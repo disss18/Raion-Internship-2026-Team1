@@ -27,17 +27,17 @@ fun OnboardingScreen(
     val pages = listOf(
         OnboardingPage(
             title = "Makanan Bergizi untuk Setiap Anak",
-            description = "Memastikan setiap siswa mendapatkan makanan bergizi.",
+            description = "Memastikan  setiap siswa mendapatkan makanan bergizi ",
             imageRes = R.drawable.onboarding1
         ),
         OnboardingPage(
             title = "Logistik Siap Diantar",
-            description = "Pelacakan waktu nyata agar makanan tiba tepat waktu.",
+            description = "Menghubungkan dapur dan sekolah dengan pelacakan waktu nyata ",
             imageRes = R.drawable.onboarding2
         ),
         OnboardingPage(
             title = "Pantau dengan Satu Genggaman",
-            description = "Orang tua & sekolah dapat memantau nutrisi.",
+            description = "Orang tua & sekolah dapat memantau program MBG melalui gawai  pribadi",
             imageRes = R.drawable.onboarding3
         )
     )
