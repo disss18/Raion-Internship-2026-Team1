@@ -2,4 +2,11 @@
 <resources>
 
     <style name="Theme.MBG" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="temaSpalashScreen" parent="Theme.SplashScreen">
+    <item name="windowSplashScreenBackground">@color/white</item>
+    <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
+        <item name="postSplashScreenTheme">@style/Theme.MBG</item>
+    </style>
+
 </resources>
