@@ -5,7 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.example.mbg.onboarding.presentation.Welcome
+import com.example.mbg.onboarding.presentation.OnboardingScreen
 
 
 @Composable
@@ -17,12 +17,16 @@ fun RootNavGraph() {
             startDestination = Screen.Welcome.route,
             route = Screen.OnboardingGraph.route
         ){
-            composable(Screen.Welcome.route){
-                Welcome()
-            }
-
-            composable(Screen.Feature.route){
-
+            composable(Screen.Onboarding.route) {
+                OnboardingScreen(
+                    onFinish = {
+                        navController.navigate("auth_graph") {
+                            popUpTo(Screen.Onboarding.route) {
+                                inclusive = true
+                            }
+                        }
+                    }
+                )
             }
         }
     }
