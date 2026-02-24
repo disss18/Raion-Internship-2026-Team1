@@ -1,6 +1,6 @@
 # 🥗 MBG+ - Platform Integrasi Makan Bergizi Gratis
 
-MBG Connect adalah aplikasi berbasis Android yang bertujuan untuk memastikan program **Makan Bergizi Gratis (MBG)** berjalan secara **aman, terukur, dan transparan** melalui integrasi antara Sekolah, Orang Tua, dan Dapur UMKM dalam satu sistem digital.
+MBG+ adalah aplikasi berbasis Android yang bertujuan untuk memastikan program **Makan Bergizi Gratis (MBG)** berjalan secara **aman, terukur, dan transparan** melalui integrasi antara Sekolah, Orang Tua, dan Dapur UMKM dalam satu sistem digital.
 
 ---
 
@@ -19,7 +19,7 @@ Program MBG melibatkan banyak pihak seperti sekolah, siswa, dan UMKM penyedia ma
 Bagaimana memastikan makanan yang diterima siswa aman, bergizi, dan terdistribusi dengan transparan?
 
 ### ✅ Answer
-MBG Connect hadir sebagai platform integrasi digital dengan sistem monitoring, verifikasi, dan transparansi distribusi.
+MBG+ hadir sebagai platform integrasi digital dengan sistem monitoring, verifikasi, dan transparansi distribusi.
 
 ---
 
@@ -85,6 +85,6 @@ app/src/main/java/com/example/mbgconnect/
 
 # 📄 License
 
-This project is created for academic and social innovation purposes.
+This project is created for educational purposes as part of Raion Internships.
 
 ---
