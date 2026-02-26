@@ -5,7 +5,7 @@
 
     <style name="temaSpalashScreen" parent="Theme.SplashScreen">
     <item name="windowSplashScreenBackground">@color/white</item>
-    <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
+    <item name="windowSplashScreenAnimatedIcon">@drawable/blank_icon</item>
         <item name="postSplashScreenTheme">@style/Theme.MBG</item>
     </style>
 
