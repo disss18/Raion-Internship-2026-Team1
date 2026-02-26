@@ -11,8 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.example.mbg.presentation.AnimatedSplashScreen
-import com.example.mbg.presentation.WelcomeScreen
+import com.example.mbg.splashscreen.AnimatedSplashScreen
+import com.example.mbg.splashscreen.WelcomeScreen
 import com.example.mbg.ui.theme.MBGTheme
 
 class MainActivity : ComponentActivity() {
