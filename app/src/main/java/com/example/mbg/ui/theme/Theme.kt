@@ -1,4 +1,4 @@
-package com.example.mbg.ui.theme
+    package com.example.mbg.ui.theme
 
 import android.app.Activity
 import android.os.Build
