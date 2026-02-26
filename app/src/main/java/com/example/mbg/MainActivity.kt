@@ -3,48 +3,71 @@ package com.example.mbg
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.mbg.ui.theme.MBGTheme
+import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.example.mbg.presentation.AnimatedSplashScreen
+import com.example.mbg.presentation.WelcomeScreen
+import com.example.mbg.ui.theme.MBGTheme
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         installSplashScreen()
-
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
         setContent {
             MBGTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                var currentScreen by remember { mutableStateOf("splash") }
+
+                androidx.compose.animation.Crossfade(
+                    targetState = currentScreen,
+                    animationSpec = androidx.compose.animation.core.tween(durationMillis = 800),
+                    label = "transisi_layar"
+                )
+                { screen ->
+                    when (screen) {
+
+                        "splash" -> {
+                            AnimatedSplashScreen(
+                                onNavigateToWelcome = {
+                                    currentScreen = "welcome"
+                                }
+                            )
+                        }
+
+                        "welcome" -> {
+                            WelcomeScreen(
+                                onNavigateToLogin = {
+                                    currentScreen = "login"
+                                },
+                                onNavigateToRegister = {
+                                    currentScreen = "register"
+                                }
+                            )
+                        }
+
+                        // test
+                        "login" -> {
+                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                Text("Halaman masuk", fontSize = 24.sp)
+                            }
+                        }
+
+                        "register" -> {
+                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                Text("Halaman daftar", fontSize = 24.sp)
+                            }
+                        }
+
+                    }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MBGTheme {
-        Greeting("Android")
     }
 }
