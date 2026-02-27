@@ -1,6 +1,9 @@
 package com.example.mbg.splashscreen
 
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -20,11 +23,13 @@ import kotlinx.coroutines.delay
 import com.example.mbg.R
 
 @Composable
-fun AnimatedSplashScreen(onNavigateToWelcome: () -> Unit) {
+fun AnimatedSplashScreen(
+    onNavigateToOnboarding: () -> Unit
+) {
 
     var step by remember { mutableIntStateOf(1) }
 
-
+    // ================= Navigation Trigger =================
     LaunchedEffect(Unit) {
         delay(300)
         step = 2
@@ -33,38 +38,46 @@ fun AnimatedSplashScreen(onNavigateToWelcome: () -> Unit) {
         delay(500)
         step = 4
         delay(800)
-        onNavigateToWelcome()
+
+        onNavigateToOnboarding()
     }
 
-    // animasi
+    // ================= Animations =================
     val offsetX by animateDpAsState(
         targetValue = if (step == 2) (-55).dp else 0.dp,
-        animationSpec = tween(600, easing = FastOutSlowInEasing), label = ""
+        animationSpec = tween(600, easing = FastOutSlowInEasing),
+        label = ""
     )
 
     val textAlpha by animateFloatAsState(
         targetValue = if (step == 2) 1f else 0f,
-        animationSpec = tween(400), label = ""
+        animationSpec = tween(400),
+        label = ""
     )
 
     val boxSize by animateDpAsState(
         targetValue = if (step >= 4) 4000.dp else 80.dp,
-        animationSpec = tween(1500, easing = FastOutSlowInEasing), label = ""
+        animationSpec = tween(1500, easing = FastOutSlowInEasing),
+        label = ""
     )
 
     val cornerRadius by animateDpAsState(
         targetValue = if (step >= 4) 500.dp else 20.dp,
-        animationSpec = tween(800), label = ""
+        animationSpec = tween(800),
+        label = ""
     )
 
     val iconAlpha by animateFloatAsState(
-        targetValue = if (step >= 4) 0f else 1f, // Ikon hilang pas layar full hijau biar bersih
-        animationSpec = tween(400), label = ""
+        targetValue = if (step >= 4) 0f else 1f,
+        animationSpec = tween(400),
+        label = ""
     )
 
-    //ui
+    // ================= UI =================
     Box(
-        modifier = Modifier.fillMaxSize().background(Color.White),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White),
         contentAlignment = Alignment.Center
     ) {
 
@@ -73,7 +86,9 @@ fun AnimatedSplashScreen(onNavigateToWelcome: () -> Unit) {
             fontSize = 45.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF83E0D4),
-            modifier = Modifier.offset(x = 65.dp).alpha(textAlpha)
+            modifier = Modifier
+                .offset(x = 65.dp)
+                .alpha(textAlpha)
         )
 
         Box(
@@ -84,11 +99,12 @@ fun AnimatedSplashScreen(onNavigateToWelcome: () -> Unit) {
                 .background(Color(0xFF83E0D4)),
             contentAlignment = Alignment.Center
         ) {
-
             Image(
                 painter = painterResource(id = R.drawable.logo_mbg),
                 contentDescription = null,
-                modifier = Modifier.size(100.dp).alpha(iconAlpha)
+                modifier = Modifier
+                    .size(100.dp)
+                    .alpha(iconAlpha)
             )
         }
     }

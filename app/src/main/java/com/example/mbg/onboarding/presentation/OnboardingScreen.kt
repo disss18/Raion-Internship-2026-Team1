@@ -13,7 +13,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.mbg.R
 import com.example.mbg.core.ui.component.PrimaryButton
-import com.example.mbg.onboarding.presentation.component.*
+import com.example.mbg.onboarding.presentation.component.IndicatorDot
+import com.example.mbg.onboarding.presentation.component.OnboardingPageContent
 import com.example.mbg.ui.theme.FoundationBlue
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
@@ -27,17 +28,17 @@ fun OnboardingScreen(
     val pages = listOf(
         OnboardingPage(
             title = "Makanan Bergizi untuk Setiap Anak",
-            description = "Memastikan  setiap siswa mendapatkan makanan bergizi ",
+            description = "Memastikan setiap siswa mendapatkan makanan bergizi",
             imageRes = R.drawable.onboarding1
         ),
         OnboardingPage(
             title = "Logistik Siap Diantar",
-            description = "Menghubungkan dapur dan sekolah dengan pelacakan waktu nyata ",
+            description = "Menghubungkan dapur dan sekolah dengan pelacakan waktu nyata",
             imageRes = R.drawable.onboarding2
         ),
         OnboardingPage(
             title = "Pantau dengan Satu Genggaman",
-            description = "Orang tua & sekolah dapat memantau program MBG melalui gawai  pribadi",
+            description = "Orang tua & sekolah dapat memantau program MBG melalui gawai pribadi",
             imageRes = R.drawable.onboarding3
         )
     )
@@ -45,56 +46,59 @@ fun OnboardingScreen(
     val pagerState = rememberPagerState(pageCount = { pages.size })
     val scope = rememberCoroutineScope()
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
 
-        Column(modifier = Modifier.fillMaxSize()) {
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .statusBarsPadding()
-                    .height(48.dp)
-                    .padding(end = 20.dp),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                if (pagerState.currentPage < pages.lastIndex) {
-                    TextButton(
-                        onClick = {
-                            scope.launch {
-                                pagerState.animateScrollToPage(pages.lastIndex)
-                            }
+        // ================= LEWATI =================
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .statusBarsPadding()
+                .padding(top = 100.dp)
+                .padding(horizontal = 20.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.End
+        ) {
+            if (pagerState.currentPage < pages.lastIndex) {
+                TextButton(
+                    onClick = {
+                        scope.launch {
+                            pagerState.animateScrollToPage(pages.lastIndex)
                         }
-                    ) {
-                        Text("Lewati")
                     }
+                ) {
+                    Text(
+                        text = "Lewati"
+                    )
                 }
-            }
-
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier.weight(1f)
-            ) { page ->
-
-                val pageOffset by remember {
-                    derivedStateOf {
-                        (
-                                (pagerState.currentPage - page)
-                                        + pagerState.currentPageOffsetFraction
-                                ).absoluteValue
-                    }
-                }
-
-                OnboardingPageContent(
-                    page = pages[page],
-                    pageOffset = pageOffset
-                )
             }
         }
 
+        // ================= PAGER =================
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.weight(1f)
+        ) { page ->
+
+            val pageOffset by remember {
+                derivedStateOf {
+                    (
+                            (pagerState.currentPage - page)
+                                    + pagerState.currentPageOffsetFraction
+                            ).absoluteValue
+                }
+            }
+
+            OnboardingPageContent(
+                page = pages[page],
+                pageOffset = pageOffset
+            )
+        }
+
+        // ================= BOTTOM =================
         Column(
             modifier = Modifier
-                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
                 .padding(bottom = 40.dp)
         ) {
 

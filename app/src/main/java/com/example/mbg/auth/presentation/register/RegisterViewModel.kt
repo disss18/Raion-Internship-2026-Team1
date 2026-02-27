@@ -1,4 +1,4 @@
-package com.example.mbg.auth.presentation.login
+package com.example.mbg.auth.presentation.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,27 +7,28 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class LoginViewModel : ViewModel() {
+
+class RegisterViewModel : ViewModel() {
 
     private val repository = AuthRepositoryImpl()
 
-    private val _uiState = MutableStateFlow(LoginUiState())
-    val uiState: StateFlow<LoginUiState> = _uiState
+    private val _uiState = MutableStateFlow(RegisterUiState())
+    val uiState: StateFlow<RegisterUiState> = _uiState
 
-    fun login(email: String, password: String) {
+    fun register(email: String, password: String) {
 
         viewModelScope.launch {
 
-            _uiState.value = LoginUiState(isLoading = true)
+            _uiState.value = RegisterUiState(isLoading = true)
 
-            val result = repository.login(email, password)
+            val result = repository.register(email, password)
 
             _uiState.value = result.fold(
                 onSuccess = {
-                    LoginUiState(isSuccess = true)
+                    RegisterUiState(isSuccess = true)
                 },
                 onFailure = {
-                    LoginUiState(error = it.message ?: "Login gagal")
+                    RegisterUiState(error = it.message ?: "Register gagal")
                 }
             )
         }

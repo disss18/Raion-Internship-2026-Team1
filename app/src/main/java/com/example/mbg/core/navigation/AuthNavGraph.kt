@@ -12,10 +12,11 @@ fun NavGraphBuilder.authNavGraph(
 ) {
 
     navigation(
-        startDestination = Screen.Login.route,
-        route = Screen.Auth.route
+        route = Screen.Auth.route,
+        startDestination = Screen.Login.route
     ) {
 
+        // ================= LOGIN =================
         composable(Screen.Login.route) {
             LoginScreen(
                 onNavigateToRegister = {
@@ -29,6 +30,7 @@ fun NavGraphBuilder.authNavGraph(
             )
         }
 
+        // ================= REGISTER =================
         composable(Screen.Register.route) {
             RegisterScreen(
                 onNavigateBack = {

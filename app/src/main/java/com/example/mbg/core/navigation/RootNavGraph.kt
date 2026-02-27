@@ -1,8 +1,9 @@
 package com.example.mbg.core.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.*
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.mbg.onboarding.presentation.OnboardingScreen
 import com.example.mbg.splashscreen.AnimatedSplashScreen
 import com.example.mbg.splashscreen.WelcomeScreen
@@ -10,17 +11,17 @@ import com.example.mbg.splashscreen.WelcomeScreen
 @Composable
 fun RootNavGraph() {
 
-    val navController: NavHostController = rememberNavController()
+    val navController = rememberNavController()
 
     NavHost(
         navController = navController,
         startDestination = Screen.Splash.route
     ) {
 
-        // ================= Splash =================
+        // ================= SPLASH =================
         composable(Screen.Splash.route) {
             AnimatedSplashScreen(
-                onNavigateToWelcome = {
+                onNavigateToOnboarding = {
                     navController.navigate(Screen.Onboarding.route) {
                         popUpTo(Screen.Splash.route) { inclusive = true }
                     }
@@ -28,7 +29,7 @@ fun RootNavGraph() {
             )
         }
 
-        // ================= Onboarding =================
+        // ================= ONBOARDING =================
         composable(Screen.Onboarding.route) {
             OnboardingScreen(
                 onFinish = {
@@ -39,25 +40,20 @@ fun RootNavGraph() {
             )
         }
 
-        // ================= Welcome =================
+        // ================= WELCOME =================
         composable(Screen.Welcome.route) {
             WelcomeScreen(
                 onNavigateToLogin = {
-                    navController.navigate(Screen.Auth.route)
+                    navController.navigate(Screen.Login.route)
                 },
                 onNavigateToRegister = {
-                    navController.navigate(Screen.Auth.route) {
-                        launchSingleTop = true
-                    }
                     navController.navigate(Screen.Register.route)
                 }
             )
         }
 
-        // ================= Auth =================
+        // ================= NESTED GRAPH =================
         authNavGraph(navController)
-
-        // ================= Main =================
-        mainNavGraph()
+        mainNavGraph(navController)
     }
 }

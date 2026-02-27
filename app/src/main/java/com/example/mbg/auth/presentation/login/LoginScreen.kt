@@ -1,71 +1,82 @@
 package com.example.mbg.auth.presentation.login
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mbg.auth.component.AuthDivider
 import com.example.mbg.core.ui.component.AuthBackground
 import com.example.mbg.core.ui.component.PrimaryButton
 import com.example.mbg.core.ui.component.PrimaryTextField
 import com.example.mbg.ui.theme.BlueLight
 import com.example.mbg.ui.theme.BlueNormal
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
     onNavigateToRegister: () -> Unit,
     onLoginSuccess: () -> Unit,
-
 ) {
+
     val viewModel: LoginViewModel = viewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    // Observe success (one-time navigation)
+    // Navigate once on success
     LaunchedEffect(uiState.isSuccess) {
         if (uiState.isSuccess) {
             onLoginSuccess()
         }
     }
 
-    AuthBackground {
+    // Show error
+    LaunchedEffect(uiState.error) {
+        uiState.error?.let {
+            snackbarHostState.showSnackbar(it)
+            viewModel.clearError()
+        }
+    }
 
-        Box(modifier = Modifier.fillMaxSize()) {
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { padding ->
+
+        AuthBackground(
+            modifier = Modifier.padding(padding)
+        ) {
 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 32.dp),
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 24.dp),
+                verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                Spacer(modifier = Modifier.height(80.dp))
-
                 Text(
                     text = "Masuk ke Akun Anda",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = BlueNormal,
-                    fontSize = 24.sp
+                    style = MaterialTheme.typography.titleLarge,
+                    color = BlueNormal
                 )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
-                // Email
-                Text(
-                    text = "Email",
-                    style = MaterialTheme.typography.labelLarge,
-                    modifier = Modifier.align(Alignment.Start)
-                )
+                Text("Email", modifier = Modifier.align(Alignment.Start))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 PrimaryTextField(
                     value = email,
@@ -75,27 +86,26 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Password
-                Text(
-                    text = "Kata Sandi",
-                    style = MaterialTheme.typography.labelLarge,
-                    modifier = Modifier.align(Alignment.Start)
-                )
+                Text("Kata Sandi", modifier = Modifier.align(Alignment.Start))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 PrimaryTextField(
                     value = password,
                     onValueChange = { password = it },
-                    placeholder = "Masukkan Kata Sandi",
+                    placeholder = "Masukkan kata sandi",
                     isPassword = true
                 )
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 PrimaryButton(
                     text = if (uiState.isLoading) "Loading..." else "Masuk",
                     containerColor = BlueNormal,
                     onClick = {
-                        viewModel.login(email, password)
+                        viewModel.login(
+                            email.trim(),
+                            password.trim()
+                        )
                     }
                 )
 
@@ -107,36 +117,20 @@ fun LoginScreen(
 
                 PrimaryButton(
                     text = "Lanjutkan dengan Google",
-                    onClick = { },
+                    onClick = {},
                     containerColor = BlueLight,
                     contentColor = BlueNormal,
                     borderColor = BlueNormal
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 Row {
                     Text("Belum punya akun? ")
-
                     ClickableText(
-                        text = AnnotatedString("ajukan akses"),
-                        onClick = { onNavigateToRegister() }
+                        text = AnnotatedString("Daftar"),
+                        onClick = {onNavigateToRegister()}
                     )
-                }
-            }
-
-            // ERROR UI
-            uiState.error?.let { message ->
-                Text(
-                    text = message,
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(16.dp)
-                )
-
-                LaunchedEffect(message) {
-                    viewModel.clearError()
                 }
             }
         }

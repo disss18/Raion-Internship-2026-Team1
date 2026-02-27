@@ -1,25 +1,22 @@
 package com.example.mbg.core.navigation
 
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import androidx.compose.material3.Text
 
-fun NavGraphBuilder.mainNavGraph() {
+fun NavGraphBuilder.mainNavGraph(
+    navController: NavHostController
+) {
 
     navigation(
-        startDestination = Screen.Home.route,
-        route = Screen.Main.route
+        route = Screen.Main.route,
+        startDestination = Screen.Home.route
     ) {
 
         composable(Screen.Home.route) {
-            MainScreen()
+            Text("HOME SCREEN")
         }
     }
-}
-
-@Composable
-fun MainScreen() {
-    Text("Main Screen Placeholder")
 }
