@@ -4,7 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import androidx.compose.material3.Text
+import com.example.mbg.feature.home.presentation.HomeScreen
 
 fun NavGraphBuilder.mainNavGraph(
     navController: NavHostController
@@ -16,7 +16,7 @@ fun NavGraphBuilder.mainNavGraph(
     ) {
 
         composable(Screen.Home.route) {
-            Text("HOME SCREEN")
+            HomeScreen(navController)
         }
     }
 }

@@ -4,8 +4,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.example.mbg.auth.presentation.login.LoginScreen
-import com.example.mbg.auth.presentation.register.RegisterScreen
+import com.example.mbg.feature.auth.presentation.login.LoginScreen
+import com.example.mbg.feature.auth.presentation.register.RegisterScreen
 
 fun NavGraphBuilder.authNavGraph(
     navController: NavHostController
@@ -18,13 +18,20 @@ fun NavGraphBuilder.authNavGraph(
 
         // ================= LOGIN =================
         composable(Screen.Login.route) {
+
             LoginScreen(
                 onNavigateToRegister = {
                     navController.navigate(Screen.Register.route)
                 },
+
                 onLoginSuccess = {
                     navController.navigate(Screen.Main.route) {
-                        popUpTo(Screen.Auth.route) { inclusive = true }
+
+                        popUpTo(0) {
+                            inclusive = true
+                        }
+
+                        launchSingleTop = true
                     }
                 }
             )
@@ -32,13 +39,18 @@ fun NavGraphBuilder.authNavGraph(
 
         // ================= REGISTER =================
         composable(Screen.Register.route) {
+
             RegisterScreen(
                 onNavigateBack = {
                     navController.popBackStack()
                 },
+
+                // REGISTER → LOGIN (BUKAN MAIN)
                 onRegisterSuccess = {
-                    navController.navigate(Screen.Main.route) {
-                        popUpTo(Screen.Auth.route) { inclusive = true }
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(Screen.Register.route) {
+                            inclusive = true
+                        }
                     }
                 }
             )

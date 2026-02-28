@@ -4,9 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.mbg.onboarding.presentation.OnboardingScreen
-import com.example.mbg.splashscreen.AnimatedSplashScreen
-import com.example.mbg.splashscreen.WelcomeScreen
+import com.example.mbg.feature.onboarding.presentation.OnboardingScreen
+import com.example.mbg.feature.splashscreen.AnimatedSplashScreen
+import com.example.mbg.feature.splashscreen.WelcomeScreen
 
 @Composable
 fun RootNavGraph() {
@@ -20,9 +20,15 @@ fun RootNavGraph() {
 
         // ================= SPLASH =================
         composable(Screen.Splash.route) {
+
             AnimatedSplashScreen(
                 onNavigateToOnboarding = {
                     navController.navigate(Screen.Onboarding.route) {
+                        popUpTo(Screen.Splash.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMain = {
+                    navController.navigate(Screen.Main.route) {
                         popUpTo(Screen.Splash.route) { inclusive = true }
                     }
                 }
