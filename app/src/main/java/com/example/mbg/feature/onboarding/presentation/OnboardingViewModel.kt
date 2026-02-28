@@ -1,4 +1,4 @@
-package com.example.mbg.onboarding.presentation
+package com.example.mbg.feature.onboarding.presentation
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

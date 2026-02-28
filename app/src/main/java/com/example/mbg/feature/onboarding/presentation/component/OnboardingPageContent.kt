@@ -1,4 +1,4 @@
-package com.example.mbg.onboarding.presentation.component
+package com.example.mbg.feature.onboarding.presentation.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,9 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.mbg.onboarding.presentation.OnboardingPage
-import com.example.mbg.ui.theme.poppins
-import kotlin.math.absoluteValue
+import com.example.mbg.feature.onboarding.presentation.OnboardingPage
 
 
 @Composable

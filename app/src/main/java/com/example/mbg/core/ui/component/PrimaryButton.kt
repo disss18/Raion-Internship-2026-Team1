@@ -1,5 +1,6 @@
 package com.example.mbg.core.ui.component
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -16,18 +17,21 @@ fun PrimaryButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true,
     containerColor: Color = MaterialTheme.colorScheme.primary,
-    contentColor: Color = MaterialTheme.colorScheme.onPrimary
+    contentColor: Color = Color.White,
+    borderColor: Color? = null
 ) {
     Button(
         onClick = onClick,
         modifier = modifier.fillMaxWidth(),
-        enabled = enabled,
         shape = RoundedCornerShape(16.dp),
+        border = borderColor?.let { BorderStroke(1.dp, it) },
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor,
             contentColor = contentColor
+        ),
+        elevation = ButtonDefaults.buttonElevation(
+            defaultElevation = 4.dp
         )
     ) {
         Text(

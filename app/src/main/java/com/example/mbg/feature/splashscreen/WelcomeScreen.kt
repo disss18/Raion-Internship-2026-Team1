@@ -1,4 +1,4 @@
-package com.example.mbg.splashscreen
+package com.example.mbg.feature.splashscreen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

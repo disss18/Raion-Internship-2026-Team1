@@ -1,4 +1,4 @@
-package com.example.mbg.onboarding.presentation.component
+package com.example.mbg.feature.onboarding.presentation.component
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
