@@ -16,14 +16,31 @@ class LoginViewModel(
 
     fun login(email: String, password: String) {
 
-        viewModelScope.launch {
+        // ================= VALIDATION =================
+        val validationError = LoginValidator.validate(email, password)
 
-            _uiState.value = LoginUiState(isLoading = true)
+        if (validationError != null) {
+            _uiState.value = _uiState.value.copy(
+                isLoading = false,
+                error = validationError
+            )
+            return
+        }
+
+        // ================= LOADING =================
+        _uiState.value = _uiState.value.copy(
+            isLoading = true,
+            error = null
+        )
+
+        viewModelScope.launch {
 
             val result = repository.login(email, password)
 
             _uiState.value = result.fold(
-                onSuccess = { LoginUiState(isSuccess = true) },
+                onSuccess = {
+                    LoginUiState(isSuccess = true)
+                },
                 onFailure = {
                     LoginUiState(
                         error = it.message ?: "Login gagal"

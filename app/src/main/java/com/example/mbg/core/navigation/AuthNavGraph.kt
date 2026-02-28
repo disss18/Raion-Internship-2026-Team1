@@ -41,8 +41,13 @@ fun NavGraphBuilder.authNavGraph(
         composable(Screen.Register.route) {
 
             RegisterScreen(
-                onNavigateBack = {
-                    navController.popBackStack()
+                onNavigateToLogin = {
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(Screen.Register.route) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
                 },
 
                 // REGISTER → LOGIN (BUKAN MAIN)
