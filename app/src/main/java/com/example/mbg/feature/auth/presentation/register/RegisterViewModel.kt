@@ -2,14 +2,14 @@ package com.example.mbg.feature.auth.presentation.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mbg.feature.auth.data.AuthRepositoryImpl
+import com.example.mbg.feature.auth.domain.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class RegisterViewModel : ViewModel() {
-
-    private val repository = AuthRepositoryImpl()
+class RegisterViewModel(
+    private val repository: AuthRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RegisterUiState())
     val uiState: StateFlow<RegisterUiState> = _uiState

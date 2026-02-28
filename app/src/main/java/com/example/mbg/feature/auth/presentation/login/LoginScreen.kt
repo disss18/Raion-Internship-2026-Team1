@@ -11,11 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mbg.feature.auth.component.AuthDivider
 import com.example.mbg.core.ui.component.AuthBackground
 import com.example.mbg.core.ui.component.PrimaryButton
 import com.example.mbg.core.ui.component.PrimaryTextField
+import com.example.mbg.feature.auth.data.remote.AuthRemoteDataSource
+import com.example.mbg.feature.auth.data.repository.AuthRepositoryImpl
 import com.example.mbg.ui.theme.BlueLight
 import com.example.mbg.ui.theme.BlueNormal
 
@@ -25,23 +26,30 @@ fun LoginScreen(
     onLoginSuccess: () -> Unit,
 ) {
 
-    val viewModel: LoginViewModel = viewModel()
+    // 🔥 MANUAL DI LANGSUNG (NO AuthModule, NO viewModel())
+    val viewModel = remember {
+
+        val remote = AuthRemoteDataSource()
+        val repository = AuthRepositoryImpl(remote)
+
+        LoginViewModel(repository)
+    }
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    // Navigate once on success
+    // ================= SUCCESS NAVIGATION =================
     LaunchedEffect(uiState.isSuccess) {
         if (uiState.isSuccess) {
             onLoginSuccess()
         }
     }
 
-    // Show error
+    // ================= ERROR HANDLING =================
     LaunchedEffect(uiState.error) {
         uiState.error?.let {
             snackbarHostState.showSnackbar(it)
@@ -116,7 +124,7 @@ fun LoginScreen(
 
                 PrimaryButton(
                     text = "Lanjutkan dengan Google",
-                    onClick = {},
+                    onClick = { /* TODO */ },
                     containerColor = BlueLight,
                     contentColor = BlueNormal,
                     borderColor = BlueNormal
@@ -128,7 +136,7 @@ fun LoginScreen(
                     Text("Belum punya akun? ")
                     ClickableText(
                         text = AnnotatedString("Daftar"),
-                        onClick = {onNavigateToRegister()}
+                        onClick = { onNavigateToRegister() }
                     )
                 }
             }

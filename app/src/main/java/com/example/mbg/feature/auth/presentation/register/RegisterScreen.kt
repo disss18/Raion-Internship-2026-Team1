@@ -11,11 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mbg.feature.auth.component.AuthDivider
 import com.example.mbg.core.ui.component.AuthBackground
 import com.example.mbg.core.ui.component.PrimaryButton
 import com.example.mbg.core.ui.component.PrimaryTextField
+import com.example.mbg.feature.auth.data.remote.AuthRemoteDataSource
+import com.example.mbg.feature.auth.data.repository.AuthRepositoryImpl
 import com.example.mbg.ui.theme.BlueNormal
 
 @Composable
@@ -24,23 +25,29 @@ fun RegisterScreen(
     onRegisterSuccess: () -> Unit
 ) {
 
-    val viewModel: RegisterViewModel = viewModel()
+    val viewModel = remember {
+        val remote = AuthRemoteDataSource()
+        val repository = AuthRepositoryImpl(remote)
+        RegisterViewModel(repository)
+    }
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
 
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
 
+    // ================= NAVIGATION SUCCESS =================
     LaunchedEffect(uiState.isSuccess) {
         if (uiState.isSuccess) {
             onRegisterSuccess()
         }
     }
 
+    // ================= ERROR HANDLING =================
     LaunchedEffect(uiState.error) {
         uiState.error?.let {
             snackbarHostState.showSnackbar(it)
@@ -73,6 +80,7 @@ fun RegisterScreen(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
+                // ================= NAMA =================
                 Text("Nama", modifier = Modifier.align(Alignment.Start))
                 Spacer(modifier = Modifier.height(8.dp))
                 PrimaryTextField(
@@ -83,6 +91,7 @@ fun RegisterScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // ================= EMAIL =================
                 Text("Email", modifier = Modifier.align(Alignment.Start))
                 Spacer(modifier = Modifier.height(8.dp))
                 PrimaryTextField(
@@ -93,6 +102,7 @@ fun RegisterScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // ================= PASSWORD =================
                 Text("Kata Sandi", modifier = Modifier.align(Alignment.Start))
                 Spacer(modifier = Modifier.height(8.dp))
                 PrimaryTextField(
@@ -104,6 +114,7 @@ fun RegisterScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // ================= CONFIRM PASSWORD =================
                 Text("Konfirmasi Kata Sandi", modifier = Modifier.align(Alignment.Start))
                 Spacer(modifier = Modifier.height(8.dp))
                 PrimaryTextField(
@@ -115,6 +126,7 @@ fun RegisterScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
+                // ================= BUTTON =================
                 PrimaryButton(
                     text = if (uiState.isLoading) "Loading..." else "Daftar",
                     containerColor = BlueNormal,
