@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+
 class LoginViewModel(
     private val repository: AuthRepository
 ) : ViewModel() {
@@ -16,22 +17,7 @@ class LoginViewModel(
 
     fun login(email: String, password: String) {
 
-        // ================= VALIDATION =================
-        val validationError = LoginValidator.validate(email, password)
-
-        if (validationError != null) {
-            _uiState.value = _uiState.value.copy(
-                isLoading = false,
-                error = validationError
-            )
-            return
-        }
-
-        // ================= LOADING =================
-        _uiState.value = _uiState.value.copy(
-            isLoading = true,
-            error = null
-        )
+        _uiState.value = LoginUiState(isLoading = true)
 
         viewModelScope.launch {
 
@@ -39,11 +25,32 @@ class LoginViewModel(
 
             _uiState.value = result.fold(
                 onSuccess = {
-                    LoginUiState(isSuccess = true)
+                    LoginUiState()
                 },
                 onFailure = {
                     LoginUiState(
                         error = it.message ?: "Login gagal"
+                    )
+                }
+            )
+        }
+    }
+
+    fun loginWithGoogle() {
+
+        _uiState.value = LoginUiState(isLoading = true)
+
+        viewModelScope.launch {
+
+            val result = repository.loginWithGoogle()
+
+            _uiState.value = result.fold(
+                onSuccess = {
+                    LoginUiState()
+                },
+                onFailure = {
+                    LoginUiState(
+                        error = it.message ?: "Google login gagal"
                     )
                 }
             )

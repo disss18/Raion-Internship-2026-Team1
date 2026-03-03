@@ -23,7 +23,13 @@ class AuthRepositoryImpl(
             remote.register(email, password)
         }
 
-    override suspend fun logout() {
-        remote.logout()
-    }
+    override suspend fun loginWithGoogle(): Result<Unit> =
+        runCatching {
+            remote.loginWithGoogle()
+        }
+
+    override suspend fun logout() =
+        runCatching {
+            remote.logout()
+        }
 }

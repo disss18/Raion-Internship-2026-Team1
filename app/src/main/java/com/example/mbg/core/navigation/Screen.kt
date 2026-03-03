@@ -11,6 +11,7 @@ sealed class Screen(val route: String) {
     object Auth : Screen("auth_graph")
     object Login : Screen("login")
     object Register : Screen("register")
+    object Role : Screen("role")
 
     // Main
     object Main : Screen("main_graph")

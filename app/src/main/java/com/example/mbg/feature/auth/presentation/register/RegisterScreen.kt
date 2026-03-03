@@ -13,10 +13,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.mbg.feature.auth.component.AuthDivider
 import com.example.mbg.core.ui.component.AuthBackground
 import com.example.mbg.core.ui.component.PrimaryButton
 import com.example.mbg.core.ui.component.PrimaryTextField
+import com.example.mbg.feature.auth.component.AuthDivider
 import com.example.mbg.feature.auth.data.remote.AuthRemoteDataSource
 import com.example.mbg.feature.auth.data.repository.AuthRepositoryImpl
 import com.example.mbg.ui.theme.BlueLight
@@ -28,6 +28,7 @@ fun RegisterScreen(
     onNavigateToLogin: () -> Unit,
     onRegisterSuccess: () -> Unit
 ) {
+
     val viewModel = remember {
         val remote = AuthRemoteDataSource()
         val repository = AuthRepositoryImpl(remote)
@@ -42,14 +43,14 @@ fun RegisterScreen(
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
 
-    // ================= NAVIGATION SUCCESS =================
+    // ================= SUCCESS =================
     LaunchedEffect(uiState.isSuccess) {
         if (uiState.isSuccess) {
             onRegisterSuccess()
         }
     }
 
-    // ================= ERROR HANDLING =================
+    // ================= ERROR =================
     LaunchedEffect(uiState.error) {
         uiState.error?.let {
             snackbarHostState.showSnackbar(it)
@@ -61,19 +62,27 @@ fun RegisterScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
 
-        AuthBackground(
-            modifier = Modifier.padding(padding)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
         ) {
+
+            // ================= BACKGROUND =================
+            AuthBackground(
+                waveOffsetY = (-40).dp
+            )
+
+            // ================= CONTENT =================
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 24.dp),
-                verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                Spacer(modifier = Modifier.height(55.dp))
+                Spacer(modifier = Modifier.height(130.dp))
 
                 Text(
                     text = "Registrasi Akun",
@@ -85,14 +94,14 @@ fun RegisterScreen(
                     color = BlueNormal
                 )
 
-                Spacer(modifier = Modifier.height(15.dp))
+                Spacer(modifier = Modifier.height(40.dp))
 
                 Column(
                     modifier = Modifier.fillMaxWidth(0.90f),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
-                    // ================= NAMA =================
+                    // ===== NAMA =====
                     Text("Nama", modifier = Modifier.align(Alignment.Start))
                     Spacer(modifier = Modifier.height(8.dp))
                     PrimaryTextField(
@@ -103,7 +112,7 @@ fun RegisterScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // ================= EMAIL =================
+                    // ===== EMAIL =====
                     Text("Email", modifier = Modifier.align(Alignment.Start))
                     Spacer(modifier = Modifier.height(8.dp))
                     PrimaryTextField(
@@ -114,7 +123,7 @@ fun RegisterScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // ================= PASSWORD =================
+                    // ===== PASSWORD =====
                     Text("Kata Sandi", modifier = Modifier.align(Alignment.Start))
                     Spacer(modifier = Modifier.height(8.dp))
                     PrimaryTextField(
@@ -126,7 +135,7 @@ fun RegisterScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // ================= CONFIRM PASSWORD =================
+                    // ===== CONFIRM PASSWORD =====
                     Text("Konfirmasi Kata Sandi", modifier = Modifier.align(Alignment.Start))
                     Spacer(modifier = Modifier.height(8.dp))
                     PrimaryTextField(
@@ -138,10 +147,11 @@ fun RegisterScreen(
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // ================= BUTTON =================
+                    // ===== REGISTER BUTTON =====
                     PrimaryButton(
                         text = if (uiState.isLoading) "Loading..." else "Daftar",
                         containerColor = BlueNormal,
+                        enabled = !uiState.isLoading,
                         onClick = {
                             viewModel.register(
                                 name.trim(),
@@ -160,14 +170,14 @@ fun RegisterScreen(
 
                     PrimaryButton(
                         text = "Lanjutkan dengan Google",
-                        onClick = { /* TODO */ },
+                        onClick = { viewModel.loginWithGoogle() },
                         containerColor = BlueLight,
                         contentColor = BlueNormal,
                         borderColor = BlueNormal
                     )
                 }
 
-                Spacer(modifier = Modifier.height(15.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -183,6 +193,8 @@ fun RegisterScreen(
                         )
                     )
                 }
+
+                Spacer(modifier = Modifier.height(40.dp))
             }
         }
     }

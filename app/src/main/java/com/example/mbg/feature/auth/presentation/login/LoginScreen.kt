@@ -62,9 +62,19 @@ fun LoginScreen(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
-        AuthBackground(
-            modifier = Modifier.padding(padding)
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
         ) {
+
+            // ================= BACKGROUND LAYER =================
+            AuthBackground(
+                waveOffsetY = (-50).dp
+            )
+
+            // ================= CONTENT LAYER =================
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -74,8 +84,7 @@ fun LoginScreen(
                 verticalArrangement = Arrangement.Top
             ) {
 
-                // jarak dari atas
-                Spacer(modifier = Modifier.height(90.dp))
+                Spacer(modifier = Modifier.height(130.dp))
 
                 Text(
                     text = "Masuk ke Akun Anda",
@@ -97,17 +106,17 @@ fun LoginScreen(
                         .height(150.dp)
                         .offset(y = 20.dp)
                         .graphicsLayer(
-                            scaleX = 2.0f, // 1.0 normal
+                            scaleX = 2.0f,
                             scaleY = 2.0f
                         )
                 )
+
                 Column(
                     modifier = Modifier
                         .fillMaxWidth(0.90f),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
-                    // ===== EMAIL =====
                     Text("Email", modifier = Modifier.align(Alignment.Start))
                     Spacer(modifier = Modifier.height(8.dp))
 
@@ -119,7 +128,6 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // ===== PASSWORD =====
                     Text("Kata Sandi", modifier = Modifier.align(Alignment.Start))
                     Spacer(modifier = Modifier.height(8.dp))
 
@@ -132,7 +140,6 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // ===== LOGIN BUTTON =====
                     PrimaryButton(
                         text = if (uiState.isLoading) "Loading..." else "Masuk",
                         containerColor = BlueNormal,
@@ -152,7 +159,7 @@ fun LoginScreen(
 
                     PrimaryButton(
                         text = "Lanjutkan dengan Google",
-                        onClick = { /* TODO */ },
+                        onClick = { viewModel.loginWithGoogle() },
                         containerColor = BlueLight,
                         contentColor = BlueNormal,
                         borderColor = BlueNormal
@@ -161,7 +168,6 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(15.dp))
 
-                // ===== REGISTER TEXT =====
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {

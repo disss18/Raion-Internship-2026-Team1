@@ -19,24 +19,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.delay
 import com.example.mbg.R
-import com.example.mbg.feature.auth.presentation.GlobalAuthViewModel
 
 @Composable
-fun AnimatedSplashScreen(
-    onNavigateToOnboarding: () -> Unit,
-    onNavigateToMain: () -> Unit
-) {
-
-    val authViewModel: GlobalAuthViewModel = viewModel()
-    val isLoggedIn by authViewModel.isLoggedIn.collectAsStateWithLifecycle()
+fun AnimatedSplashScreen() {
 
     var step by remember { mutableIntStateOf(1) }
-    var animationFinished by remember { mutableStateOf(false) }
-    var hasNavigated by remember { mutableStateOf(false) }
 
     // ================= Animations =================
     LaunchedEffect(Unit) {
@@ -46,27 +35,8 @@ fun AnimatedSplashScreen(
         step = 3
         delay(500)
         step = 4
-        delay(800)
-
-        animationFinished = true
     }
 
-    // ================= Navigation Trigger =================
-    LaunchedEffect(animationFinished, isLoggedIn) {
-
-        if (animationFinished && !hasNavigated) {
-
-            hasNavigated = true
-
-            if (isLoggedIn) {
-                onNavigateToMain()
-            } else {
-                onNavigateToOnboarding()
-            }
-        }
-    }
-
-    // ================= Animations =================
     val offsetX by animateDpAsState(
         targetValue = if (step == 2) (-55).dp else 0.dp,
         animationSpec = tween(600, easing = FastOutSlowInEasing),

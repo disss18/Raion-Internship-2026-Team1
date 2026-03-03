@@ -2,7 +2,10 @@ package com.example.mbg.core.ui.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,8 +19,8 @@ import com.example.mbg.R
 @Composable
 fun AuthBackground(
     modifier: Modifier = Modifier,
-    topSpacing: Dp = 150.dp,
-    content: @Composable () -> Unit
+    waveOffsetY: Dp = 0.dp,          // ⬅ kontrol naik turun
+    waveHeightOffset: Float = 1f     // ⬅ kontrol scale kalau mau
 ) {
     Box(
         modifier = modifier
@@ -25,24 +28,14 @@ fun AuthBackground(
             .background(Color(0xFFF5F5F5))
     ) {
 
-        // Wave Background
         Image(
             painter = painterResource(id = R.drawable.background_wave),
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
-                .offset(y = (70.dp))
+                .offset(y = waveOffsetY) // ⬅ ini yang bikin bisa naik turun
                 .align(Alignment.TopCenter),
             contentScale = ContentScale.FillWidth
         )
-
-        // Content Area
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = topSpacing),
-        ) {
-            content()
-        }
     }
 }
