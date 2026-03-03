@@ -22,6 +22,7 @@ import com.example.mbg.core.ui.component.PrimaryButton
 import com.example.mbg.core.ui.component.PrimaryTextField
 import com.example.mbg.feature.auth.component.AuthDivider
 import com.example.mbg.feature.auth.data.remote.AuthRemoteDataSource
+import com.example.mbg.feature.auth.data.remote.AuthRemoteDataSourceImpl
 import com.example.mbg.feature.auth.data.repository.AuthRepositoryImpl
 import com.example.mbg.ui.theme.BlueLight
 import com.example.mbg.ui.theme.BlueNormal
@@ -33,7 +34,7 @@ fun LoginScreen(
     onLoginSuccess: () -> Unit,
 ) {
     val viewModel = remember {
-        val remote = AuthRemoteDataSource()
+        val remote = AuthRemoteDataSourceImpl()
         val repository = AuthRepositoryImpl(remote)
         LoginViewModel(repository)
     }

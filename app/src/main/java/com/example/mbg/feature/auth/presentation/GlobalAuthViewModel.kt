@@ -1,8 +1,11 @@
 package com.example.mbg.feature.auth.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mbg.feature.auth.data.remote.AuthRemoteDataSource
+import com.example.mbg.feature.auth.data.remote.AuthRemoteDataSourceImpl
+import com.example.mbg.feature.auth.data.repository.AuthRepositoryImpl
+import com.example.mbg.feature.auth.domain.AuthRepository
 import com.example.mbg.supabase.SupabaseClientProvider
 import io.github.jan.supabase.gotrue.SessionStatus
 import io.github.jan.supabase.gotrue.auth
@@ -12,11 +15,15 @@ import kotlinx.coroutines.launch
 
 sealed class AuthState {
     object Loading : AuthState()
-    object Authenticated : AuthState()
     object Unauthenticated : AuthState()
+    object Authenticated : AuthState()
+    object NeedRole : AuthState() // TAMBAHAN
 }
 
 class GlobalAuthViewModel : ViewModel() {
+
+    private val repository: AuthRepository =
+        AuthRepositoryImpl(AuthRemoteDataSourceImpl())
 
     private val supabase = SupabaseClientProvider.client
 
@@ -32,32 +39,28 @@ class GlobalAuthViewModel : ViewModel() {
 
             supabase.auth.sessionStatus.collect { status ->
 
-                Log.d("AUTH_DEBUG", "SessionStatus = $status")
+                if (status is SessionStatus.Authenticated) {
 
-                _authState.value =
-                    when (status) {
-                        is SessionStatus.Authenticated -> {
-                            Log.d("AUTH_DEBUG", "User AUTHENTICATED")
+                    val roleResult = repository.getUserRole()
+                    val role = roleResult.getOrNull()
+
+                    _authState.value =
+                        if (role == null) {
+                            AuthState.NeedRole
+                        } else {
                             AuthState.Authenticated
                         }
 
-                        is SessionStatus.NotAuthenticated -> {
-                            Log.d("AUTH_DEBUG", "User NOT AUTHENTICATED")
-                            AuthState.Unauthenticated
-                        }
-
-                        else -> {
-                            Log.d("AUTH_DEBUG", "Session Loading")
-                            AuthState.Loading
-                        }
-                    }
+                } else {
+                    _authState.value = AuthState.Unauthenticated
+                }
             }
         }
     }
 
     fun logout() {
         viewModelScope.launch {
-            supabase.auth.signOut()
+            repository.logout()
         }
     }
 }

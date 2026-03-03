@@ -20,6 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mbg.R
+import com.example.mbg.feature.auth.data.remote.AuthRemoteDataSourceImpl
+import com.example.mbg.feature.auth.data.repository.AuthRepositoryImpl
 import com.example.mbg.feature.role.domain.model.UserRole
 import com.example.mbg.supabase.SupabaseClientProvider
 import com.example.mbg.ui.theme.inter
@@ -30,9 +32,18 @@ fun RoleScreen(
     onRoleSelected: () -> Unit
 ) {
 
+    // ================= DEPENDENCY MANUAL INJECTION =================
     val factory = remember {
-        RoleViewModelFactory(SupabaseClientProvider.client)
+
+        val remote = AuthRemoteDataSourceImpl(
+            SupabaseClientProvider.client
+        )
+
+        val repository = AuthRepositoryImpl(remote)
+
+        RoleViewModelFactory(repository)
     }
+
     val viewModel: RoleViewModel = viewModel(factory = factory)
 
     var selectedRole by remember { mutableStateOf<UserRole?>(null) }
@@ -72,11 +83,6 @@ fun RoleScreen(
                         Color(0xFFD9F5F2),
                         Color(0xFF43A047),
                         Color(0xFF388E3C)
-                    ),
-                    start = androidx.compose.ui.geometry.Offset(0f, 0f),
-                    end = androidx.compose.ui.geometry.Offset(
-                        Float.POSITIVE_INFINITY,
-                        Float.POSITIVE_INFINITY
                     )
                 )
             )
@@ -170,12 +176,12 @@ fun RoleScreen(
                             icon = painterResource(id = item.iconRes),
                             selected = selectedRole == item.role
                         ) {
+
                             selectedRole = item.role
-                            handleSelect(
-                                role = item.role,
-                                viewModel = viewModel,
-                                onNavigate = onRoleSelected
-                            )
+
+                            viewModel.saveRole(item.role) {
+                                onRoleSelected()
+                            }
                         }
 
                         Spacer(modifier = Modifier.height(16.dp))
@@ -183,16 +189,6 @@ fun RoleScreen(
                 }
             }
         }
-    }
-}
-
-private fun handleSelect(
-    role: UserRole,
-    viewModel: RoleViewModel,
-    onNavigate: () -> Unit
-) {
-    viewModel.saveRole(role) {
-        onNavigate()
     }
 }
 

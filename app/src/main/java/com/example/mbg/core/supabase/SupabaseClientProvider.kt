@@ -14,5 +14,6 @@ object SupabaseClientProvider {
             scheme = "mbg"
         }
         install(Postgrest)
+
     }
 }

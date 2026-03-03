@@ -2,10 +2,16 @@ package com.example.mbg.feature.auth.data.repository
 
 import com.example.mbg.feature.auth.data.remote.AuthRemoteDataSource
 import com.example.mbg.feature.auth.domain.AuthRepository
+import com.example.mbg.supabase.SupabaseClientProvider
+import io.github.jan.supabase.gotrue.auth
+import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.query.Columns
 
 class AuthRepositoryImpl(
     private val remote: AuthRemoteDataSource
 ) : AuthRepository {
+
+    private val client = SupabaseClientProvider.client
 
     override suspend fun login(
         email: String,
@@ -31,5 +37,30 @@ class AuthRepositoryImpl(
     override suspend fun logout() =
         runCatching {
             remote.logout()
+        }
+
+    override suspend fun getUserRole(): Result<String?> =
+        runCatching {
+
+            val userId = client.auth.currentUserOrNull()?.id
+                ?: return@runCatching null
+
+            val result = client
+                .from("profiles")
+                .select(
+                    columns = Columns.list("role")
+                ) {
+                    filter {
+                        eq("id", userId)
+                    }
+                }
+                .decodeSingleOrNull<Map<String, String?>>()
+
+            result?.get("role")
+        }
+
+    override suspend fun updateUserRole(role: String): Result<Unit> =
+        runCatching {
+            remote.updateUserRole(role)
         }
 }

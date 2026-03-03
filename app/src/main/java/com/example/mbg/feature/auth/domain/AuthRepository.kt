@@ -15,4 +15,9 @@ interface AuthRepository {
     suspend fun loginWithGoogle(): Result<Unit>
 
     suspend fun logout(): Result<Unit>
+
+    suspend fun getUserRole(): Result<String?>
+
+    suspend fun updateUserRole(role: String): Result<Unit>
+
 }

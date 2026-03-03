@@ -8,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.mbg.feature.auth.presentation.AuthState
 import com.example.mbg.feature.auth.presentation.GlobalAuthViewModel
 import com.example.mbg.feature.onboarding.presentation.OnboardingScreen
+import com.example.mbg.feature.role.presentation.RoleScreen
 import com.example.mbg.feature.splashscreen.AnimatedSplashScreen
 import com.example.mbg.feature.splashscreen.WelcomeScreen
 import kotlinx.coroutines.delay
@@ -21,7 +22,7 @@ fun RootNavGraph() {
 
     var splashFinished by remember { mutableStateOf(false) }
 
-    // Splash delay 2 detik
+    // Splash delay 2 detik (TETAP SAMA)
     LaunchedEffect(Unit) {
         delay(2000)
         splashFinished = true
@@ -34,8 +35,15 @@ fun RootNavGraph() {
         if (authState is AuthState.Loading) return@LaunchedEffect
 
         when (authState) {
+
             is AuthState.Authenticated -> {
                 navController.navigate(Screen.Main.route) {
+                    popUpTo(0) { inclusive = true }
+                }
+            }
+
+            is AuthState.NeedRole -> {
+                navController.navigate(Screen.Role.route) {
                     popUpTo(0) { inclusive = true }
                 }
             }
@@ -80,7 +88,21 @@ fun RootNavGraph() {
             )
         }
 
+        // Auth Graph (Login & Register)
         authNavGraph(navController)
+
+        // Role Screen (DITAMBAHKAN)
+        composable(Screen.Role.route) {
+            RoleScreen(
+                onRoleSelected = {
+                    navController.navigate(Screen.Main.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        // Main Graph
         mainNavGraph(navController)
     }
 }
