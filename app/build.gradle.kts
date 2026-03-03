@@ -68,6 +68,8 @@ dependencies {
 
     // ===== SUPABASE (MINIMAL UNTUK AUTH) =====
     implementation("io.github.jan-tennert.supabase:supabase-kt:2.5.0")
+    implementation("io.github.jan-tennert.supabase:postgrest-kt:2.5.0")
+    implementation("io.github.jan-tennert.supabase:storage-kt:2.5.0")
     implementation("io.github.jan-tennert.supabase:gotrue-kt:2.5.0")
 
     // WAJIB

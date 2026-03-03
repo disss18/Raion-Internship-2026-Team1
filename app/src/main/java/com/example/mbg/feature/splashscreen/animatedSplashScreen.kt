@@ -24,6 +24,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.delay
 import com.example.mbg.R
 import com.example.mbg.feature.auth.presentation.GlobalAuthViewModel
+import com.example.mbg.ui.theme.BlueNormal
 
 @Composable
 fun AnimatedSplashScreen(
@@ -38,7 +39,7 @@ fun AnimatedSplashScreen(
     var animationFinished by remember { mutableStateOf(false) }
     var hasNavigated by remember { mutableStateOf(false) }
 
-    // ================= Animations =================
+    // animasi
     LaunchedEffect(Unit) {
         delay(300)
         step = 2
@@ -51,7 +52,7 @@ fun AnimatedSplashScreen(
         animationFinished = true
     }
 
-    // ================= Navigation Trigger =================
+    // navigasi
     LaunchedEffect(animationFinished, isLoggedIn) {
 
         if (animationFinished && !hasNavigated) {
@@ -66,7 +67,7 @@ fun AnimatedSplashScreen(
         }
     }
 
-    // ================= Animations =================
+    // animasi
     val offsetX by animateDpAsState(
         targetValue = if (step == 2) (-55).dp else 0.dp,
         animationSpec = tween(600, easing = FastOutSlowInEasing),
@@ -97,7 +98,7 @@ fun AnimatedSplashScreen(
         label = ""
     )
 
-    // ================= UI =================
+    // ui
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -109,7 +110,7 @@ fun AnimatedSplashScreen(
             text = "MBG +",
             fontSize = 45.sp,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF83E0D4),
+            color = BlueNormal,
             modifier = Modifier
                 .offset(x = 65.dp)
                 .alpha(textAlpha)
@@ -120,7 +121,7 @@ fun AnimatedSplashScreen(
                 .offset(x = offsetX)
                 .requiredSize(boxSize)
                 .clip(RoundedCornerShape(cornerRadius))
-                .background(Color(0xFF83E0D4)),
+                .background(BlueNormal),
             contentAlignment = Alignment.Center
         ) {
             Image(

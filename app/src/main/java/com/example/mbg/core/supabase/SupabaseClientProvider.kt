@@ -2,6 +2,8 @@ package com.example.mbg.supabase
 
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.gotrue.Auth
+import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.storage.Storage
 
 object SupabaseClientProvider {
 
@@ -10,5 +12,7 @@ object SupabaseClientProvider {
         supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlzbm9yYnBwb2Rqc3dyb3h2anBqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxNjgwNzYsImV4cCI6MjA4Nzc0NDA3Nn0.rRUr04wRQKh0h5LaTZa_EMwkGxd3-2-WEw6thBzwuno"
     ) {
         install(Auth)
+        install(Storage)
+        install(Postgrest)
     }
 }
