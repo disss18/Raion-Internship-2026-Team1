@@ -32,6 +32,7 @@ import com.example.mbg.ui.theme.poppins
 fun LoginScreen(
     onNavigateToRegister: () -> Unit,
     onLoginSuccess: () -> Unit,
+    onNavigateToForgotPassword: () -> Unit,
 ) {
     val viewModel = remember {
         val remote = AuthRemoteDataSourceImpl()
@@ -68,6 +69,7 @@ fun LoginScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
+                .windowInsetsPadding(WindowInsets.systemBars)
         ) {
 
             // ================= BACKGROUND LAYER =================
@@ -138,6 +140,22 @@ fun LoginScreen(
                         placeholder = "Masukkan kata sandi",
                         isPassword = true
                     )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+
+                        ClickableText(
+                            text = AnnotatedString("Lupa Kata Sandi?"),
+                            onClick = { onNavigateToForgotPassword() },
+                            style = TextStyle(
+                                fontFamily = poppins,
+                                fontWeight = FontWeight.Medium,
+                                color = BlueNormal
+                            )
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(24.dp))
 

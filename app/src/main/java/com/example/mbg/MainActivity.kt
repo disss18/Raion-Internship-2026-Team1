@@ -5,6 +5,8 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.*
 import androidx.lifecycle.lifecycleScope
 import com.example.mbg.core.navigation.RootNavGraph
 import com.example.mbg.supabase.SupabaseClientProvider
@@ -15,14 +17,23 @@ import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
+    private var deepLinkRoute by mutableStateOf<String?>(null)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        enableEdgeToEdge()
 
         handleIntent(intent)
 
         setContent {
+
             MBGTheme {
-                RootNavGraph()
+
+                RootNavGraph(
+                    deepLinkRoute = deepLinkRoute
+                )
+
             }
         }
     }
@@ -33,9 +44,8 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun handleIntent(intent: Intent?) {
-        val dataString = intent?.dataString ?: return
 
-        if (!dataString.contains("access_token")) return
+        val dataString = intent?.dataString ?: return
 
         val uri = Uri.parse(dataString.replace("#", "?"))
 
@@ -46,6 +56,7 @@ class MainActivity : ComponentActivity() {
 
         lifecycleScope.launch {
 
+            // Import session Supabase
             SupabaseClientProvider.client.auth.importSession(
                 session = UserSession(
                     accessToken = accessToken,
@@ -54,6 +65,19 @@ class MainActivity : ComponentActivity() {
                     tokenType = "bearer"
                 )
             )
+
+            // ================= HANDLE ROUTE =================
+
+            when {
+
+                dataString.contains("reset-password") -> {
+                    deepLinkRoute = "reset_password"
+                }
+
+                dataString.contains("login-callback") -> {
+                    deepLinkRoute = null
+                }
+            }
         }
     }
 }

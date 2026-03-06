@@ -14,43 +14,83 @@ import com.example.mbg.feature.splashscreen.WelcomeScreen
 import kotlinx.coroutines.delay
 
 @Composable
-fun RootNavGraph() {
+fun RootNavGraph(
+    deepLinkRoute: String? = null
+) {
 
     val navController = rememberNavController()
     val globalAuthViewModel: GlobalAuthViewModel = viewModel()
+
     val authState by globalAuthViewModel.authState.collectAsState()
 
     var splashFinished by remember { mutableStateOf(false) }
 
-    // Splash delay 2 detik (TETAP SAMA)
+    var isResetFlow by remember { mutableStateOf(false) }
+
+    // ================= SPLASH =================
+
     LaunchedEffect(Unit) {
         delay(2000)
         splashFinished = true
     }
 
-    // Navigation hanya setelah splash selesai & auth resolved
+    // ================= DEEP LINK HANDLER =================
+
+    LaunchedEffect(deepLinkRoute, splashFinished) {
+
+        if (!splashFinished) return@LaunchedEffect
+
+        if (deepLinkRoute == Screen.ResetPassword.route) {
+
+            isResetFlow = true
+
+            navController.navigate(Screen.ResetPassword.route) {
+
+                popUpTo(Screen.Splash.route)
+
+                launchSingleTop = true
+            }
+        }
+    }
+
+    // ================= AUTH NAVIGATION =================
+
     LaunchedEffect(authState, splashFinished) {
 
         if (!splashFinished) return@LaunchedEffect
         if (authState is AuthState.Loading) return@LaunchedEffect
 
+        if (isResetFlow) return@LaunchedEffect
+
         when (authState) {
 
             is AuthState.Authenticated -> {
+
                 navController.navigate(Screen.Main.route) {
-                    popUpTo(0) { inclusive = true }
+
+                    popUpTo(Screen.Splash.route) { inclusive = true }
+
+                    launchSingleTop = true
                 }
             }
 
             is AuthState.NeedRole -> {
+
                 navController.navigate(Screen.Role.route) {
-                    popUpTo(0) { inclusive = true }
+
+                    popUpTo(Screen.Splash.route) { inclusive = true }
+
+                    launchSingleTop = true
                 }
             }
 
             is AuthState.Unauthenticated -> {
+
                 navController.navigate(Screen.Onboarding.route) {
+
                     popUpTo(Screen.Splash.route) { inclusive = true }
+
+                    launchSingleTop = true
                 }
             }
 
@@ -58,51 +98,75 @@ fun RootNavGraph() {
         }
     }
 
+    // ================= NAV HOST =================
+
     NavHost(
         navController = navController,
         startDestination = Screen.Splash.route
     ) {
 
+        // ================= SPLASH =================
+
         composable(Screen.Splash.route) {
             AnimatedSplashScreen()
         }
 
+        // ================= ONBOARDING =================
+
         composable(Screen.Onboarding.route) {
+
             OnboardingScreen(
+
                 onFinish = {
+
                     navController.navigate(Screen.Welcome.route) {
+
                         popUpTo(Screen.Onboarding.route) { inclusive = true }
                     }
                 }
             )
         }
 
+        // ================= WELCOME =================
+
         composable(Screen.Welcome.route) {
+
             WelcomeScreen(
+
                 onNavigateToLogin = {
                     navController.navigate(Screen.Login.route)
                 },
+
                 onNavigateToRegister = {
                     navController.navigate(Screen.Register.route)
                 }
             )
         }
 
-        // Auth Graph (Login & Register)
+        // ================= AUTH GRAPH =================
+
         authNavGraph(navController)
 
-        // Role Screen (DITAMBAHKAN)
+        // ================= ROLE =================
+
         composable(Screen.Role.route) {
+
             RoleScreen(
+
                 onRoleSelected = {
+
                     navController.navigate(Screen.Main.route) {
-                        popUpTo(0) { inclusive = true }
+
+                        popUpTo(Screen.Role.route) { inclusive = true }
+
+                        launchSingleTop = true
                     }
                 }
             )
         }
 
-        // Main Graph
+        // ================= MAIN GRAPH =================
+
         mainNavGraph(navController)
     }
 }

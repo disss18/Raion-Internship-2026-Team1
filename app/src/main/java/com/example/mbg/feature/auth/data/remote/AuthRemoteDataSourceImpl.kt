@@ -32,7 +32,11 @@ class AuthRemoteDataSourceImpl(
     }
 
     override suspend fun logout() {
+
+        Log.d("AUTH_DEBUG", "logout start")
         client.auth.signOut()
+        client.auth.clearSession()
+        Log.d("AUTH_DEBUG", "logout end")
     }
 
     override suspend fun updateUserRole(role: String) {
@@ -44,7 +48,7 @@ class AuthRemoteDataSourceImpl(
 
         // decode JWT manually
         val userId = accessToken
-            .split(".")[1] // payload
+            .split(".")[1]
             .let { payload ->
                 String(android.util.Base64.decode(payload, android.util.Base64.URL_SAFE))
             }
@@ -67,5 +71,45 @@ class AuthRemoteDataSourceImpl(
             }
 
         Log.d("ROLE_DEBUG", "ROLE UPDATED SUCCESS")
+    }
+
+    // ================= RESET PASSWORD =================
+
+    override suspend fun resetPassword(email: String): Result<Unit> {
+        return try {
+
+            client.auth.resetPasswordForEmail(
+                email = email,
+                redirectUrl = "mbg://reset-password"
+            )
+
+            Result.success(Unit)
+
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun sendResetPasswordEmail(
+        email: String
+    ) {
+
+        client.auth.resetPasswordForEmail(
+            email = email,
+            redirectUrl = "mbg://reset-password"
+        )
+
+    }
+
+    // ================= UPDATE PASSWORD =================
+
+    override suspend fun updatePassword(
+        password: String
+    ) {
+
+        client.auth.updateUser {
+            this.password = password
+        }
+
     }
 }

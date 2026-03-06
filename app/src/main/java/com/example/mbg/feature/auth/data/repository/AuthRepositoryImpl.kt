@@ -63,4 +63,16 @@ class AuthRepositoryImpl(
         runCatching {
             remote.updateUserRole(role)
         }
+
+    override suspend fun resetPassword(email: String): Result<Unit> {
+        return remote.resetPassword(email)
+    }
+
+    override suspend fun sendResetPasswordEmail(email: String) {
+        remote.sendResetPasswordEmail(email)
+    }
+
+    override suspend fun updatePassword(password: String) {
+        remote.updatePassword(password)
+    }
 }

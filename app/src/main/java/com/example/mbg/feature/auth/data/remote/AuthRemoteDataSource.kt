@@ -11,4 +11,10 @@ interface AuthRemoteDataSource {
     suspend fun logout()
 
     suspend fun updateUserRole(role: String)
+
+    suspend fun resetPassword(email: String): Result<Unit>
+
+    suspend fun sendResetPasswordEmail(email: String)
+
+    suspend fun updatePassword(password: String)
 }

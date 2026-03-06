@@ -2,7 +2,6 @@ package com.example.mbg.feature.auth.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mbg.feature.auth.data.remote.AuthRemoteDataSource
 import com.example.mbg.feature.auth.data.remote.AuthRemoteDataSourceImpl
 import com.example.mbg.feature.auth.data.repository.AuthRepositoryImpl
 import com.example.mbg.feature.auth.domain.AuthRepository
@@ -17,7 +16,7 @@ sealed class AuthState {
     object Loading : AuthState()
     object Unauthenticated : AuthState()
     object Authenticated : AuthState()
-    object NeedRole : AuthState() // TAMBAHAN
+    object NeedRole : AuthState()
 }
 
 class GlobalAuthViewModel : ViewModel() {
@@ -35,32 +34,58 @@ class GlobalAuthViewModel : ViewModel() {
     }
 
     private fun observeSession() {
+
         viewModelScope.launch {
 
             supabase.auth.sessionStatus.collect { status ->
 
-                if (status is SessionStatus.Authenticated) {
+                when (status) {
 
-                    val roleResult = repository.getUserRole()
-                    val role = roleResult.getOrNull()
+                    is SessionStatus.Authenticated -> {
 
-                    _authState.value =
-                        if (role == null) {
-                            AuthState.NeedRole
-                        } else {
-                            AuthState.Authenticated
+                        val session = supabase.auth.currentSessionOrNull()
+
+                        if (session == null) {
+
+                            _authState.value = AuthState.Unauthenticated
+                            return@collect
                         }
 
-                } else {
-                    _authState.value = AuthState.Unauthenticated
+                        try {
+
+                            val roleResult = repository.getUserRole()
+                            val role = roleResult.getOrNull()
+
+                            _authState.value =
+                                if (role == null) {
+                                    AuthState.NeedRole
+                                } else {
+                                    AuthState.Authenticated
+                                }
+
+                        } catch (e: Exception) {
+
+                            // Jika gagal ambil role, fallback
+                            _authState.value = AuthState.Authenticated
+                        }
+                    }
+
+                    else -> {
+
+                        _authState.value = AuthState.Unauthenticated
+                    }
                 }
             }
         }
     }
 
     fun logout() {
+
         viewModelScope.launch {
+
             repository.logout()
+
+            _authState.value = AuthState.Unauthenticated
         }
     }
 }

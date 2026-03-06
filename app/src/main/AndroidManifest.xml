@@ -27,7 +27,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <!-- 🔥 TAMBAHAN UNTUK GOOGLE OAUTH -->
+            <!-- GOOGLE OAUTH -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -37,6 +37,18 @@
                 <data
                     android:scheme="mbg"
                     android:host="login-callback" />
+            </intent-filter>
+
+            <!-- RESET PASSWORD DEEPLINK -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data
+                    android:scheme="mbg"
+                    android:host="reset-password"/>
             </intent-filter>
 
         </activity>
