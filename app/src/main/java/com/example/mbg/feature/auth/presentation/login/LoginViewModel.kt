@@ -16,17 +16,48 @@ class LoginViewModel(
 
     fun login(email: String, password: String) {
 
-        viewModelScope.launch {
+        _uiState.value = LoginUiState(isLoading = true)
 
-            _uiState.value = LoginUiState(isLoading = true)
+        viewModelScope.launch {
 
             val result = repository.login(email, password)
 
             _uiState.value = result.fold(
-                onSuccess = { LoginUiState(isSuccess = true) },
+
+                onSuccess = {
+                    LoginUiState(
+                        isSuccess = true
+                    )
+                },
+
                 onFailure = {
                     LoginUiState(
                         error = it.message ?: "Login gagal"
+                    )
+                }
+            )
+        }
+    }
+
+    fun loginWithGoogle() {
+
+        _uiState.value = LoginUiState(isLoading = true)
+
+        viewModelScope.launch {
+
+            val result = repository.loginWithGoogle()
+
+            _uiState.value = result.fold(
+
+                onSuccess = {
+                    LoginUiState(
+                        isSuccess = true
+                    )
+                },
+
+                onFailure = {
+                    LoginUiState(
+                        error = it.message ?: "Google login gagal"
                     )
                 }
             )

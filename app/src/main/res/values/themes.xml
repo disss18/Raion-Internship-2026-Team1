@@ -1,12 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.MBG" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- Main App Theme -->
+    <style name="Theme.MBG" parent="" />
 
+    <!-- Splash Theme -->
     <style name="temaSpalashScreen" parent="Theme.SplashScreen">
-    <item name="windowSplashScreenBackground">@color/white</item>
-    <item name="windowSplashScreenAnimatedIcon">@drawable/blank_icon</item>
-        <item name="postSplashScreenTheme">@style/Theme.MBG</item>
+
+        <item name="windowSplashScreenBackground">@android:color/white</item>
+
+        <item name="windowSplashScreenAnimatedIcon">
+            @mipmap/ic_launcher
+        </item>
+
+        <item name="postSplashScreenTheme">
+            @style/Theme.MBG
+        </item>
+
     </style>
 
 </resources>

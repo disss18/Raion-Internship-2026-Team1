@@ -12,5 +12,18 @@ interface AuthRepository {
         password: String
     ): Result<Unit>
 
-    suspend fun logout()
+    suspend fun loginWithGoogle(): Result<Unit>
+
+    suspend fun logout(): Result<Unit>
+
+    suspend fun getUserRole(): Result<String?>
+
+    suspend fun updateUserRole(role: String): Result<Unit>
+
+    suspend fun resetPassword(email: String): Result<Unit>
+
+    suspend fun sendResetPasswordEmail(email: String)
+
+    suspend fun updatePassword(password: String)
+
 }

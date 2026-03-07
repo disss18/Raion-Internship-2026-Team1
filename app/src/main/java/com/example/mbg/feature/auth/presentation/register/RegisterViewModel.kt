@@ -37,9 +37,42 @@ class RegisterViewModel(
             val result = repository.register(email, password)
 
             _uiState.value = result.fold(
-                onSuccess = { RegisterUiState(isSuccess = true) },
+
+                onSuccess = {
+                    RegisterUiState(
+                        isSuccess = true
+                    )
+                },
+
                 onFailure = {
-                    RegisterUiState(error = it.message ?: "Register gagal")
+                    RegisterUiState(
+                        error = it.message ?: "Register gagal"
+                    )
+                }
+            )
+        }
+    }
+
+    fun loginWithGoogle() {
+
+        _uiState.value = RegisterUiState(isLoading = true)
+
+        viewModelScope.launch {
+
+            val result = repository.loginWithGoogle()
+
+            _uiState.value = result.fold(
+
+                onSuccess = {
+                    RegisterUiState(
+                        isSuccess = true
+                    )
+                },
+
+                onFailure = {
+                    RegisterUiState(
+                        error = it.message ?: "Google login gagal"
+                    )
                 }
             )
         }

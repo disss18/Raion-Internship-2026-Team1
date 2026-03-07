@@ -19,10 +19,13 @@ fun PrimaryButton(
     modifier: Modifier = Modifier,
     containerColor: Color = MaterialTheme.colorScheme.primary,
     contentColor: Color = Color.White,
-    borderColor: Color? = null
+    borderColor: Color? = null,
+    enabled: Boolean = true
+
 ) {
     Button(
         onClick = onClick,
+        enabled = enabled,
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         border = borderColor?.let { BorderStroke(1.dp, it) },
