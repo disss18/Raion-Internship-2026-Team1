@@ -1,4 +1,4 @@
-package com.example.mbg.supabase
+package com.example.mbg.core.supabase
 
 import com.example.mbg.BuildConfig
 import io.github.jan.supabase.createSupabaseClient
