@@ -1,4 +1,4 @@
-package com.example.mbg.core.ui.component
+package com.example.mbg.core.ui.component.textfield
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth

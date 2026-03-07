@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
-import com.example.mbg.core.ui.component.SelectableRoleCard
+import com.example.mbg.core.ui.component.card.SelectableRoleCard
 
 @Composable
 fun RoleItemAnimated(

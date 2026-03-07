@@ -3,13 +3,14 @@ package com.example.mbg.feature.home.presentation
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.mbg.feature.auth.presentation.GlobalAuthViewModel
 import com.example.mbg.core.navigation.Screen
-import com.example.mbg.core.ui.component.PrimaryButton
+import com.example.mbg.core.ui.component.button.PrimaryButton
 import com.example.mbg.ui.theme.BlueNormal
 
 @Composable
@@ -32,7 +33,7 @@ fun HomeScreen(
                 text = "Logout",
                 containerColor = BlueNormal,
                 modifier = Modifier
-                    .align(androidx.compose.ui.Alignment.BottomCenter)
+                    .align(Alignment.BottomCenter)
                     .padding(bottom = 32.dp),
                 onClick = {
 

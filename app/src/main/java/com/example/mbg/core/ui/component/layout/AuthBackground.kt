@@ -1,4 +1,4 @@
-package com.example.mbg.core.ui.component
+package com.example.mbg.core.ui.component.layout
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.mbg.R
-import com.example.mbg.core.ui.component.PrimaryButton
+import com.example.mbg.core.ui.component.button.PrimaryButton
 import com.example.mbg.feature.onboarding.presentation.component.IndicatorDot
 import com.example.mbg.feature.onboarding.presentation.component.OnboardingPageContent
 import com.example.mbg.ui.theme.FoundationBlue

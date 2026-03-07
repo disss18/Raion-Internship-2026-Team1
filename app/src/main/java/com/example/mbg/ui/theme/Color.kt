@@ -51,3 +51,13 @@ val Warning700 = Color(0xFFFF9600)
 val Error300 = Color(0xFFFFDFE0)
 val Error500 = Color(0xFFFF9696)
 val Error700 = Color(0xFFFF4B4B)
+
+val GreenPrimary = Color(0xFF5BA37B)
+val GreenLight = Color(0xFFE6F3EC)
+val GreenChip = Color(0xFFEAF5EE)
+val Graybackground = Color(0xFFF1F5F9)
+val GreenAccent = Color(0xFF4BA26A)
+
+val BorderGray = Color(0xFFE2E8F0)
+val TextGray = Color(0xFF64748B)
+val BackgroundGray = Color(0xFFF6F7F9)

@@ -81,6 +81,8 @@ dependencies {
 
     // ================= KTOR =================
     implementation("io.ktor:ktor-client-android:2.3.7")
+    implementation(libs.androidx.foundation)
+    implementation(libs.androidx.compose.ui.text)
 
     // ================= TEST =================
     testImplementation(libs.junit)
