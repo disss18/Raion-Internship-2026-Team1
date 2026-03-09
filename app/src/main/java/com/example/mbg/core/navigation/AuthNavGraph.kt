@@ -35,17 +35,7 @@
                         navController.navigate(Screen.ForgotPassword.route)
                     },
 
-                    onLoginSuccess = {
-
-                        navController.navigate(Screen.Main.route) {
-
-                            popUpTo(Screen.Auth.route) {
-                                inclusive = true
-                            }
-
-                            launchSingleTop = true
-                        }
-                    }
+                    onLoginSuccess = {}
 
                 )
             }
@@ -117,9 +107,9 @@
                         // 🔵 Update status supaya RootNavGraph tidak kirim balik ke Verification
                         globalAuthViewModel.setVerificationPending()
 
-                        navController.navigate(Screen.DashboardMBG.route) {
+                        navController.navigate(Screen.Main.route) {
 
-                            popUpTo(Screen.Auth.route) {
+                            popUpTo(0) {
                                 inclusive = true
                             }
 

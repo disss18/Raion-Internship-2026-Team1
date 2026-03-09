@@ -47,7 +47,6 @@ class VerificationViewModel : ViewModel() {
                 client.from("dapur_verifications").insert(
 
                     mapOf(
-                        "user_id" to userId,
                         "nama_umkm" to namaUmkm,
                         "alamat" to alamat,
                         "nama_pemilik" to namaPemilik,

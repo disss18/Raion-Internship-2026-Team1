@@ -24,7 +24,7 @@ fun RootNavGraph(
 
     val authState by globalAuthViewModel.authState.collectAsState()
 
-    val userRole by SessionManager.userRole.collectAsState()
+    val userRole by globalAuthViewModel.userRole.collectAsState()
 
     val verificationStatus by globalAuthViewModel.verificationStatus.collectAsState()
 
