@@ -1,8 +1,8 @@
 package com.example.mbg.feature.auth.data.repository
 
+import com.example.mbg.core.supabase.SupabaseClientProvider
 import com.example.mbg.feature.auth.data.remote.AuthRemoteDataSource
 import com.example.mbg.feature.auth.domain.AuthRepository
-import com.example.mbg.supabase.SupabaseClientProvider
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns

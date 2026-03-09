@@ -6,6 +6,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,6 +21,7 @@ import com.example.mbg.core.ui.component.textfield.PrimaryTextField
 import com.example.mbg.feature.auth.data.remote.AuthRemoteDataSourceImpl
 import com.example.mbg.feature.auth.data.repository.AuthRepositoryImpl
 import com.example.mbg.ui.theme.BlueNormal
+import com.example.mbg.ui.theme.FoundationGreen
 import com.example.mbg.ui.theme.poppins
 import kotlinx.coroutines.launch
 
@@ -88,13 +90,13 @@ fun ResetPasswordScreen(
                             fontFamily = poppins,
                             fontWeight = FontWeight.SemiBold
                         ),
-                        color = BlueNormal
+                        color = FoundationGreen
                     )
                 },
 
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = null)
+                        Icon(Icons.Default.KeyboardArrowLeft, contentDescription = null)
                     }
                 }
             )
@@ -160,7 +162,7 @@ fun ResetPasswordScreen(
 
                 PrimaryButton(
                     text = if (uiState.isLoading) "Loading..." else "Kirim",
-                    containerColor = BlueNormal,
+                    containerColor = FoundationGreen,
                     enabled = !uiState.isLoading,
                     onClick = {
 

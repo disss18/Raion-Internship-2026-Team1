@@ -9,6 +9,7 @@ import com.example.mbg.feature.auth.presentation.login.LoginScreen
 import com.example.mbg.feature.auth.presentation.register.RegisterScreen
 import com.example.mbg.feature.auth.presentation.resetpassword.ResetPasswordScreen
 import com.example.mbg.feature.role.presentation.RoleScreen
+import com.example.mbg.verificationMBG.VerificationScreen
 
 fun NavGraphBuilder.authNavGraph(
     navController: NavHostController
@@ -55,7 +56,9 @@ fun NavGraphBuilder.authNavGraph(
             RegisterScreen(
 
                 onNavigateToLogin = {
-                    navController.popBackStack()
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(Screen.Register.route) { inclusive = true }
+                    }
                 },
 
                 onRegisterSuccess = {
@@ -71,7 +74,41 @@ fun NavGraphBuilder.authNavGraph(
 
             RoleScreen(
 
-                onRoleSelected = {
+                onRoleSelected = { role ->
+
+                    if (role == "DAPUR_MBG") {
+
+                        navController.navigate(Screen.VerificationMBG.route)
+
+                    } else {
+
+                        navController.navigate(Screen.Main.route) {
+
+                            popUpTo(Screen.Auth.route) {
+                                inclusive = true
+                            }
+
+                            launchSingleTop = true
+                        }
+
+                    }
+
+                }
+
+            )
+        }
+
+        // ================= VERIFICATION MBG =================
+
+        composable(Screen.VerificationMBG.route) {
+
+            VerificationScreen(
+
+                onBackClick = {
+                    navController.popBackStack()
+                },
+
+                onSubmitSuccess = {
 
                     navController.navigate(Screen.Main.route) {
 
@@ -81,9 +118,7 @@ fun NavGraphBuilder.authNavGraph(
 
                         launchSingleTop = true
                     }
-
                 }
-
             )
         }
 
@@ -121,6 +156,5 @@ fun NavGraphBuilder.authNavGraph(
                 }
             )
         }
-
     }
 }

@@ -1,6 +1,7 @@
 package com.example.mbg.feature.auth.presentation.login
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
@@ -9,12 +10,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.mbg.R
 import com.example.mbg.core.ui.component.layout.AuthBackground
@@ -23,8 +27,7 @@ import com.example.mbg.core.ui.component.textfield.PrimaryTextField
 import com.example.mbg.feature.auth.component.AuthDivider
 import com.example.mbg.feature.auth.data.remote.AuthRemoteDataSourceImpl
 import com.example.mbg.feature.auth.data.repository.AuthRepositoryImpl
-import com.example.mbg.ui.theme.BlueLight
-import com.example.mbg.ui.theme.BlueNormal
+import com.example.mbg.ui.theme.FoundationGreen
 import com.example.mbg.ui.theme.poppins
 
 @Composable
@@ -33,6 +36,7 @@ fun LoginScreen(
     onLoginSuccess: () -> Unit,
     onNavigateToForgotPassword: () -> Unit,
 ) {
+
     val viewModel = remember {
         val remote = AuthRemoteDataSourceImpl()
         val repository = AuthRepositoryImpl(remote)
@@ -45,14 +49,10 @@ fun LoginScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    // ================= SUCCESS =================
     LaunchedEffect(uiState.isSuccess) {
-        if (uiState.isSuccess) {
-            onLoginSuccess()
-        }
+        if (uiState.isSuccess) onLoginSuccess()
     }
 
-    // ================= ERROR =================
     LaunchedEffect(uiState.error) {
         uiState.error?.let {
             snackbarHostState.showSnackbar(it)
@@ -67,27 +67,23 @@ fun LoginScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .background(Color(0xFFF5F5F5))
+                .verticalScroll(rememberScrollState())
                 .padding(padding)
-                .windowInsetsPadding(WindowInsets.systemBars)
         ) {
 
-            // ================= BACKGROUND LAYER =================
-            AuthBackground(
-                waveOffsetY = (-50).dp
-            )
+            AuthBackground()
 
-            // ================= CONTENT LAYER =================
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
+                    .fillMaxWidth()
                     .padding(horizontal = 24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                Spacer(modifier = Modifier.height(130.dp))
+                Spacer(modifier = Modifier.height(125.dp))
 
+                // HEADER
                 Text(
                     text = "Masuk ke Akun Anda",
                     style = TextStyle(
@@ -95,32 +91,34 @@ fun LoginScreen(
                         fontWeight = FontWeight.SemiBold,
                         fontSize = MaterialTheme.typography.titleLarge.fontSize
                     ),
-                    color = BlueNormal
+                    color = FoundationGreen
                 )
 
-                Spacer(modifier = Modifier.height(70.dp))
+                Spacer(modifier = Modifier.height(120.dp))
 
                 Image(
                     painter = painterResource(id = R.drawable.login),
                     contentDescription = null,
                     modifier = Modifier
-                        .fillMaxWidth(0.9f)
+                        .fillMaxWidth(0.85f)
                         .height(150.dp)
-                        .offset(y = 20.dp)
                         .graphicsLayer(
-                            scaleX = 2.0f,
-                            scaleY = 2.0f
-                        )
+                            scaleX = 2.15f,
+                            scaleY = 2.15f
+                        ),
+                    contentScale = ContentScale.Fit
                 )
 
+                Spacer(modifier = Modifier.height(1.dp))
+
+                // FORM
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth(0.90f),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier = Modifier.fillMaxWidth(0.9f)
                 ) {
 
-                    Text("Email", modifier = Modifier.align(Alignment.Start))
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("Email")
+
+                    Spacer(modifier = Modifier.height(4.dp))
 
                     PrimaryTextField(
                         value = email,
@@ -130,8 +128,9 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    Text("Kata Sandi", modifier = Modifier.align(Alignment.Start))
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("Kata Sandi")
+
+                    Spacer(modifier = Modifier.height(4.dp))
 
                     PrimaryTextField(
                         value = password,
@@ -151,7 +150,7 @@ fun LoginScreen(
                             style = TextStyle(
                                 fontFamily = poppins,
                                 fontWeight = FontWeight.Medium,
-                                color = BlueNormal
+                                color = FoundationGreen
                             )
                         )
                     }
@@ -160,7 +159,7 @@ fun LoginScreen(
 
                     PrimaryButton(
                         text = if (uiState.isLoading) "Loading..." else "Masuk",
-                        containerColor = BlueNormal,
+                        containerColor = FoundationGreen,
                         onClick = {
                             viewModel.login(
                                 email.trim(),
@@ -169,34 +168,36 @@ fun LoginScreen(
                         }
                     )
 
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     AuthDivider()
 
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     PrimaryButton(
                         text = "Lanjutkan dengan Google",
                         onClick = { viewModel.loginWithGoogle() },
-                        containerColor = BlueLight,
-                        contentColor = BlueNormal,
-                        borderColor = BlueNormal
+                        containerColor = Color(0xFFEDEFEF),
+                        contentColor = FoundationGreen,
+                        borderColor = FoundationGreen
                     )
                 }
 
-                Spacer(modifier = Modifier.height(15.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+
                     Text("Belum punya akun? ")
+
                     ClickableText(
                         text = AnnotatedString("Daftar"),
                         onClick = { onNavigateToRegister() },
                         style = TextStyle(
                             fontFamily = poppins,
                             fontWeight = FontWeight.SemiBold,
-                            color = BlueNormal
+                            color = FoundationGreen
                         )
                     )
                 }

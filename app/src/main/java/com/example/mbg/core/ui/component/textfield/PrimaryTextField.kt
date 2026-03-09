@@ -2,6 +2,7 @@ package com.example.mbg.core.ui.component.textfield
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -13,7 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.example.mbg.ui.theme.BlueNormal
+import com.example.mbg.ui.theme.FoundationGreen
 
 @Composable
 fun PrimaryTextField(
@@ -23,6 +24,7 @@ fun PrimaryTextField(
     modifier: Modifier = Modifier,
     isPassword: Boolean = false
 ) {
+
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
@@ -30,33 +32,35 @@ fun PrimaryTextField(
             Text(
                 text = placeholder,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                color = Color.Gray
             )
         },
+
         modifier = modifier
             .fillMaxWidth()
-            .background(Color.White, RoundedCornerShape(16.dp)),
-        shape = RoundedCornerShape(16.dp),
+            .height(56.dp)
+            .background(Color.White, RoundedCornerShape(14.dp)),
+
+        shape = RoundedCornerShape(14.dp),
+
         singleLine = true,
+
         visualTransformation =
             if (isPassword) PasswordVisualTransformation()
             else VisualTransformation.None,
+
         colors = TextFieldDefaults.colors(
 
-            // background container
             focusedContainerColor = Color.White,
             unfocusedContainerColor = Color.White,
 
-            // border / outline
-            focusedIndicatorColor = BlueNormal,
-            unfocusedIndicatorColor = BlueNormal.copy(alpha = 0.7f),
+            focusedIndicatorColor = FoundationGreen,
+            unfocusedIndicatorColor = FoundationGreen.copy(alpha = 0.6f),
 
-            // text color
+            cursorColor = FoundationGreen,
+
             focusedTextColor = MaterialTheme.colorScheme.onSurface,
-            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-
-            // cursor
-            cursorColor = BlueNormal
+            unfocusedTextColor = MaterialTheme.colorScheme.onSurface
         )
     )
 }

@@ -19,9 +19,9 @@ import com.example.mbg.R
 @Composable
 fun AuthBackground(
     modifier: Modifier = Modifier,
-    waveOffsetY: Dp = 0.dp,          // ⬅ kontrol naik turun
-    waveHeightOffset: Float = 1f     // ⬅ kontrol scale kalau mau
+    waveOffsetY: Dp = (-60).dp
 ) {
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -33,7 +33,7 @@ fun AuthBackground(
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
-                .offset(y = waveOffsetY) // ⬅ ini yang bikin bisa naik turun
+                .offset(y = waveOffsetY)
                 .align(Alignment.TopCenter),
             contentScale = ContentScale.FillWidth
         )

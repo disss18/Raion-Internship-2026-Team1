@@ -8,9 +8,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.mbg.feature.auth.presentation.AuthState
 import com.example.mbg.feature.auth.presentation.GlobalAuthViewModel
 import com.example.mbg.feature.onboarding.presentation.OnboardingScreen
-import com.example.mbg.feature.role.presentation.RoleScreen
 import com.example.mbg.feature.splashscreen.AnimatedSplashScreen
 import com.example.mbg.feature.splashscreen.WelcomeScreen
+import com.example.mbg.core.session.SessionManager
 import kotlinx.coroutines.delay
 
 @Composable
@@ -22,6 +22,9 @@ fun RootNavGraph(
     val globalAuthViewModel: GlobalAuthViewModel = viewModel()
 
     val authState by globalAuthViewModel.authState.collectAsState()
+
+    // 🔥 TAMBAHAN PENTING
+    val userRole by SessionManager.userRole.collectAsState()
 
     var splashFinished by remember { mutableStateOf(false) }
 
@@ -147,26 +150,11 @@ fun RootNavGraph(
 
         authNavGraph(navController)
 
-        // ================= ROLE =================
-
-        composable(Screen.Role.route) {
-
-            RoleScreen(
-
-                onRoleSelected = {
-
-                    navController.navigate(Screen.Main.route) {
-
-                        popUpTo(Screen.Role.route) { inclusive = true }
-
-                        launchSingleTop = true
-                    }
-                }
-            )
-        }
-
         // ================= MAIN GRAPH =================
 
-        mainNavGraph(navController)
+        mainNavGraph(
+            navController = navController,
+            role = userRole
+        )
     }
 }

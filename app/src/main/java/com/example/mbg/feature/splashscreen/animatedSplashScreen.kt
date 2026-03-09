@@ -19,26 +19,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.delay
 import com.example.mbg.R
-import com.example.mbg.feature.auth.presentation.GlobalAuthViewModel
-import com.example.mbg.ui.theme.BlueNormal
 
 @Composable
-fun AnimatedSplashScreen(
-    onNavigateToOnboarding: () -> Unit,
-    onNavigateToMain: () -> Unit
-) {
-    val authViewModel: GlobalAuthViewModel = viewModel()
-    val isLoggedIn by authViewModel.isLoggedIn.collectAsStateWithLifecycle()
+fun AnimatedSplashScreen() {
 
     var step by remember { mutableIntStateOf(1) }
-    var animationFinished by remember { mutableStateOf(false) }
-    var hasNavigated by remember { mutableStateOf(false) }
 
-    // Animasi Timeline
+    // ================= Animations =================
     LaunchedEffect(Unit) {
         delay(300)
         step = 2
@@ -46,63 +35,70 @@ fun AnimatedSplashScreen(
         step = 3
         delay(500)
         step = 4
-        delay(800)
-        animationFinished = true
     }
 
-    // Navigasi Logic (Punya Kamu - Wajib Ada)
-    LaunchedEffect(animationFinished, isLoggedIn) {
-        if (animationFinished && !hasNavigated) {
-            hasNavigated = true
-            if (isLoggedIn) onNavigateToMain() else onNavigateToOnboarding()
-        }
-    }
-
-    // Animasi Values
     val offsetX by animateDpAsState(
         targetValue = if (step == 2) (-55).dp else 0.dp,
-        animationSpec = tween(600, easing = FastOutSlowInEasing), label = ""
-    )
-    val textAlpha by animateFloatAsState(
-        targetValue = if (step == 2) 1f else 0f,
-        animationSpec = tween(400), label = ""
-    )
-    val boxSize by animateDpAsState(
-        targetValue = if (step >= 4) 4000.dp else 80.dp,
-        animationSpec = tween(1500, easing = FastOutSlowInEasing), label = ""
-    )
-    val cornerRadius by animateDpAsState(
-        targetValue = if (step >= 4) 500.dp else 20.dp,
-        animationSpec = tween(800), label = ""
-    )
-    val iconAlpha by animateFloatAsState(
-        targetValue = if (step >= 4) 0f else 1f,
-        animationSpec = tween(400), label = ""
+        animationSpec = tween(600, easing = FastOutSlowInEasing),
+        label = ""
     )
 
+    val textAlpha by animateFloatAsState(
+        targetValue = if (step == 2) 1f else 0f,
+        animationSpec = tween(400),
+        label = ""
+    )
+
+    val boxSize by animateDpAsState(
+        targetValue = if (step >= 4) 4000.dp else 80.dp,
+        animationSpec = tween(1500, easing = FastOutSlowInEasing),
+        label = ""
+    )
+
+    val cornerRadius by animateDpAsState(
+        targetValue = if (step >= 4) 500.dp else 20.dp,
+        animationSpec = tween(800),
+        label = ""
+    )
+
+    val iconAlpha by animateFloatAsState(
+        targetValue = if (step >= 4) 0f else 1f,
+        animationSpec = tween(400),
+        label = ""
+    )
+
+    // ================= UI =================
     Box(
-        modifier = Modifier.fillMaxSize().background(Color.White),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White),
         contentAlignment = Alignment.Center
     ) {
+
         Text(
             text = "MBG +",
             fontSize = 45.sp,
             fontWeight = FontWeight.Bold,
-            color = BlueNormal, // Pakai BlueNormal dari theme kamu
-            modifier = Modifier.offset(x = 65.dp).alpha(textAlpha)
+            color = Color(0xFF83E0D4),
+            modifier = Modifier
+                .offset(x = 65.dp)
+                .alpha(textAlpha)
         )
+
         Box(
             modifier = Modifier
                 .offset(x = offsetX)
                 .requiredSize(boxSize)
                 .clip(RoundedCornerShape(cornerRadius))
-                .background(BlueNormal),
+                .background(Color(0xFF83E0D4)),
             contentAlignment = Alignment.Center
         ) {
             Image(
                 painter = painterResource(id = R.drawable.logo_mbg),
                 contentDescription = null,
-                modifier = Modifier.size(100.dp).alpha(iconAlpha)
+                modifier = Modifier
+                    .size(100.dp)
+                    .alpha(iconAlpha)
             )
         }
     }

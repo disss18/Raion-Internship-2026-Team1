@@ -6,6 +6,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,6 +23,7 @@ import com.example.mbg.ui.theme.BlueNormal
 import com.example.mbg.ui.theme.poppins
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import com.example.mbg.ui.theme.FoundationGreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -89,7 +91,7 @@ fun ForgotPasswordScreen(
                             fontFamily = poppins,
                             fontWeight = FontWeight.SemiBold
                         ),
-                        color = BlueNormal
+                        color = FoundationGreen
                     )
 
                 },
@@ -99,7 +101,7 @@ fun ForgotPasswordScreen(
                     IconButton(onClick = onBackToLogin) {
 
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.Default.KeyboardArrowLeft,
                             contentDescription = "Back"
                         )
                     }
@@ -159,7 +161,7 @@ fun ForgotPasswordScreen(
 
                 PrimaryButton(
                     text = "Kirim",
-                    containerColor = BlueNormal,
+                    containerColor = FoundationGreen,
                     onClick = {
 
                         viewModel.sendResetEmail(

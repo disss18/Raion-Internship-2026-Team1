@@ -1,5 +1,6 @@
 package com.example.mbg.feature.auth.presentation.register
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
@@ -8,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -19,8 +21,7 @@ import com.example.mbg.core.ui.component.textfield.PrimaryTextField
 import com.example.mbg.feature.auth.component.AuthDivider
 import com.example.mbg.feature.auth.data.remote.AuthRemoteDataSourceImpl
 import com.example.mbg.feature.auth.data.repository.AuthRepositoryImpl
-import com.example.mbg.ui.theme.BlueLight
-import com.example.mbg.ui.theme.BlueNormal
+import com.example.mbg.ui.theme.FoundationGreen
 import com.example.mbg.ui.theme.poppins
 
 @Composable
@@ -65,45 +66,42 @@ fun RegisterScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .background(Color(0xFFF5F5F5))
+                .verticalScroll(rememberScrollState())
                 .padding(padding)
         ) {
 
-            // ================= BACKGROUND =================
-            AuthBackground(
-                waveOffsetY = (-40).dp
-            )
+            // Background ikut scroll (sama seperti LoginScreen)
+            AuthBackground()
 
-            // ================= CONTENT =================
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
+                    .fillMaxWidth()
                     .padding(horizontal = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                Spacer(modifier = Modifier.height(130.dp))
+                Spacer(modifier = Modifier.height(125.dp))
 
                 Text(
-                    text = "Registrasi Akun",
+                    text = "Registrasi Akun Anda",
                     style = TextStyle(
                         fontFamily = poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = MaterialTheme.typography.titleLarge.fontSize
                     ),
-                    color = BlueNormal
+                    color = FoundationGreen
                 )
 
                 Spacer(modifier = Modifier.height(40.dp))
 
                 Column(
-                    modifier = Modifier.fillMaxWidth(0.90f),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier = Modifier.fillMaxWidth(0.9f)
                 ) {
 
-                    // ===== NAMA =====
-                    Text("Nama", modifier = Modifier.align(Alignment.Start))
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("Nama")
+                    Spacer(modifier = Modifier.height(4.dp))
+
                     PrimaryTextField(
                         value = name,
                         onValueChange = { name = it },
@@ -112,9 +110,9 @@ fun RegisterScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // ===== EMAIL =====
-                    Text("Email", modifier = Modifier.align(Alignment.Start))
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("Email")
+                    Spacer(modifier = Modifier.height(4.dp))
+
                     PrimaryTextField(
                         value = email,
                         onValueChange = { email = it },
@@ -123,9 +121,9 @@ fun RegisterScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // ===== PASSWORD =====
-                    Text("Kata Sandi", modifier = Modifier.align(Alignment.Start))
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("Kata Sandi")
+                    Spacer(modifier = Modifier.height(4.dp))
+
                     PrimaryTextField(
                         value = password,
                         onValueChange = { password = it },
@@ -135,9 +133,9 @@ fun RegisterScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // ===== CONFIRM PASSWORD =====
-                    Text("Konfirmasi Kata Sandi", modifier = Modifier.align(Alignment.Start))
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("Konfirmasi Kata Sandi")
+                    Spacer(modifier = Modifier.height(4.dp))
+
                     PrimaryTextField(
                         value = confirmPassword,
                         onValueChange = { confirmPassword = it },
@@ -147,10 +145,9 @@ fun RegisterScreen(
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // ===== REGISTER BUTTON =====
                     PrimaryButton(
-                        text = if (uiState.isLoading) "Loading..." else "Daftar",
-                        containerColor = BlueNormal,
+                        text = if (uiState.isLoading) "Loading..." else "Masuk",
+                        containerColor = FoundationGreen,
                         enabled = !uiState.isLoading,
                         onClick = {
                             viewModel.register(
@@ -162,34 +159,36 @@ fun RegisterScreen(
                         }
                     )
 
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     AuthDivider()
 
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     PrimaryButton(
                         text = "Lanjutkan dengan Google",
                         onClick = { viewModel.loginWithGoogle() },
-                        containerColor = BlueLight,
-                        contentColor = BlueNormal,
-                        borderColor = BlueNormal
+                        containerColor = Color(0xFFEDEFEF),
+                        contentColor = FoundationGreen,
+                        borderColor = FoundationGreen
                     )
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+
                     Text("Sudah punya akun? ")
+
                     ClickableText(
                         text = AnnotatedString("Masuk"),
                         onClick = { onNavigateToLogin() },
                         style = TextStyle(
                             fontFamily = poppins,
                             fontWeight = FontWeight.SemiBold,
-                            color = BlueNormal
+                            color = FoundationGreen
                         )
                     )
                 }

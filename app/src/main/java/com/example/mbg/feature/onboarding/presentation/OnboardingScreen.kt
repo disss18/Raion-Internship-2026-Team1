@@ -9,12 +9,14 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.unit.dp
 import com.example.mbg.R
 import com.example.mbg.core.ui.component.button.PrimaryButton
 import com.example.mbg.feature.onboarding.presentation.component.IndicatorDot
 import com.example.mbg.feature.onboarding.presentation.component.OnboardingPageContent
 import com.example.mbg.ui.theme.FoundationBlue
+import com.example.mbg.ui.theme.FoundationGreen
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
@@ -58,18 +60,21 @@ fun OnboardingScreen(
                 .padding(horizontal = 20.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.End
         ) {
-            if (pagerState.currentPage < pages.lastIndex) {
-                TextButton(
-                    onClick = {
-                        scope.launch {
-                            pagerState.animateScrollToPage(pages.lastIndex)
-                        }
+            TextButton(
+                onClick = {
+                    scope.launch {
+                        pagerState.animateScrollToPage(pages.lastIndex)
                     }
-                ) {
-                    Text(
-                        text = "Lewati"
-                    )
-                }
+                },
+                enabled = pagerState.currentPage < pages.lastIndex
+            ) {
+                Text(
+                    text = "Lewati",
+                    color = if (pagerState.currentPage < pages.lastIndex)
+                        Black
+                    else
+                        Color.Transparent
+                )
             }
         }
 
@@ -130,7 +135,7 @@ fun OnboardingScreen(
                         }
                     }
                 },
-                containerColor = FoundationBlue,
+                containerColor = FoundationGreen,
                 contentColor = Color.White,
                 modifier = Modifier
                     .fillMaxWidth()

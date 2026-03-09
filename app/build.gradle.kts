@@ -75,6 +75,7 @@ dependencies {
     implementation("io.ktor:ktor-client-android:2.3.7")
     implementation(libs.androidx.foundation)
     implementation(libs.androidx.compose.ui.text)
+    implementation(libs.androidx.ui.graphics)
 
     // Test
     testImplementation(libs.junit)

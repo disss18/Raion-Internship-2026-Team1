@@ -1,7 +1,7 @@
 package com.example.mbg.feature.auth.data.remote
 
 import android.util.Log
-import com.example.mbg.supabase.SupabaseClientProvider
+import com.example.mbg.core.supabase.SupabaseClientProvider
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.gotrue.providers.Google

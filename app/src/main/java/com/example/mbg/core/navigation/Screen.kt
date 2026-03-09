@@ -15,7 +15,13 @@ sealed class Screen(val route: String) {
     object ForgotPassword : Screen("forgot_password")
     object ResetPassword : Screen("reset_password")
 
+    object VerificationMBG : Screen("verification_mbg")
+
     // Main
     object Main : Screen("main_graph")
     object Home : Screen("home")
+    object DashboardMBG : Screen("dashboard_mbg")
+    object DashboardSekolah : Screen("dashboard_sekolah")
+    object DashboardOrangTua : Screen("dashboard_orang_tua")
+
 }

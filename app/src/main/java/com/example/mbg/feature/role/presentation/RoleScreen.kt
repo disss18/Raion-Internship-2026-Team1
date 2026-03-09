@@ -20,16 +20,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mbg.R
+import com.example.mbg.core.supabase.SupabaseClientProvider
 import com.example.mbg.feature.auth.data.remote.AuthRemoteDataSourceImpl
 import com.example.mbg.feature.auth.data.repository.AuthRepositoryImpl
 import com.example.mbg.feature.role.domain.model.UserRole
-import com.example.mbg.supabase.SupabaseClientProvider
 import com.example.mbg.ui.theme.inter
 import com.example.mbg.ui.theme.poppins
 
 @Composable
 fun RoleScreen(
-    onRoleSelected: () -> Unit
+    onRoleSelected: (String) -> Unit
 ) {
 
     // ================= DEPENDENCY MANUAL INJECTION =================
@@ -180,7 +180,7 @@ fun RoleScreen(
                             selectedRole = item.role
 
                             viewModel.saveRole(item.role) {
-                                onRoleSelected()
+                                onRoleSelected(item.role.name)
                             }
                         }
 

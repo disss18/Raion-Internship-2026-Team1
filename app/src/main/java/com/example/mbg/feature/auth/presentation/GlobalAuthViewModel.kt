@@ -2,15 +2,16 @@ package com.example.mbg.feature.auth.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mbg.core.supabase.SupabaseClientProvider
 import com.example.mbg.feature.auth.data.remote.AuthRemoteDataSourceImpl
 import com.example.mbg.feature.auth.data.repository.AuthRepositoryImpl
 import com.example.mbg.feature.auth.domain.AuthRepository
-import com.example.mbg.supabase.SupabaseClientProvider
 import io.github.jan.supabase.gotrue.SessionStatus
 import io.github.jan.supabase.gotrue.auth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import com.example.mbg.core.session.SessionManager
 
 sealed class AuthState {
     object Loading : AuthState()
@@ -28,6 +29,11 @@ class GlobalAuthViewModel : ViewModel() {
 
     private val _authState = MutableStateFlow<AuthState>(AuthState.Loading)
     val authState: StateFlow<AuthState> = _authState
+
+    // ================= ROLE STATE =================
+
+    private val _userRole = MutableStateFlow<String?>(null)
+    val userRole: StateFlow<String?> = _userRole
 
     init {
         observeSession()
@@ -56,6 +62,10 @@ class GlobalAuthViewModel : ViewModel() {
                             val roleResult = repository.getUserRole()
                             val role = roleResult.getOrNull()
 
+                            SessionManager.setUserRole(role)
+
+                            _userRole.value = role
+
                             _authState.value =
                                 if (role == null) {
                                     AuthState.NeedRole
@@ -65,7 +75,6 @@ class GlobalAuthViewModel : ViewModel() {
 
                         } catch (e: Exception) {
 
-                            // Jika gagal ambil role, fallback
                             _authState.value = AuthState.Authenticated
                         }
                     }
@@ -84,6 +93,7 @@ class GlobalAuthViewModel : ViewModel() {
         viewModelScope.launch {
 
             repository.logout()
+            SessionManager.clearSession()
 
             _authState.value = AuthState.Unauthenticated
         }
