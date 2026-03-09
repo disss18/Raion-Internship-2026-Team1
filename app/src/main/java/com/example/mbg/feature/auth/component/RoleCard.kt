@@ -1,4 +1,4 @@
-package com.example.mbg.feature.splashscreen.components
+package com.example.mbg.feature.auth.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background

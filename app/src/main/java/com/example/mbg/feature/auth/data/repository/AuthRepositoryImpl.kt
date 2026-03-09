@@ -1,8 +1,8 @@
 package com.example.mbg.feature.auth.data.repository
 
-import com.example.mbg.core.supabase.SupabaseClientProvider
 import com.example.mbg.feature.auth.data.remote.AuthRemoteDataSource
 import com.example.mbg.feature.auth.domain.AuthRepository
+import com.example.mbg.core.supabase.SupabaseClientProvider
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
@@ -57,27 +57,6 @@ class AuthRepositoryImpl(
                 .decodeSingleOrNull<Map<String, String?>>()
 
             result?.get("role")
-        }
-
-    // 🔵 IMPLEMENTASI BARU
-    override suspend fun getDapurVerificationStatus(): Result<String?> =
-        runCatching {
-
-            val userId = client.auth.currentUserOrNull()?.id
-                ?: return@runCatching null
-
-            val result = client
-                .from("dapur_verifications")
-                .select(
-                    columns = Columns.list("status")
-                ) {
-                    filter {
-                        eq("user_id", userId)
-                    }
-                }
-                .decodeSingleOrNull<Map<String, String?>>()
-
-            result?.get("status")
         }
 
     override suspend fun updateUserRole(role: String): Result<Unit> =
