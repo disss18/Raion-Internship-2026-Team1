@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mbg.core.supabase.SupabaseClientProvider
+import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.launch
@@ -22,19 +23,31 @@ class VerificationViewModel : ViewModel() {
         dokumenUri: Uri?,
         onSuccess: () -> Unit
     ) {
+
         viewModelScope.launch {
+
             try {
+
                 val client = SupabaseClientProvider.client
 
-                // 1. Upload file ke bucket 'berkas_dapur'
-                val usahaUrl = uploadFile(context, "usaha_${UUID.randomUUID()}", fotoUsahaUri)
-                val ktpUrl = uploadFile(context, "ktp_${UUID.randomUUID()}", fotoKtpUri)
-                val dokumenUrl = uploadFile(context, "doc_${UUID.randomUUID()}", dokumenUri)
+                val session = client.auth.currentSessionOrNull()
+                    ?: throw Exception("Session tidak ditemukan")
 
-                // 2. Insert ke tabel 'dapur_verifications'
-                // Nama kolom di map ini WAJIB sama persis dengan di web Supabase tadi
+                val userId = session.user?.id
+
+                val usahaUrl =
+                    uploadFile(context, "usaha_${UUID.randomUUID()}", fotoUsahaUri)
+
+                val ktpUrl =
+                    uploadFile(context, "ktp_${UUID.randomUUID()}", fotoKtpUri)
+
+                val dokumenUrl =
+                    uploadFile(context, "doc_${UUID.randomUUID()}", dokumenUri)
+
                 client.from("dapur_verifications").insert(
+
                     mapOf(
+                        "user_id" to userId,
                         "nama_umkm" to namaUmkm,
                         "alamat" to alamat,
                         "nama_pemilik" to namaPemilik,
@@ -45,23 +58,45 @@ class VerificationViewModel : ViewModel() {
                     )
                 )
 
+                println("VERIFICATION INSERT SUCCESS")
+
                 onSuccess()
+
             } catch (e: Exception) {
+
                 e.printStackTrace()
+
+                println("VERIFICATION ERROR: ${e.message}")
             }
         }
     }
 
-    private suspend fun uploadFile(context: Context, fileName: String, uri: Uri?): String {
+    private suspend fun uploadFile(
+        context: Context,
+        fileName: String,
+        uri: Uri?
+    ): String {
+
         if (uri == null) return ""
-        try {
-            val bytes = context.contentResolver.openInputStream(uri)?.readBytes() ?: return ""
-            val bucket = SupabaseClientProvider.client.storage.from("berkas_dapur")
+
+        return try {
+
+            val bytes =
+                context.contentResolver.openInputStream(uri)?.readBytes()
+                    ?: return ""
+
+            val bucket =
+                SupabaseClientProvider.client.storage.from("berkas_dapur")
+
             bucket.upload(fileName, bytes)
-            return bucket.publicUrl(fileName)
+
+            bucket.publicUrl(fileName)
+
         } catch (e: Exception) {
+
             e.printStackTrace()
-            return ""
+
+            ""
         }
     }
 }

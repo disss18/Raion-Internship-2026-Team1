@@ -5,12 +5,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.mbg.core.session.SessionManager
 import com.example.mbg.feature.auth.presentation.AuthState
 import com.example.mbg.feature.auth.presentation.GlobalAuthViewModel
 import com.example.mbg.feature.onboarding.presentation.OnboardingScreen
 import com.example.mbg.feature.splashscreen.AnimatedSplashScreen
 import com.example.mbg.feature.splashscreen.WelcomeScreen
-import com.example.mbg.core.session.SessionManager
 import kotlinx.coroutines.delay
 
 @Composable
@@ -19,12 +19,14 @@ fun RootNavGraph(
 ) {
 
     val navController = rememberNavController()
+
     val globalAuthViewModel: GlobalAuthViewModel = viewModel()
 
     val authState by globalAuthViewModel.authState.collectAsState()
 
-    // 🔥 TAMBAHAN PENTING
     val userRole by SessionManager.userRole.collectAsState()
+
+    val verificationStatus by globalAuthViewModel.verificationStatus.collectAsState()
 
     var splashFinished by remember { mutableStateOf(false) }
 
@@ -33,7 +35,9 @@ fun RootNavGraph(
     // ================= SPLASH =================
 
     LaunchedEffect(Unit) {
+
         delay(2000)
+
         splashFinished = true
     }
 
@@ -58,22 +62,53 @@ fun RootNavGraph(
 
     // ================= AUTH NAVIGATION =================
 
-    LaunchedEffect(authState, splashFinished) {
+    LaunchedEffect(authState, splashFinished, userRole, verificationStatus) {
 
         if (!splashFinished) return@LaunchedEffect
         if (authState is AuthState.Loading) return@LaunchedEffect
-
         if (isResetFlow) return@LaunchedEffect
+
+        val currentRoute =
+            navController.currentBackStackEntry?.destination?.route
+
+        // 🔴 LOCK SCREEN SAAT VERIFICATION
+        if (currentRoute == Screen.VerificationMBG.route) {
+            return@LaunchedEffect
+        }
 
         when (authState) {
 
             is AuthState.Authenticated -> {
 
-                navController.navigate(Screen.Main.route) {
+                if (userRole == "DAPUR_MBG") {
 
-                    popUpTo(Screen.Splash.route) { inclusive = true }
+                    if (verificationStatus == null) {
 
-                    launchSingleTop = true
+                        navController.navigate(Screen.VerificationMBG.route) {
+
+                            popUpTo(Screen.Splash.route) { inclusive = true }
+
+                            launchSingleTop = true
+                        }
+
+                    } else {
+
+                        navController.navigate(Screen.Main.route) {
+
+                            popUpTo(Screen.Splash.route) { inclusive = true }
+
+                            launchSingleTop = true
+                        }
+                    }
+
+                } else {
+
+                    navController.navigate(Screen.Main.route) {
+
+                        popUpTo(Screen.Splash.route) { inclusive = true }
+
+                        launchSingleTop = true
+                    }
                 }
             }
 
@@ -108,13 +143,10 @@ fun RootNavGraph(
         startDestination = Screen.Splash.route
     ) {
 
-        // ================= SPLASH =================
-
         composable(Screen.Splash.route) {
+
             AnimatedSplashScreen()
         }
-
-        // ================= ONBOARDING =================
 
         composable(Screen.Onboarding.route) {
 
@@ -130,17 +162,17 @@ fun RootNavGraph(
             )
         }
 
-        // ================= WELCOME =================
-
         composable(Screen.Welcome.route) {
 
             WelcomeScreen(
 
                 onNavigateToLogin = {
+
                     navController.navigate(Screen.Login.route)
                 },
 
                 onNavigateToRegister = {
+
                     navController.navigate(Screen.Register.route)
                 }
             )

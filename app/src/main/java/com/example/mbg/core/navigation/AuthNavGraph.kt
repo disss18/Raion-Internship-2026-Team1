@@ -1,86 +1,41 @@
-package com.example.mbg.core.navigation
+    package com.example.mbg.core.navigation
 
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.composable
-import androidx.navigation.navigation
-import com.example.mbg.feature.auth.presentation.forgotpassword.ForgotPasswordScreen
-import com.example.mbg.feature.auth.presentation.login.LoginScreen
-import com.example.mbg.feature.auth.presentation.register.RegisterScreen
-import com.example.mbg.feature.auth.presentation.resetpassword.ResetPasswordScreen
-import com.example.mbg.feature.role.presentation.RoleScreen
-import com.example.mbg.verificationMBG.VerificationScreen
+    import androidx.navigation.NavGraphBuilder
+    import androidx.navigation.NavHostController
+    import androidx.navigation.compose.composable
+    import androidx.navigation.navigation
+    import com.example.mbg.feature.auth.presentation.GlobalAuthViewModel
+    import com.example.mbg.feature.auth.presentation.forgotpassword.ForgotPasswordScreen
+    import com.example.mbg.feature.auth.presentation.login.LoginScreen
+    import com.example.mbg.feature.auth.presentation.register.RegisterScreen
+    import com.example.mbg.feature.auth.presentation.resetpassword.ResetPasswordScreen
+    import com.example.mbg.feature.role.presentation.RoleScreen
+    import com.example.mbg.verificationMBG.VerificationScreen
 
-fun NavGraphBuilder.authNavGraph(
-    navController: NavHostController
-) {
-
-    navigation(
-        route = Screen.Auth.route,
-        startDestination = Screen.Login.route
+    fun NavGraphBuilder.authNavGraph(
+        navController: NavHostController
     ) {
 
-        // ================= LOGIN =================
+        navigation(
+            route = Screen.Auth.route,
+            startDestination = Screen.Login.route
+        ) {
 
-        composable(Screen.Login.route) {
+            // ================= LOGIN =================
 
-            LoginScreen(
+            composable(Screen.Login.route) {
 
-                onNavigateToRegister = {
-                    navController.navigate(Screen.Register.route)
-                },
+                LoginScreen(
 
-                onNavigateToForgotPassword = {
-                    navController.navigate(Screen.ForgotPassword.route)
-                },
+                    onNavigateToRegister = {
+                        navController.navigate(Screen.Register.route)
+                    },
 
-                onLoginSuccess = {
+                    onNavigateToForgotPassword = {
+                        navController.navigate(Screen.ForgotPassword.route)
+                    },
 
-                    navController.navigate(Screen.Main.route) {
-
-                        popUpTo(Screen.Auth.route) {
-                            inclusive = true
-                        }
-
-                        launchSingleTop = true
-                    }
-                }
-
-            )
-        }
-
-        // ================= REGISTER =================
-
-        composable(Screen.Register.route) {
-
-            RegisterScreen(
-
-                onNavigateToLogin = {
-                    navController.navigate(Screen.Login.route) {
-                        popUpTo(Screen.Register.route) { inclusive = true }
-                    }
-                },
-
-                onRegisterSuccess = {
-                    navController.navigate(Screen.Role.route)
-                }
-
-            )
-        }
-
-        // ================= ROLE =================
-
-        composable(Screen.Role.route) {
-
-            RoleScreen(
-
-                onRoleSelected = { role ->
-
-                    if (role == "DAPUR_MBG") {
-
-                        navController.navigate(Screen.VerificationMBG.route)
-
-                    } else {
+                    onLoginSuccess = {
 
                         navController.navigate(Screen.Main.route) {
 
@@ -90,71 +45,123 @@ fun NavGraphBuilder.authNavGraph(
 
                             launchSingleTop = true
                         }
-
                     }
 
-                }
+                )
+            }
 
-            )
-        }
+            // ================= REGISTER =================
 
-        // ================= VERIFICATION MBG =================
+            composable(Screen.Register.route) {
 
-        composable(Screen.VerificationMBG.route) {
+                RegisterScreen(
 
-            VerificationScreen(
+                    onNavigateToLogin = {
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo(Screen.Register.route) { inclusive = true }
+                        }
+                    },
 
-                onBackClick = {
-                    navController.popBackStack()
-                },
+                    onRegisterSuccess = {
+                        navController.navigate(Screen.Role.route)
+                    }
 
-                onSubmitSuccess = {
+                )
+            }
 
-                    navController.navigate(Screen.Main.route) {
+            // ================= ROLE =================
 
-                        popUpTo(Screen.Auth.route) {
-                            inclusive = true
+            composable(Screen.Role.route) {
+
+                RoleScreen(
+
+                    onRoleSelected = { role ->
+
+                        if (role == "DAPUR_MBG") {
+
+                            navController.navigate(Screen.VerificationMBG.route)
+
+                        } else {
+
+                            navController.navigate(Screen.Main.route) {
+
+                                popUpTo(Screen.Auth.route) {
+                                    inclusive = true
+                                }
+
+                                launchSingleTop = true
+                            }
+
                         }
 
-                        launchSingleTop = true
                     }
-                }
-            )
-        }
 
-        // ================= FORGOT PASSWORD =================
+                )
+            }
 
-        composable(Screen.ForgotPassword.route) {
+            // ================= VERIFICATION MBG =================
 
-            ForgotPasswordScreen(
+            composable(Screen.VerificationMBG.route) {
 
-                onBackToLogin = {
-                    navController.popBackStack()
-                }
+                val globalAuthViewModel: GlobalAuthViewModel =
+                    androidx.lifecycle.viewmodel.compose.viewModel()
 
-            )
-        }
+                VerificationScreen(
 
-        // ================= RESET PASSWORD =================
+                    onBackClick = {
+                        navController.popBackStack()
+                    },
 
-        composable(Screen.ResetPassword.route) {
+                    onSubmitSuccess = {
 
-            ResetPasswordScreen(
+                        // 🔵 Update status supaya RootNavGraph tidak kirim balik ke Verification
+                        globalAuthViewModel.setVerificationPending()
 
-                onBack = {
-                    navController.popBackStack()
-                },
+                        navController.navigate(Screen.DashboardMBG.route) {
 
-                onResetSuccess = {
+                            popUpTo(Screen.Auth.route) {
+                                inclusive = true
+                            }
 
-                    navController.navigate(Screen.Login.route) {
-
-                        popUpTo(Screen.Auth.route)
-
-                        launchSingleTop = true
+                            launchSingleTop = true
+                        }
                     }
-                }
-            )
+                )
+            }
+
+            // ================= FORGOT PASSWORD =================
+
+            composable(Screen.ForgotPassword.route) {
+
+                ForgotPasswordScreen(
+
+                    onBackToLogin = {
+                        navController.popBackStack()
+                    }
+
+                )
+            }
+
+            // ================= RESET PASSWORD =================
+
+            composable(Screen.ResetPassword.route) {
+
+                ResetPasswordScreen(
+
+                    onBack = {
+                        navController.popBackStack()
+                    },
+
+                    onResetSuccess = {
+
+                        navController.navigate(Screen.Login.route) {
+
+                            popUpTo(Screen.Auth.route)
+
+                            launchSingleTop = true
+                        }
+                    }
+                )
+            }
         }
     }
-}

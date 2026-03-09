@@ -59,6 +59,27 @@ class AuthRepositoryImpl(
             result?.get("role")
         }
 
+    // 🔵 IMPLEMENTASI BARU
+    override suspend fun getDapurVerificationStatus(): Result<String?> =
+        runCatching {
+
+            val userId = client.auth.currentUserOrNull()?.id
+                ?: return@runCatching null
+
+            val result = client
+                .from("dapur_verifications")
+                .select(
+                    columns = Columns.list("status")
+                ) {
+                    filter {
+                        eq("user_id", userId)
+                    }
+                }
+                .decodeSingleOrNull<Map<String, String?>>()
+
+            result?.get("status")
+        }
+
     override suspend fun updateUserRole(role: String): Result<Unit> =
         runCatching {
             remote.updateUserRole(role)

@@ -18,6 +18,8 @@ interface AuthRepository {
 
     suspend fun getUserRole(): Result<String?>
 
+    suspend fun getDapurVerificationStatus(): Result<String?>
+
     suspend fun updateUserRole(role: String): Result<Unit>
 
     suspend fun resetPassword(email: String): Result<Unit>
