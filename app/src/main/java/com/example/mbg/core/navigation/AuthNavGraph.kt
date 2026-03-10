@@ -10,7 +10,8 @@
     import com.example.mbg.feature.auth.presentation.register.RegisterScreen
     import com.example.mbg.feature.auth.presentation.resetpassword.ResetPasswordScreen
     import com.example.mbg.feature.role.presentation.RoleScreen
-    import com.example.mbg.verificationMBG.VerificationScreen
+    import com.example.mbg.feature.verificationMBG.presentation.VerificationScreen
+
 
     fun NavGraphBuilder.authNavGraph(
         navController: NavHostController

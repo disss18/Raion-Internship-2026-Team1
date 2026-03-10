@@ -6,15 +6,28 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.mbg.feature.home.presentation.HomeScreen
 import com.example.mbg.feature.home.presentation.mbg.DashboardMBGScreen
+import com.example.mbg.feature.verificationMBG.presentation.VerificationStatusScreen
+import com.example.mbg.feature.verificationMBG.presentation.VerifStatus
 
 fun NavGraphBuilder.mainNavGraph(
     navController: NavHostController,
-    role: String?
+    role: String?,
+    verificationStatus: String?
 ) {
 
     val startDestination = when (role) {
 
-        "DAPUR_MBG" -> Screen.DashboardMBG.route
+        "DAPUR_MBG" -> {
+
+            when (verificationStatus) {
+
+                "pending" -> Screen.VerificationStatus.route
+
+                "approved" -> Screen.DashboardMBG.route
+
+                else -> Screen.VerificationStatus.route
+            }
+        }
 
         "SEKOLAH" -> Screen.DashboardSekolah.route
 
@@ -33,6 +46,15 @@ fun NavGraphBuilder.mainNavGraph(
         composable(Screen.DashboardMBG.route) {
 
             DashboardMBGScreen()
+        }
+
+        // ================= VERIFICATION STATUS =================
+
+        composable(Screen.VerificationStatus.route) {
+
+            VerificationStatusScreen(
+                status = VerifStatus.PENDING
+            )
         }
 
         // ================= DASHBOARD SEKOLAH =================

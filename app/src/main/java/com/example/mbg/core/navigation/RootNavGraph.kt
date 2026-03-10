@@ -19,9 +19,12 @@ fun RootNavGraph(
 ) {
 
     val navController = rememberNavController()
+
     val globalAuthViewModel: GlobalAuthViewModel = viewModel()
 
     val authState by globalAuthViewModel.authState.collectAsState()
+    val userRole by globalAuthViewModel.userRole.collectAsState()
+    val verificationStatus by globalAuthViewModel.verificationStatus.collectAsState()
 
     var splashFinished by remember { mutableStateOf(false) }
 
@@ -30,7 +33,9 @@ fun RootNavGraph(
     // ================= SPLASH =================
 
     LaunchedEffect(Unit) {
+
         delay(2000)
+
         splashFinished = true
     }
 
@@ -59,38 +64,48 @@ fun RootNavGraph(
 
         if (!splashFinished) return@LaunchedEffect
         if (authState is AuthState.Loading) return@LaunchedEffect
-
         if (isResetFlow) return@LaunchedEffect
+
+        val currentRoute = navController.currentBackStackEntry?.destination?.route
 
         when (authState) {
 
             is AuthState.Authenticated -> {
 
-                navController.navigate(Screen.Main.route) {
+                if (currentRoute != Screen.Main.route) {
 
-                    popUpTo(Screen.Splash.route) { inclusive = true }
+                    navController.navigate(Screen.Main.route) {
 
-                    launchSingleTop = true
+                        popUpTo(Screen.Splash.route) { inclusive = true }
+
+                        launchSingleTop = true
+                    }
                 }
             }
 
             is AuthState.NeedRole -> {
 
-                navController.navigate(Screen.Role.route) {
+                if (currentRoute != Screen.Role.route) {
 
-                    popUpTo(Screen.Splash.route) { inclusive = true }
+                    navController.navigate(Screen.Role.route) {
 
-                    launchSingleTop = true
+                        popUpTo(Screen.Splash.route) { inclusive = true }
+
+                        launchSingleTop = true
+                    }
                 }
             }
 
             is AuthState.Unauthenticated -> {
 
-                navController.navigate(Screen.Onboarding.route) {
+                if (currentRoute != Screen.Onboarding.route) {
 
-                    popUpTo(Screen.Splash.route) { inclusive = true }
+                    navController.navigate(Screen.Onboarding.route) {
 
-                    launchSingleTop = true
+                        popUpTo(Screen.Splash.route) { inclusive = true }
+
+                        launchSingleTop = true
+                    }
                 }
             }
 
@@ -108,16 +123,21 @@ fun RootNavGraph(
         // ================= SPLASH =================
 
         composable(Screen.Splash.route) {
+
             AnimatedSplashScreen(
+
                 onNavigateToOnboarding = {
-                    // Ganti "onboarding" dengan nama rute string lo kalau beda
-                    navController.navigate("onboarding") {
+
+                    navController.navigate(Screen.Onboarding.route) {
+
                         popUpTo(navController.graph.startDestinationId) { inclusive = true }
                     }
                 },
+
                 onNavigateToMain = {
-                    // Ganti "main" dengan nama rute string lo kalau beda
-                    navController.navigate("main") {
+
+                    navController.navigate(Screen.Main.route) {
+
                         popUpTo(navController.graph.startDestinationId) { inclusive = true }
                     }
                 }
@@ -180,6 +200,10 @@ fun RootNavGraph(
 
         // ================= MAIN GRAPH =================
 
-        mainNavGraph(navController)
+        mainNavGraph(
+            navController = navController,
+            role = userRole,
+            verificationStatus = verificationStatus
+        )
     }
 }

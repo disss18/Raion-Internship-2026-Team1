@@ -29,7 +29,7 @@ import com.example.mbg.ui.theme.poppins
 
 @Composable
 fun RoleScreen(
-    onRoleSelected: () -> Unit
+    onRoleSelected: (String) -> Unit
 ) {
 
     // ================= DEPENDENCY MANUAL INJECTION =================
@@ -180,7 +180,7 @@ fun RoleScreen(
                             selectedRole = item.role
 
                             viewModel.saveRole(item.role) {
-                                onRoleSelected()
+                                onRoleSelected(item.role.name)
                             }
                         }
 

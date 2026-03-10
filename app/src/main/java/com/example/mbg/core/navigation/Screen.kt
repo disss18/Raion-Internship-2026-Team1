@@ -17,6 +17,8 @@ sealed class Screen(val route: String) {
 
     object VerificationMBG : Screen("verification_mbg")
 
+    object VerificationStatus : Screen("verification_status")
+
     // Main
     object Main : Screen("main_graph")
     object Home : Screen("home")

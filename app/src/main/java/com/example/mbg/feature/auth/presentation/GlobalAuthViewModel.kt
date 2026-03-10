@@ -3,6 +3,7 @@ package com.example.mbg.feature.auth.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mbg.core.supabase.SupabaseClientProvider
+import com.example.mbg.core.session.SessionManager
 import com.example.mbg.feature.auth.data.remote.AuthRemoteDataSourceImpl
 import com.example.mbg.feature.auth.data.repository.AuthRepositoryImpl
 import com.example.mbg.feature.auth.domain.AuthRepository
@@ -29,6 +30,15 @@ class GlobalAuthViewModel : ViewModel() {
     private val _authState = MutableStateFlow<AuthState>(AuthState.Loading)
     val authState: StateFlow<AuthState> = _authState
 
+    private val _userRole = MutableStateFlow<String?>(null)
+    val userRole: StateFlow<String?> = _userRole
+
+    private val _verificationStatus = MutableStateFlow<String?>(null)
+    val verificationStatus: StateFlow<String?> = _verificationStatus
+
+    // Guard supaya role tidak hilang ketika session refresh
+    private var roleLoaded = false
+
     init {
         observeSession()
     }
@@ -46,7 +56,6 @@ class GlobalAuthViewModel : ViewModel() {
                         val session = supabase.auth.currentSessionOrNull()
 
                         if (session == null) {
-
                             _authState.value = AuthState.Unauthenticated
                             return@collect
                         }
@@ -56,21 +65,53 @@ class GlobalAuthViewModel : ViewModel() {
                             val roleResult = repository.getUserRole()
                             val role = roleResult.getOrNull()
 
-                            _authState.value =
-                                if (role == null) {
-                                    AuthState.NeedRole
-                                } else {
-                                    AuthState.Authenticated
+                            if (role != null) {
+
+                                roleLoaded = true
+
+                                SessionManager.setUserRole(role)
+
+                                _userRole.value = role
+
+                                if (role == "DAPUR_MBG") {
+
+                                    val verificationResult =
+                                        repository.getDapurVerificationStatus()
+
+                                    val verification =
+                                        verificationResult.getOrNull()
+
+                                    _verificationStatus.value = verification
+
+                                    SessionManager.setVerificationStatus(
+                                        verification
+                                    )
                                 }
+
+                                _authState.value = AuthState.Authenticated
+
+                            } else {
+
+                                if (!roleLoaded) {
+                                    _authState.value = AuthState.NeedRole
+                                }
+                            }
 
                         } catch (e: Exception) {
 
-                            // Jika gagal ambil role, fallback
-                            _authState.value = AuthState.Authenticated
+                            if (roleLoaded) {
+                                _authState.value = AuthState.Authenticated
+                            } else {
+                                _authState.value = AuthState.Loading
+                            }
                         }
                     }
 
                     else -> {
+
+                        roleLoaded = false
+
+                        SessionManager.clearSession()
 
                         _authState.value = AuthState.Unauthenticated
                     }
@@ -85,7 +126,20 @@ class GlobalAuthViewModel : ViewModel() {
 
             repository.logout()
 
+            SessionManager.clearSession()
+
+            roleLoaded = false
+
             _authState.value = AuthState.Unauthenticated
         }
+    }
+
+    fun setVerificationPending() {
+
+        _verificationStatus.value = "pending"
+
+        SessionManager.setVerificationStatus("pending")
+
+        _authState.value = AuthState.Authenticated
     }
 }
