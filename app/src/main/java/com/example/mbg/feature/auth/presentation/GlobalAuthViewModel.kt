@@ -3,7 +3,6 @@ package com.example.mbg.feature.auth.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mbg.core.supabase.SupabaseClientProvider
-import com.example.mbg.core.session.SessionManager
 import com.example.mbg.feature.auth.data.remote.AuthRemoteDataSourceImpl
 import com.example.mbg.feature.auth.data.repository.AuthRepositoryImpl
 import com.example.mbg.feature.auth.domain.AuthRepository
@@ -30,15 +29,6 @@ class GlobalAuthViewModel : ViewModel() {
     private val _authState = MutableStateFlow<AuthState>(AuthState.Loading)
     val authState: StateFlow<AuthState> = _authState
 
-    private val _userRole = MutableStateFlow<String?>(null)
-    val userRole: StateFlow<String?> = _userRole
-
-    private val _verificationStatus = MutableStateFlow<String?>(null)
-    val verificationStatus: StateFlow<String?> = _verificationStatus
-
-    // Guard agar role tidak hilang saat activity resume
-    private var roleLoaded = false
-
     init {
         observeSession()
     }
@@ -56,6 +46,7 @@ class GlobalAuthViewModel : ViewModel() {
                         val session = supabase.auth.currentSessionOrNull()
 
                         if (session == null) {
+
                             _authState.value = AuthState.Unauthenticated
                             return@collect
                         }
@@ -65,46 +56,21 @@ class GlobalAuthViewModel : ViewModel() {
                             val roleResult = repository.getUserRole()
                             val role = roleResult.getOrNull()
 
-                            if (role != null) {
-
-                                roleLoaded = true
-
-                                SessionManager.setUserRole(role)
-
-                                _userRole.value = role
-
-                                // CEK VERIFICATION KHUSUS DAPUR
-                                if (role == "DAPUR_MBG") {
-
-                                    val verificationResult =
-                                        repository.getDapurVerificationStatus()
-
-                                    _verificationStatus.value =
-                                        verificationResult.getOrNull()
+                            _authState.value =
+                                if (role == null) {
+                                    AuthState.NeedRole
+                                } else {
+                                    AuthState.Authenticated
                                 }
-
-                                _authState.value = AuthState.Authenticated
-
-                            } else {
-
-                                if (!roleLoaded) {
-                                    _authState.value = AuthState.NeedRole
-                                }
-                            }
 
                         } catch (e: Exception) {
 
-                            if (roleLoaded) {
-                                _authState.value = AuthState.Authenticated
-                            } else {
-                                _authState.value = AuthState.Loading
-                            }
+                            // Jika gagal ambil role, fallback
+                            _authState.value = AuthState.Authenticated
                         }
                     }
 
                     else -> {
-
-                        roleLoaded = false
 
                         _authState.value = AuthState.Unauthenticated
                     }
@@ -119,15 +85,7 @@ class GlobalAuthViewModel : ViewModel() {
 
             repository.logout()
 
-            SessionManager.clearSession()
-
-            roleLoaded = false
-
             _authState.value = AuthState.Unauthenticated
         }
-    }
-
-    fun setVerificationPending() {
-        _verificationStatus.value = "pending"
     }
 }
