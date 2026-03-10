@@ -1,0 +1,74 @@
+[33mdaf22eb[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfitur-dashboard-Sekolah[m[33m, [m[1;31morigin/staging[m[33m)[m HEAD@{0}: reset: moving to Head
+[33mdaf22eb[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfitur-dashboard-Sekolah[m[33m, [m[1;31morigin/staging[m[33m)[m HEAD@{1}: merge origin/staging: Fast-forward
+[33m3b05226[m[33m ([m[1;31morigin/fitur-dashboard-Sekolah[m[33m, [m[1;31morigin/fitur-dasboard-MBG[m[33m, [m[1;32mstaging[m[33m, [m[1;32mfitur-dasboard-MBG[m[33m)[m HEAD@{2}: checkout: moving from fitur-dashboard-Sekolah to fitur-dashboard-Sekolah
+[33m3b05226[m[33m ([m[1;31morigin/fitur-dashboard-Sekolah[m[33m, [m[1;31morigin/fitur-dasboard-MBG[m[33m, [m[1;32mstaging[m[33m, [m[1;32mfitur-dasboard-MBG[m[33m)[m HEAD@{3}: checkout: moving from staging to fitur-dashboard-Sekolah
+[33m3b05226[m[33m ([m[1;31morigin/fitur-dashboard-Sekolah[m[33m, [m[1;31morigin/fitur-dasboard-MBG[m[33m, [m[1;32mstaging[m[33m, [m[1;32mfitur-dasboard-MBG[m[33m)[m HEAD@{4}: merge fitur-dasboard-MBG: Fast-forward
+[33m548df59[m HEAD@{5}: pull origin staging: Fast-forward
+[33m791faca[m[33m ([m[1;31morigin/Fitur-Dashboard-MBG[m[33m)[m HEAD@{6}: checkout: moving from fitur-dasboard-MBG to staging
+[33m3b05226[m[33m ([m[1;31morigin/fitur-dashboard-Sekolah[m[33m, [m[1;31morigin/fitur-dasboard-MBG[m[33m, [m[1;32mstaging[m[33m, [m[1;32mfitur-dasboard-MBG[m[33m)[m HEAD@{7}: commit: fix userid di supabase
+[33mb2b61c7[m HEAD@{8}: reset: moving to origin/fitur-dasboard-MBG
+[33mb2b61c7[m HEAD@{9}: commit: fix verifikasi per role
+[33m7d56b8c[m HEAD@{10}: reset: moving to origin/fitur-dasboard-MBG
+[33m7d56b8c[m HEAD@{11}: commit: navigation hingga ke dashboard mbg
+[33mee55b04[m HEAD@{12}: commit (merge): merging
+[33m8cc35fb[m HEAD@{13}: commit: ui dashboard mbg
+[33m791faca[m[33m ([m[1;31morigin/Fitur-Dashboard-MBG[m[33m)[m HEAD@{14}: checkout: moving from staging to fitur-dasboard-MBG
+[33m791faca[m[33m ([m[1;31morigin/Fitur-Dashboard-MBG[m[33m)[m HEAD@{15}: reset: moving to origin/staging
+[33m791faca[m[33m ([m[1;31morigin/Fitur-Dashboard-MBG[m[33m)[m HEAD@{16}: commit: database eror fix
+[33m0896269[m[33m ([m[1;31morigin/fitur-login[m[33m, [m[1;32mfitur-login[m[33m)[m HEAD@{17}: reset: moving to origin/staging
+[33m0896269[m[33m ([m[1;31morigin/fitur-login[m[33m, [m[1;32mfitur-login[m[33m)[m HEAD@{18}: checkout: moving from staging to staging
+[33m0896269[m[33m ([m[1;31morigin/fitur-login[m[33m, [m[1;32mfitur-login[m[33m)[m HEAD@{19}: reset: moving to fitur-login
+[33m02148a5[m HEAD@{20}: reset: moving to HEAD
+[33m02148a5[m HEAD@{21}: checkout: moving from fitur-login to staging
+[33m0896269[m[33m ([m[1;31morigin/fitur-login[m[33m, [m[1;32mfitur-login[m[33m)[m HEAD@{22}: commit: fitur forget password
+[33m0256d63[m HEAD@{23}: reset: moving to 0256d6364c34f3329c4327d4c02d12f1dd8cbd66
+[33mdc38860[m HEAD@{24}: checkout: moving from fitur-login to fitur-login
+[33mdc38860[m HEAD@{25}: checkout: moving from staging to fitur-login
+[33m02148a5[m HEAD@{26}: reset: moving to HEAD
+[33m02148a5[m HEAD@{27}: checkout: moving from fitur-login to staging
+[33mdc38860[m HEAD@{28}: commit (merge): Merge branch 'staging' into fitur-login
+[33m0256d63[m HEAD@{29}: commit: save user role in database
+[33md844ff9[m HEAD@{30}: commit: login dengan google
+[33m515611a[m HEAD@{31}: commit: Fix ui and button logic
+[33m8750e81[m HEAD@{32}: checkout: moving from onboarding-page to fitur-login
+[33m8582d42[m[33m ([m[1;31morigin/onboarding-page[m[33m, [m[1;32monboarding-page[m[33m)[m HEAD@{33}: checkout: moving from fitur-login to onboarding-page
+[33m8750e81[m HEAD@{34}: reset: moving to HEAD
+[33m8750e81[m HEAD@{35}: commit: fix Architecture agar clean
+[33m24d655a[m HEAD@{36}: commit: Tambah GlobalAuthViewModel & Benarkan backstack handling
+[33m4d48f97[m HEAD@{37}: commit: add login & register feature
+[33m943dca0[m HEAD@{38}: checkout: moving from staging to fitur-login
+[33m02148a5[m HEAD@{39}: checkout: moving from fitur-login to staging
+[33m943dca0[m HEAD@{40}: reset: moving to HEAD
+[33m943dca0[m HEAD@{41}: commit: feat: add auth and core module structure
+[33m049aa71[m HEAD@{42}: reset: moving to origin/staging
+[33mecf35bf[m HEAD@{43}: reset: moving to HEAD
+[33mecf35bf[m HEAD@{44}: checkout: moving from staging to fitur-login
+[33m02148a5[m HEAD@{45}: reset: moving to HEAD
+[33m02148a5[m HEAD@{46}: reset: moving to HEAD
+[33m02148a5[m HEAD@{47}: checkout: moving from fitur-login to staging
+[33mecf35bf[m HEAD@{48}: reset: moving to HEAD
+[33mecf35bf[m HEAD@{49}: commit: test
+[33m68ac5d3[m HEAD@{50}: commit (merge): resolve conflict
+[33m0fdc434[m HEAD@{51}: commit (merge): Resolve merge conflict and remove .idea from tracking
+[33m0ae2d74[m HEAD@{52}: commit: Resolve conflict: keep PrimaryTextField
+[33m5a1b9ac[m HEAD@{53}: checkout: moving from staging to fitur-login
+[33m02148a5[m HEAD@{54}: reset: moving to HEAD
+[33m02148a5[m HEAD@{55}: commit: initialize
+[33m8582d42[m[33m ([m[1;31morigin/onboarding-page[m[33m, [m[1;32monboarding-page[m[33m)[m HEAD@{56}: merge onboarding-page: Fast-forward
+[33mfb4a88b[m HEAD@{57}: checkout: moving from onboarding-page to staging
+[33m8582d42[m[33m ([m[1;31morigin/onboarding-page[m[33m, [m[1;32monboarding-page[m[33m)[m HEAD@{58}: commit: finishing
+[33me0cf0ae[m HEAD@{59}: commit: fix bold & isi text
+[33m9c23eb7[m HEAD@{60}: commit: base ui onboarding page
+[33m88f7324[m HEAD@{61}: checkout: moving from onboarding-page to onboarding-page
+[33m88f7324[m HEAD@{62}: checkout: moving from onboarding-page to onboarding-page
+[33m88f7324[m HEAD@{63}: commit: package structure & navigatio
+[33m7f598f9[m[33m ([m[1;32mmain[m[33m)[m HEAD@{64}: checkout: moving from fitur-login to onboarding-page
+[33m5a1b9ac[m HEAD@{65}: commit: package auth
+[33mfb4a88b[m HEAD@{66}: checkout: moving from main to fitur-login
+[33m7f598f9[m[33m ([m[1;32mmain[m[33m)[m HEAD@{67}: pull origin main: Fast-forward
+[33mfb4a88b[m HEAD@{68}: checkout: moving from fitur-login to main
+[33mfb4a88b[m HEAD@{69}: checkout: moving from main to fitur-login
+[33mfb4a88b[m HEAD@{70}: checkout: moving from staging to main
+[33mfb4a88b[m HEAD@{71}: checkout: moving from main to staging
+[33mfb4a88b[m HEAD@{72}: checkout: moving from main to main
+[33mfb4a88b[m HEAD@{73}: commit (initial): first commit
