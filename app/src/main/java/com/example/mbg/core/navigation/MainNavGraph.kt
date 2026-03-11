@@ -6,6 +6,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.mbg.feature.home.presentation.HomeScreen
 import com.example.mbg.feature.home.presentation.mbg.DashboardMBGScreen
+import com.example.mbg.feature.home.presentation.parent.DashboardParentScreen
+import com.example.mbg.feature.home.presentation.school.DashboardSchoolScreen
 import com.example.mbg.feature.verificationMBG.presentation.VerificationStatusScreen
 import com.example.mbg.feature.verificationMBG.presentation.VerifStatus
 
@@ -60,15 +62,13 @@ fun NavGraphBuilder.mainNavGraph(
         // ================= DASHBOARD SEKOLAH =================
 
         composable(Screen.DashboardSekolah.route) {
-
-            HomeScreen(navController)
+            DashboardSchoolScreen()
         }
 
         // ================= DASHBOARD ORANG TUA =================
 
         composable(Screen.DashboardOrangTua.route) {
-
-            HomeScreen(navController)
+            DashboardParentScreen()
         }
     }
 }

@@ -1,62 +1,44 @@
 package com.example.mbg.core.ui.component
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import com.example.mbg.R
+import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.mbg.core.navigation.BottomNavItem
+import androidx.compose.runtime.*
 
 @Composable
-fun DashboardBottomBar() {
+fun DashboardBottomBar(
+    items: List<BottomNavItem>
+) {
 
-    NavigationBar(
-        containerColor = Color.White
-    ) {
+    var selectedIndex by remember { mutableStateOf(0) }
 
-        NavigationBarItem(
-            selected = true,
-            onClick = {},
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.beranda_botom),
-                    contentDescription = "Menu"
-                )
-            },
-        )
+    NavigationBar {
 
-        NavigationBarItem(
-            selected = false,
-            onClick = {},
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.menu_bottom),
-                    contentDescription = "Menu"
-                )
-            },
-        )
+        items.forEachIndexed { index, item ->
 
-        NavigationBarItem(
-            selected = false,
-            onClick = {},
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.distribusi_bottom),
-                    contentDescription = "Menu"
-                )
-            },
-        )
+            NavigationBarItem(
 
-        NavigationBarItem(
-            selected = false,
-            onClick = {},
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.profil_bottom),
-                    contentDescription = "Profil"
-                )
-            },
-        )
+                selected = selectedIndex == index,
+
+                onClick = {
+                    selectedIndex = index
+                },
+
+                icon = {
+
+                    Icon(
+                        painter = painterResource(item.icon),
+                        contentDescription = item.label
+                    )
+
+                },
+            )
+        }
     }
 }

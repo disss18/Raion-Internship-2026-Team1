@@ -68,23 +68,30 @@
 
                     onRoleSelected = { role ->
 
-                        if (role == "DAPUR_MBG") {
+                        when(role) {
 
-                            navController.navigate(Screen.VerificationMBG.route)
-
-                        } else {
-
-                            navController.navigate(Screen.Main.route) {
-
-                                popUpTo(Screen.Auth.route) {
-                                    inclusive = true
-                                }
-
-                                launchSingleTop = true
+                            "DAPUR_MBG" -> {
+                                navController.navigate(Screen.VerificationMBG.route)
                             }
 
-                        }
+                            "SEKOLAH" -> {
+                                navController.navigate(Screen.DashboardSekolah.route) {
 
+                                    popUpTo(Screen.Auth.route) { inclusive = true }
+
+                                    launchSingleTop = true
+                                }
+                            }
+
+                            "ORANG_TUA" -> {
+                                navController.navigate(Screen.DashboardOrangTua.route) {
+
+                                    popUpTo(Screen.Auth.route) { inclusive = true }
+
+                                    launchSingleTop = true
+                                }
+                            }
+                        }
                     }
 
                 )
