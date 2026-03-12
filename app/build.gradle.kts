@@ -4,6 +4,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 val localProperties = Properties()
@@ -61,7 +62,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation("androidx.compose.foundation:foundation")
-
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     // Splash & Navigation (Gabungan versi terbaru kamu & Yudis)
     implementation("androidx.core:core-splashscreen:1.2.0")
     implementation("androidx.navigation:navigation-compose:2.7.7")
@@ -76,6 +77,7 @@ dependencies {
     implementation(libs.androidx.foundation)
     implementation(libs.androidx.compose.ui.text)
     implementation(libs.androidx.ui.graphics)
+    implementation("io.coil-kt:coil-compose:2.4.0")
 
     // Test
     testImplementation(libs.junit)
