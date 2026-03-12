@@ -12,30 +12,20 @@ import com.example.mbg.R
 import com.example.mbg.core.navigation.BottomNavItem
 import com.example.mbg.core.ui.component.*
 import com.example.mbg.feature.home.presentation.component.*
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mbg.feature.feedback.presentation.FeedbackViewModel
+import com.example.mbg.feature.feedback.component.FeedbackRatingCard
 
 @Composable
-fun DashboardParentScreen() {
+fun DashboardParentScreen(
+    feedbackViewModel: FeedbackViewModel = viewModel()
+) {
+
     val parentBottomNav = listOf(
-
-        BottomNavItem(
-            "Beranda",
-            com.example.mbg.R.drawable.beranda_botom
-        ),
-
-        BottomNavItem(
-            "Menu",
-            com.example.mbg.R.drawable.beranda_botom
-        ),
-
-        BottomNavItem(
-            "Aktivitas",
-            com.example.mbg.R.drawable.aktivitas_bottom
-        ),
-
-        BottomNavItem(
-            "Profil",
-            R.drawable.profil_bottom
-        )
+        BottomNavItem("Beranda", R.drawable.beranda_botom),
+        BottomNavItem("Menu", R.drawable.beranda_botom),
+        BottomNavItem("Aktivitas", R.drawable.aktivitas_bottom),
+        BottomNavItem("Profil", R.drawable.profil_bottom)
     )
 
     Scaffold(
@@ -49,19 +39,16 @@ fun DashboardParentScreen() {
                 .verticalScroll(rememberScrollState())
         ) {
 
-            /** HEADER PROFILE */
             ProfileHeaderCard()
 
             Column(
                 modifier = Modifier.padding(16.dp)
             ) {
 
-                /** MENU HARIAN */
                 MenuDailyCard()
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                /** RINGKASAN GIZI */
                 DashboardSectionTitle("Ringkasan Gizi Hari Ini")
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -70,6 +57,23 @@ fun DashboardParentScreen() {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                /** FEEDBACK */
+
+                DashboardSectionTitle("Feedback Menu")
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                FeedbackRatingCard { rating, comment ->
+
+                    feedbackViewModel.sendFeedback(
+                        school = "SDN 1 Jakarta",
+                        parent = "Orang Tua",
+                        comment = comment,
+                        rating = rating
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
             }
         }
     }

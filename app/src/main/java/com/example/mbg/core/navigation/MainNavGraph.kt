@@ -4,7 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.example.mbg.feature.home.presentation.HomeScreen
+import com.example.mbg.feature.feedback.presentation.FeedbackViewModel
 import com.example.mbg.feature.home.presentation.mbg.DashboardMBGScreen
 import com.example.mbg.feature.home.presentation.parent.DashboardParentScreen
 import com.example.mbg.feature.home.presentation.school.DashboardSchoolScreen
@@ -13,61 +13,37 @@ import com.example.mbg.feature.verificationMBG.presentation.VerifStatus
 
 fun NavGraphBuilder.mainNavGraph(
     navController: NavHostController,
-    role: String?,
-    verificationStatus: String?
+    feedbackViewModel: FeedbackViewModel
 ) {
-
-    val startDestination = when (role) {
-
-        "DAPUR_MBG" -> {
-
-            when (verificationStatus) {
-
-                "pending" -> Screen.VerificationStatus.route
-
-                "approved" -> Screen.DashboardMBG.route
-
-                else -> Screen.VerificationStatus.route
-            }
-        }
-
-        "SEKOLAH" -> Screen.DashboardSekolah.route
-
-        "ORANG_TUA" -> Screen.DashboardOrangTua.route
-
-        else -> Screen.DashboardMBG.route
-    }
 
     navigation(
         route = Screen.Main.route,
-        startDestination = startDestination
+        startDestination = Screen.Home.route
     ) {
 
-        // ================= DASHBOARD MBG =================
+        // ROUTER
+        composable(Screen.Home.route) {
+
+            // kosong saja
+        }
 
         composable(Screen.DashboardMBG.route) {
 
-            DashboardMBGScreen()
+            DashboardMBGScreen(feedbackViewModel)
         }
-
-        // ================= VERIFICATION STATUS =================
 
         composable(Screen.VerificationStatus.route) {
 
-            VerificationStatusScreen(
-                status = VerifStatus.PENDING
-            )
+            VerificationStatusScreen(status = VerifStatus.PENDING)
         }
 
-        // ================= DASHBOARD SEKOLAH =================
-
         composable(Screen.DashboardSekolah.route) {
+
             DashboardSchoolScreen()
         }
 
-        // ================= DASHBOARD ORANG TUA =================
-
         composable(Screen.DashboardOrangTua.route) {
+
             DashboardParentScreen()
         }
     }

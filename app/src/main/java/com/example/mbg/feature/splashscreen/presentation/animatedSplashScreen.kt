@@ -19,12 +19,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.delay
 import com.example.mbg.R
-import com.example.mbg.feature.auth.presentation.AuthState
-import com.example.mbg.feature.auth.presentation.GlobalAuthViewModel
 import com.example.mbg.ui.theme.FoundationGreen
 
 @Composable
@@ -32,14 +28,10 @@ fun AnimatedSplashScreen(
     onNavigateToOnboarding: () -> Unit,
     onNavigateToMain: () -> Unit
 ) {
-    val authViewModel: GlobalAuthViewModel = viewModel()
-    val authState by authViewModel.authState.collectAsStateWithLifecycle()
 
     var step by remember { mutableIntStateOf(1) }
-    var animationFinished by remember { mutableStateOf(false) }
-    var hasNavigated by remember { mutableStateOf(false) }
 
-    // Animasi Timeline
+    // Timeline animasi saja
     LaunchedEffect(Unit) {
         delay(300)
         step = 2
@@ -47,23 +39,6 @@ fun AnimatedSplashScreen(
         step = 3
         delay(500)
         step = 4
-        delay(800)
-        animationFinished = true
-    }
-
-// Navigasi Logic
-    LaunchedEffect(animationFinished, authState) {
-        if (animationFinished && !hasNavigated && authState !is AuthState.Loading) {
-            hasNavigated = true
-
-            // Kalau udah login atau butuh role ke Main
-            if (authState is AuthState.Authenticated || authState is AuthState.NeedRole) {
-                onNavigateToMain()
-            } else {
-                // Kalau Unauthenticated ke halaman Onboarding/Login
-                onNavigateToOnboarding()
-            }
-        }
     }
 
     // Animasi Values
@@ -71,34 +46,44 @@ fun AnimatedSplashScreen(
         targetValue = if (step == 2) (-55).dp else 0.dp,
         animationSpec = tween(600, easing = FastOutSlowInEasing), label = ""
     )
+
     val textAlpha by animateFloatAsState(
         targetValue = if (step == 2) 1f else 0f,
         animationSpec = tween(400), label = ""
     )
+
     val boxSize by animateDpAsState(
         targetValue = if (step >= 4) 4000.dp else 80.dp,
         animationSpec = tween(1500, easing = FastOutSlowInEasing), label = ""
     )
+
     val cornerRadius by animateDpAsState(
         targetValue = if (step >= 4) 500.dp else 20.dp,
         animationSpec = tween(800), label = ""
     )
+
     val iconAlpha by animateFloatAsState(
         targetValue = if (step >= 4) 0f else 1f,
         animationSpec = tween(400), label = ""
     )
 
     Box(
-        modifier = Modifier.fillMaxSize().background(Color.White),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White),
         contentAlignment = Alignment.Center
     ) {
+
         Text(
             text = "MBG +",
             fontSize = 45.sp,
             fontWeight = FontWeight.Bold,
             color = FoundationGreen,
-            modifier = Modifier.offset(x = 65.dp).alpha(textAlpha)
+            modifier = Modifier
+                .offset(x = 65.dp)
+                .alpha(textAlpha)
         )
+
         Box(
             modifier = Modifier
                 .offset(x = offsetX)
@@ -107,10 +92,13 @@ fun AnimatedSplashScreen(
                 .background(FoundationGreen),
             contentAlignment = Alignment.Center
         ) {
+
             Image(
                 painter = painterResource(id = R.drawable.logo_ijo1),
                 contentDescription = null,
-                modifier = Modifier.size(100.dp).alpha(iconAlpha)
+                modifier = Modifier
+                    .size(100.dp)
+                    .alpha(iconAlpha)
             )
         }
     }

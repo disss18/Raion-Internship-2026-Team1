@@ -3,22 +3,15 @@ package com.example.mbg.feature.auth.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mbg.core.supabase.SupabaseClientProvider
-import com.example.mbg.core.session.SessionManager
 import com.example.mbg.feature.auth.data.remote.AuthRemoteDataSourceImpl
 import com.example.mbg.feature.auth.data.repository.AuthRepositoryImpl
 import com.example.mbg.feature.auth.domain.AuthRepository
 import io.github.jan.supabase.gotrue.SessionStatus
 import io.github.jan.supabase.gotrue.auth
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-
-sealed class AuthState {
-    object Loading : AuthState()
-    object Unauthenticated : AuthState()
-    object Authenticated : AuthState()
-    object NeedRole : AuthState()
-}
 
 class GlobalAuthViewModel : ViewModel() {
 
@@ -36,9 +29,6 @@ class GlobalAuthViewModel : ViewModel() {
     private val _verificationStatus = MutableStateFlow<String?>(null)
     val verificationStatus: StateFlow<String?> = _verificationStatus
 
-    // Guard supaya role tidak hilang ketika session refresh
-    private var roleLoaded = false
-
     init {
         observeSession()
     }
@@ -53,66 +43,47 @@ class GlobalAuthViewModel : ViewModel() {
 
                     is SessionStatus.Authenticated -> {
 
-                        val session = supabase.auth.currentSessionOrNull()
+                        val userId =
+                            supabase.auth.currentUserOrNull()?.id
 
-                        if (session == null) {
+                        if (userId == null) {
                             _authState.value = AuthState.Unauthenticated
                             return@collect
                         }
 
                         try {
 
-                            val roleResult = repository.getUserRole()
-                            val role = roleResult.getOrNull()
+                            var role =
+                                repository.getUserRole(userId).getOrNull()
 
-                            if (role != null) {
+                            // retry kecil supaya tidak race condition
+                            if (role == null) {
+                                delay(250)
+                                role = repository.getUserRole(userId).getOrNull()
+                            }
 
-                                roleLoaded = true
+                            val verification =
+                                repository.getDapurVerificationStatus().getOrNull()
 
-                                SessionManager.setUserRole(role)
+                            _userRole.value = role
+                            _verificationStatus.value = verification
 
-                                _userRole.value = role
-
-                                if (role == "DAPUR_MBG") {
-
-                                    val verificationResult =
-                                        repository.getDapurVerificationStatus()
-
-                                    val verification =
-                                        verificationResult.getOrNull()
-
-                                    _verificationStatus.value = verification
-
-                                    SessionManager.setVerificationStatus(
-                                        verification
-                                    )
-                                }
-
-                                _authState.value = AuthState.Authenticated
-
+                            if (role == null) {
+                                _authState.value = AuthState.NeedRole
                             } else {
-
-                                if (!roleLoaded) {
-                                    _authState.value = AuthState.NeedRole
-                                }
+                                _authState.value = AuthState.Authenticated
                             }
 
                         } catch (e: Exception) {
 
-                            if (roleLoaded) {
-                                _authState.value = AuthState.Authenticated
-                            } else {
-                                _authState.value = AuthState.Loading
-                            }
+                            _authState.value = AuthState.Unauthenticated
                         }
                     }
 
                     else -> {
 
-                        roleLoaded = false
-
-                        SessionManager.clearSession()
-
+                        _userRole.value = null
+                        _verificationStatus.value = null
                         _authState.value = AuthState.Unauthenticated
                     }
                 }
@@ -120,25 +91,9 @@ class GlobalAuthViewModel : ViewModel() {
         }
     }
 
-    fun logout() {
-
-        viewModelScope.launch {
-
-            repository.logout()
-
-            SessionManager.clearSession()
-
-            roleLoaded = false
-
-            _authState.value = AuthState.Unauthenticated
-        }
-    }
-
     fun setVerificationPending() {
 
         _verificationStatus.value = "pending"
-
-        SessionManager.setVerificationStatus("pending")
 
         _authState.value = AuthState.Authenticated
     }

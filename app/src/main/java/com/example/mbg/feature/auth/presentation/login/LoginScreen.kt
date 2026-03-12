@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mbg.R
 import com.example.mbg.core.ui.component.layout.AuthBackground
 import com.example.mbg.core.ui.component.button.PrimaryButton
@@ -37,11 +38,7 @@ fun LoginScreen(
     onNavigateToForgotPassword: () -> Unit,
 ) {
 
-    val viewModel = remember {
-        val remote = AuthRemoteDataSourceImpl()
-        val repository = AuthRepositoryImpl(remote)
-        LoginViewModel(repository)
-    }
+    val viewModel: LoginViewModel = viewModel()
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }

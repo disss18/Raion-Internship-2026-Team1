@@ -13,6 +13,8 @@ object SupabaseClientProvider {
     ) {
         install(Auth) {
             scheme = "mbg"
+            autoLoadFromStorage = true
+            autoSaveToStorage = true
         }
         install(Postgrest)
         // biar fitur upload foto UMKM  jalan

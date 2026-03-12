@@ -8,13 +8,17 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mbg.R
 import com.example.mbg.core.navigation.BottomNavItem
 import com.example.mbg.core.ui.component.*
+import com.example.mbg.feature.feedback.component.FeedbackRatingCard
+import com.example.mbg.feature.feedback.presentation.FeedbackViewModel
 import com.example.mbg.feature.home.presentation.component.*
 
 @Composable
 fun DashboardSchoolScreen() {
+    val feedbackViewModel: FeedbackViewModel = viewModel()
     val schoolBottomNav = listOf(
 
         BottomNavItem(
@@ -75,7 +79,19 @@ fun DashboardSchoolScreen() {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                FeedbackRatingCard()
+                FeedbackRatingCard { rating, comment ->
+
+                    feedbackViewModel.sendFeedback(
+
+                        school = "SMP 01 Menteng", // sementara hardcode dulu
+
+                        parent = "Orang Tua Siswa",
+
+                        comment = comment,
+
+                        rating = rating
+                    )
+                }
             }
         }
     }

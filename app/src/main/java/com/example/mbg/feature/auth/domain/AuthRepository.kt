@@ -16,7 +16,7 @@ interface AuthRepository {
 
     suspend fun logout(): Result<Unit>
 
-    suspend fun getUserRole(): Result<String?>
+    suspend fun getUserRole(userId: String): Result<String?>
 
     suspend fun getDapurVerificationStatus(): Result<String?>
 

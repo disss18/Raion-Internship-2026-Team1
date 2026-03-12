@@ -1,4 +1,4 @@
-package com.example.mbg.feature.home.presentation.component
+package com.example.mbg.feature.feedback.component
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -6,32 +6,31 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun FeedbackRatingCard() {
+fun FeedbackRatingCard(
+    onSubmit: (rating: Int, comment: String) -> Unit
+) {
 
     var rating by remember { mutableStateOf(0) }
+    var comment by remember { mutableStateOf("") }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
-        elevation = CardDefaults.cardElevation(4.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        elevation = CardDefaults.cardElevation(4.dp)
     ) {
 
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
 
-            Text(
-                "Bagaimana Kualitas menu hari ini?",
-                style = MaterialTheme.typography.bodyMedium
-            )
+            Text("Bagaimana kualitas menu hari ini?")
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(Modifier.height(12.dp))
 
             Row {
 
@@ -54,21 +53,32 @@ fun FeedbackRatingCard() {
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(Modifier.height(12.dp))
+
+            OutlinedTextField(
+                value = comment,
+                onValueChange = { comment = it },
+                placeholder = { Text("Tulis masukan...") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(Modifier.height(12.dp))
 
             Button(
-                onClick = {},
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(10.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFDFF1E6)
-                )
+                onClick = {
+
+                    if (rating > 0 && comment.isNotBlank()) {
+
+                        onSubmit(rating, comment)
+
+                        comment = ""
+                        rating = 0
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
             ) {
 
-                Text(
-                    "Beri Masukan",
-                    color = Color(0xFF4BA26A)
-                )
+                Text("Kirim Feedback")
             }
         }
     }

@@ -39,11 +39,8 @@ class AuthRepositoryImpl(
             remote.logout()
         }
 
-    override suspend fun getUserRole(): Result<String?> =
+    override suspend fun getUserRole(userId: String): Result<String?> =
         runCatching {
-
-            val userId = client.auth.currentUserOrNull()?.id
-                ?: return@runCatching null
 
             val result = client
                 .from("profiles")

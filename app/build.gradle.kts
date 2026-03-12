@@ -4,6 +4,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.0.21"
 }
 
 val localProperties = Properties()
@@ -76,6 +77,7 @@ dependencies {
     implementation(libs.androidx.foundation)
     implementation(libs.androidx.compose.ui.text)
     implementation(libs.androidx.ui.graphics)
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     // Test
     testImplementation(libs.junit)
