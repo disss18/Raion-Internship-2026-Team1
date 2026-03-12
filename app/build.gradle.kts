@@ -4,7 +4,8 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.0.21"
+    // 🔥 PERBAIKAN: Hapus versi 2.0.21 biar nggak bentrok sama classpath 1.9.0
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 val localProperties = Properties()
@@ -60,7 +61,9 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation("androidx.compose.foundation:foundation")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3") // Versi Staging
+
+    // 🔥 PERBAIKAN: Sesuaikan dengan versi yang stabil (1.6.0) untuk Kotlin 1.9.0
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
     implementation("androidx.core:core-splashscreen:1.2.0")
     implementation("androidx.navigation:navigation-compose:2.7.7")
@@ -72,7 +75,6 @@ dependencies {
     implementation("io.github.jan-tennert.supabase:storage-kt:2.5.4")
     implementation("io.ktor:ktor-client-android:2.3.7")
 
-    // Punya Farrell yang nggak boleh ilang
     implementation("io.coil-kt:coil-compose:2.4.0")
 
     implementation(libs.androidx.foundation)

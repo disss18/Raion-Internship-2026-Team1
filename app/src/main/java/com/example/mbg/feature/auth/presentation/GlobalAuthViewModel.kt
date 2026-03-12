@@ -18,13 +18,6 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
 
-sealed class AuthState {
-    object Loading : AuthState()
-    object Unauthenticated : AuthState()
-    object Authenticated : AuthState()
-    object NeedRole : AuthState()
-}
-
 class GlobalAuthViewModel : ViewModel() {
     private val repository: AuthRepository = AuthRepositoryImpl(AuthRemoteDataSourceImpl())
     private val supabase = SupabaseClientProvider.client
@@ -66,7 +59,6 @@ class GlobalAuthViewModel : ViewModel() {
                     return@launch
                 }
 
-                // Trik Staging: delay kecil anti race-condition
                 var role = repository.getUserRole(userId).getOrNull()
                 if (role == null) {
                     delay(250)
@@ -86,7 +78,6 @@ class GlobalAuthViewModel : ViewModel() {
         }
     }
 
-    // Fix Farrell + param userId
     fun updateVerificationStatus(userId: String? = null) {
         viewModelScope.launch {
             try {
@@ -119,7 +110,11 @@ class GlobalAuthViewModel : ViewModel() {
     }
 
     fun setVerificationPending() {
+        // 🔥 PERBAIKAN: Kasih tau sistem kalau yang verifikasi PASTI Dapur MBG
+        // Biar nggak di-lempar ke layar kosong (Screen.Home)
+        _userRole.value = "DAPUR_MBG"
         _verificationStatus.value = "pending"
+
         SessionManager.setVerificationStatus("pending")
         _authState.value = AuthState.Authenticated
     }

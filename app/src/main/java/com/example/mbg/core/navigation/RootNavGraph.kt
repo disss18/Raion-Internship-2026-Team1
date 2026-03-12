@@ -9,7 +9,6 @@ import com.example.mbg.feature.auth.presentation.AuthState
 import com.example.mbg.feature.auth.presentation.GlobalAuthViewModel
 import com.example.mbg.feature.feedback.presentation.FeedbackViewModel
 import com.example.mbg.feature.onboarding.presentation.OnboardingScreen
-import com.example.mbg.feature.role.presentation.RoleScreen
 import com.example.mbg.feature.splashscreen.presentation.AnimatedSplashScreen
 import com.example.mbg.feature.splashscreen.components.WelcomeScreen
 import kotlinx.coroutines.delay
@@ -145,18 +144,8 @@ fun RootNavGraph(
             )
         }
 
+        // AuthGraph sudah meng-handle RoleScreen
         authNavGraph(navController)
-
-        composable(Screen.Role.route) {
-            RoleScreen(
-                onRoleSelected = {
-                    navController.navigate(Screen.Main.route) {
-                        popUpTo(Screen.Role.route) { inclusive = true }
-                        launchSingleTop = true
-                    }
-                }
-            )
-        }
 
         mainNavGraph(
             navController = navController,
