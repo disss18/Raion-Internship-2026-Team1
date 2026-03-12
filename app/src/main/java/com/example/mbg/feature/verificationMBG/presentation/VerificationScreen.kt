@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,24 +46,31 @@ fun VerificationScreen(
     onSubmitSuccess: () -> Unit = {}
 ) {
     val viewModel: VerificationViewModel = viewModel()
-
-    var currentStep by remember { mutableIntStateOf(initialStep) }
     val context = LocalContext.current
 
-    var namaUmkm by remember { mutableStateOf(initNamaUmkm) }
-    var alamat by remember { mutableStateOf(initAlamat) }
-    var namaPemilik by remember { mutableStateOf(initPemilik) }
-    var isAgreed by remember { mutableStateOf(initAgreed) }
+    // 🔥 PERBAIKAN: Gunakan rememberSaveable agar state kebal dari Process Death
+    var currentStep by rememberSaveable { mutableIntStateOf(initialStep) }
+    var namaUmkm by rememberSaveable { mutableStateOf(initNamaUmkm) }
+    var alamat by rememberSaveable { mutableStateOf(initAlamat) }
+    var namaPemilik by rememberSaveable { mutableStateOf(initPemilik) }
+    var isAgreed by rememberSaveable { mutableStateOf(initAgreed) }
 
-    var fotoUsahaUri by remember { mutableStateOf<Uri?>(null) }
-    var fotoKtpUri by remember { mutableStateOf<Uri?>(null) }
-    var dokumenUri by remember { mutableStateOf<Uri?>(null) }
-    var buktiTransferUri by remember { mutableStateOf<Uri?>(null) }
+    // Simpan URI dalam bentuk String agar aman di-Saveable
+    var fotoUsahaUriStr by rememberSaveable { mutableStateOf<String?>(null) }
+    var fotoKtpUriStr by rememberSaveable { mutableStateOf<String?>(null) }
+    var dokumenUriStr by rememberSaveable { mutableStateOf<String?>(null) }
+    var buktiTransferUriStr by rememberSaveable { mutableStateOf<String?>(null) }
 
-    val usahaLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri -> fotoUsahaUri = uri }
-    val ktpLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri -> fotoKtpUri = uri }
-    val dokumenLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri -> dokumenUri = uri }
-    val buktiLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri -> buktiTransferUri = uri }
+    // Konversi String kembali ke Uri
+    val fotoUsahaUri = fotoUsahaUriStr?.let { Uri.parse(it) }
+    val fotoKtpUri = fotoKtpUriStr?.let { Uri.parse(it) }
+    val dokumenUri = dokumenUriStr?.let { Uri.parse(it) }
+    val buktiTransferUri = buktiTransferUriStr?.let { Uri.parse(it) }
+
+    val usahaLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri -> uri?.let { fotoUsahaUriStr = it.toString() } }
+    val ktpLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri -> uri?.let { fotoKtpUriStr = it.toString() } }
+    val dokumenLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri -> uri?.let { dokumenUriStr = it.toString() } }
+    val buktiLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri -> uri?.let { buktiTransferUriStr = it.toString() } }
 
     val isStep1Valid = namaUmkm.isNotBlank() && alamat.isNotBlank() && (fotoUsahaUri != null) && namaPemilik.isNotBlank()
     val isStep2Valid = (fotoKtpUri != null) && (dokumenUri != null) && (buktiTransferUri != null)
@@ -89,7 +97,6 @@ fun VerificationScreen(
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
         ) {
-            // Bagian Header (dikasih padding horizontal)
             Column(modifier = Modifier.padding(horizontal = 24.dp)) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text("Verifikasi Dapur MBG", fontFamily = poppins, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Gray900)
@@ -417,32 +424,5 @@ fun SummaryRow(label: String, status: String) {
 fun PreviewStep1() {
     MBGTheme {
         VerificationScreen(initialStep = 1)
-    }
-}
-
-@Preview(showBackground = true, name = "2. Step Dokumen")
-@Composable
-fun PreviewStep2() {
-    MBGTheme {
-        VerificationScreen(
-            initialStep = 2,
-            initNamaUmkm = "Dapur Abang",
-            initAlamat = "Jl. Malang",
-            initPemilik = "Abang Jago"
-        )
-    }
-}
-
-@Preview(showBackground = true, name = "3. Step Verifikasi (Full)")
-@Composable
-fun PreviewStep3() {
-    MBGTheme {
-        VerificationScreen(
-            initialStep = 3,
-            initNamaUmkm = "Dapur Abang",
-            initAlamat = "Jl. Malang",
-            initPemilik = "Abang Jago",
-            initAgreed = true
-        )
     }
 }
