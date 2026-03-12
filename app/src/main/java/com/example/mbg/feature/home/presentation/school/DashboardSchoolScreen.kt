@@ -17,8 +17,7 @@ import com.example.mbg.feature.feedback.presentation.FeedbackViewModel
 import com.example.mbg.feature.home.presentation.component.*
 
 @Composable
-fun DashboardSchoolScreen() {
-    val feedbackViewModel: FeedbackViewModel = viewModel()
+fun DashboardSchoolScreen(feedbackViewModel: FeedbackViewModel) {
     val schoolBottomNav = listOf(
 
         BottomNavItem(

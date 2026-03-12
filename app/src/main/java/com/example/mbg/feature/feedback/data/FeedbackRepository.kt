@@ -3,7 +3,6 @@ package com.example.mbg.feature.feedback.data
 import com.example.mbg.core.supabase.SupabaseClientProvider
 import com.example.mbg.feature.feedback.domain.model.FeedbackModel
 import io.github.jan.supabase.postgrest.from
-import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
 
 class FeedbackRepository {
@@ -63,38 +62,29 @@ class FeedbackRepository {
         }
     }
 
-    suspend fun getRatingSummary(): Pair<Double, Map<Int, Int>> {
+    /**
+     * Hitung rating summary di Android
+     * (bukan lewat SQL aggregate Supabase)
+     */
+    suspend fun getRatingSummary(
+        feedbackList: List<FeedbackModel>
+    ): Pair<Double, Map<Int, Int>> {
+
+        if (feedbackList.isEmpty()) {
+            return 0.0 to emptyMap()
+        }
 
         /** AVERAGE RATING */
-        val averageResult =
-            supabase
-                .from("feedback")
-                .select(Columns.raw("avg(rating)"))
-                .decodeSingle<Map<String, Double?>>()
-
         val average =
-            averageResult.values.firstOrNull() ?: 0.0
-
+            feedbackList
+                .map { it.rating }
+                .average()
 
         /** RATING DISTRIBUTION */
-        val distributionResult =
-            supabase
-                .from("feedback")
-                .select(
-                    Columns.raw(
-                        "rating, count:count(*)"
-                    )
-                )
-                .decodeList<Map<String, Int>>()
-
         val distribution =
-            distributionResult.associate { row ->
-
-                val star = row["rating"] ?: 0
-                val count = row["count"] ?: 0
-
-                star to count
-            }
+            feedbackList
+                .groupingBy { it.rating }
+                .eachCount()
 
         println("SUMMARY RESULT: $distribution")
 

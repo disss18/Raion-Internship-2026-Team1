@@ -99,10 +99,6 @@ fun FeedbackCard(
                     color = Color.Gray
                 )
 
-                Text(
-                    "Balas",
-                    color = Color(0xFF4BA26A)
-                )
             }
         }
     }

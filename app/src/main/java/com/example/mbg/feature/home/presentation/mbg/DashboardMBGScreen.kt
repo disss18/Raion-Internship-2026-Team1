@@ -20,14 +20,13 @@ import com.example.mbg.core.util.formatTimeAgo
 
 @Composable
 fun DashboardMBGScreen(
-    feedbackViewModel: FeedbackViewModel
+    feedbackViewModel: FeedbackViewModel,
+    onSeeAllClick: () -> Unit
 ) {
 
     val uiState by feedbackViewModel.uiState.collectAsStateWithLifecycle()
 
-    val feedbackList by remember(uiState.feedbackList) {
-        mutableStateOf(uiState.feedbackList)
-    }
+    val feedbackList = uiState.feedbackList
 
     LaunchedEffect(Unit) {
         feedbackViewModel.refresh()
@@ -94,7 +93,9 @@ fun DashboardMBGScreen(
 
                 DashboardSectionTitle(
                     "Feedback Terbaru",
-                    "Lihat Semua"
+                    "Lihat Semua",
+                    onActionClick = onSeeAllClick
+
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))

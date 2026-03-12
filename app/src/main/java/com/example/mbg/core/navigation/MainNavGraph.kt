@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.mbg.feature.auth.presentation.GlobalAuthViewModel
+import com.example.mbg.feature.feedback.presentation.FeedbackScreen
 import com.example.mbg.feature.feedback.presentation.FeedbackViewModel
 import com.example.mbg.feature.home.presentation.mbg.DashboardMBGScreen
 import com.example.mbg.feature.home.presentation.parent.DashboardParentScreen
@@ -38,7 +39,23 @@ fun NavGraphBuilder.mainNavGraph(
         }
 
         composable(Screen.DashboardMBG.route) {
-            DashboardMBGScreen(feedbackViewModel)
+
+            DashboardMBGScreen(
+                feedbackViewModel = feedbackViewModel,
+                onSeeAllClick = {
+                    navController.navigate(Screen.Feedback.route)
+                }
+            )
+        }
+
+        composable(Screen.Feedback.route) {
+
+            FeedbackScreen(
+                viewModel = feedbackViewModel,
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
         }
 
         composable(Screen.VerificationStatus.route) {
@@ -68,7 +85,11 @@ fun NavGraphBuilder.mainNavGraph(
             )
         }
 
-        composable(Screen.DashboardSekolah.route) { DashboardSchoolScreen() }
+        composable(Screen.DashboardSekolah.route) {
+            DashboardSchoolScreen(
+                feedbackViewModel = feedbackViewModel
+            )
+        }
         composable(Screen.DashboardOrangTua.route) { DashboardParentScreen() }
     }
 }
