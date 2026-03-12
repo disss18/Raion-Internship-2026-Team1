@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.mbg.feature.auth.presentation.AuthState
 import com.example.mbg.feature.auth.presentation.GlobalAuthViewModel
+import com.example.mbg.feature.feedback.presentation.FeedbackViewModel
 import com.example.mbg.feature.onboarding.presentation.OnboardingScreen
 import com.example.mbg.feature.role.presentation.RoleScreen
 import com.example.mbg.feature.splashscreen.presentation.AnimatedSplashScreen
@@ -17,31 +18,24 @@ import kotlinx.coroutines.delay
 fun RootNavGraph(
     deepLinkRoute: String? = null
 ) {
-
     val navController = rememberNavController()
-
     val globalAuthViewModel: GlobalAuthViewModel = viewModel()
+    val feedbackViewModel: FeedbackViewModel = viewModel()
 
     val authState by globalAuthViewModel.authState.collectAsState()
     val userRole by globalAuthViewModel.userRole.collectAsState()
     val verificationStatus by globalAuthViewModel.verificationStatus.collectAsState()
 
     var splashFinished by remember { mutableStateOf(false) }
-
     var isResetFlow by remember { mutableStateOf(false) }
-
-    // ================= SPLASH =================
 
     LaunchedEffect(Unit) {
         delay(2000)
         splashFinished = true
     }
 
-    // ================= DEEP LINK HANDLER =================
-
     LaunchedEffect(deepLinkRoute, splashFinished) {
         if (!splashFinished) return@LaunchedEffect
-
         if (deepLinkRoute == Screen.ResetPassword.route) {
             isResetFlow = true
             navController.navigate(Screen.ResetPassword.route) {
@@ -51,41 +45,54 @@ fun RootNavGraph(
         }
     }
 
-    // ================= AUTH NAVIGATION (FIXED) =================
-
-    LaunchedEffect(authState, splashFinished) {
+    // ================= AUTH NAVIGATION =================
+    LaunchedEffect(authState, userRole, verificationStatus, splashFinished) {
         if (!splashFinished) return@LaunchedEffect
         if (authState is AuthState.Loading) return@LaunchedEffect
         if (isResetFlow) return@LaunchedEffect
 
         val currentRoute = navController.currentBackStackEntry?.destination?.route
-
-        // 🔥 PERBAIKAN: Daftar route yang termasuk "layar depan / Auth"
         val authRoutes = listOf(
-            Screen.Splash.route,
-            Screen.Onboarding.route,
-            Screen.Welcome.route,
-            Screen.Login.route,
-            Screen.Register.route,
-            Screen.Role.route
+            Screen.Splash.route, Screen.Onboarding.route, Screen.Welcome.route,
+            Screen.Login.route, Screen.Register.route, Screen.Role.route
         )
-
-        // Mengecek apakah user SEDANG berada di layar Auth.
-        // Kalau user udah masuk ke Main atau Verification, jangan di-kick balik ke depan!
         val isInAuthScreen = authRoutes.contains(currentRoute)
 
         when (authState) {
             is AuthState.Authenticated -> {
-                if (isInAuthScreen && currentRoute != Screen.Main.route) {
-                    navController.navigate(Screen.Main.route) {
-                        popUpTo(Screen.Splash.route) { inclusive = true }
-                        launchSingleTop = true
+                if (userRole == null) return@LaunchedEffect
+
+                when (userRole) {
+                    "DAPUR_MBG" -> {
+                        val target = if (verificationStatus == "approved") Screen.DashboardMBG.route else Screen.VerificationStatus.route
+                        if (currentRoute != target && isInAuthScreen) {
+                            navController.navigate(target) {
+                                popUpTo(Screen.Splash.route) { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        }
+                    }
+                    "SEKOLAH" -> {
+                        if (currentRoute != Screen.DashboardSekolah.route && isInAuthScreen) {
+                            navController.navigate(Screen.DashboardSekolah.route) {
+                                popUpTo(Screen.Splash.route) { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        }
+                    }
+                    "ORANG_TUA" -> {
+                        if (currentRoute != Screen.DashboardOrangTua.route && isInAuthScreen) {
+                            navController.navigate(Screen.DashboardOrangTua.route) {
+                                popUpTo(Screen.Splash.route) { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        }
                     }
                 }
             }
 
             is AuthState.NeedRole -> {
-                if (isInAuthScreen && currentRoute != Screen.Role.route) {
+                if (currentRoute != Screen.Role.route && isInAuthScreen) {
                     navController.navigate(Screen.Role.route) {
                         popUpTo(Screen.Splash.route) { inclusive = true }
                         launchSingleTop = true
@@ -94,7 +101,7 @@ fun RootNavGraph(
             }
 
             is AuthState.Unauthenticated -> {
-                if (isInAuthScreen && currentRoute != Screen.Onboarding.route) {
+                if (currentRoute != Screen.Onboarding.route && isInAuthScreen) {
                     navController.navigate(Screen.Onboarding.route) {
                         popUpTo(Screen.Splash.route) { inclusive = true }
                         launchSingleTop = true
@@ -106,12 +113,10 @@ fun RootNavGraph(
     }
 
     // ================= NAV HOST =================
-
     NavHost(
         navController = navController,
         startDestination = Screen.Splash.route
     ) {
-
         composable(Screen.Splash.route) {
             AnimatedSplashScreen(
                 onNavigateToOnboarding = {
@@ -119,11 +124,7 @@ fun RootNavGraph(
                         popUpTo(navController.graph.startDestinationId) { inclusive = true }
                     }
                 },
-                onNavigateToMain = {
-                    navController.navigate(Screen.Main.route) {
-                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
-                    }
-                }
+                onNavigateToMain = {}
             )
         }
 
@@ -139,19 +140,13 @@ fun RootNavGraph(
 
         composable(Screen.Welcome.route) {
             WelcomeScreen(
-                onNavigateToLogin = {
-                    navController.navigate(Screen.Login.route)
-                },
-                onNavigateToRegister = {
-                    navController.navigate(Screen.Register.route)
-                }
+                onNavigateToLogin = { navController.navigate(Screen.Login.route) },
+                onNavigateToRegister = { navController.navigate(Screen.Register.route) }
             )
         }
 
-        // ================= AUTH GRAPH =================
         authNavGraph(navController)
 
-        // ================= ROLE =================
         composable(Screen.Role.route) {
             RoleScreen(
                 onRoleSelected = {
@@ -163,11 +158,11 @@ fun RootNavGraph(
             )
         }
 
-        // ================= MAIN GRAPH =================
         mainNavGraph(
             navController = navController,
             role = userRole,
-            verificationStatus = verificationStatus
+            verificationStatus = verificationStatus,
+            feedbackViewModel = feedbackViewModel
         )
     }
 }

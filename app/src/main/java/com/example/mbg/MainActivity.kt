@@ -56,8 +56,9 @@ class MainActivity : ComponentActivity() {
 
         lifecycleScope.launch {
 
-            // Import session Supabase
-            SupabaseClientProvider.client.auth.importSession(
+            val client = SupabaseClientProvider.client
+
+            client.auth.importSession(
                 session = UserSession(
                     accessToken = accessToken,
                     refreshToken = refreshToken,
@@ -65,6 +66,9 @@ class MainActivity : ComponentActivity() {
                     tokenType = "bearer"
                 )
             )
+
+// paksa refresh state auth supaya sessionStatus emit
+            client.auth.refreshCurrentSession()
 
             // ================= HANDLE ROUTE =================
 

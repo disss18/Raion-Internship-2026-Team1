@@ -2,14 +2,14 @@ package com.example.mbg.feature.auth.presentation.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mbg.feature.auth.domain.AuthRepository
+import com.example.mbg.core.di.AuthModule
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class RegisterViewModel(
-    private val repository: AuthRepository
-) : ViewModel() {
+class RegisterViewModel : ViewModel() {
+
+    private val repository = AuthModule.repository
 
     private val _uiState = MutableStateFlow(RegisterUiState())
     val uiState: StateFlow<RegisterUiState> = _uiState
@@ -39,15 +39,11 @@ class RegisterViewModel(
             _uiState.value = result.fold(
 
                 onSuccess = {
-                    RegisterUiState(
-                        isSuccess = true
-                    )
+                    RegisterUiState(isSuccess = true)
                 },
 
                 onFailure = {
-                    RegisterUiState(
-                        error = it.message ?: "Register gagal"
-                    )
+                    RegisterUiState(error = it.message ?: "Register gagal")
                 }
             )
         }
@@ -55,26 +51,16 @@ class RegisterViewModel(
 
     fun loginWithGoogle() {
 
-        _uiState.value = RegisterUiState(isLoading = true)
-
         viewModelScope.launch {
 
-            val result = repository.loginWithGoogle()
+            try {
+                repository.loginWithGoogle()
+            } catch (e: Exception) {
 
-            _uiState.value = result.fold(
-
-                onSuccess = {
-                    RegisterUiState(
-                        isSuccess = true
-                    )
-                },
-
-                onFailure = {
-                    RegisterUiState(
-                        error = it.message ?: "Google login gagal"
-                    )
-                }
-            )
+                _uiState.value = RegisterUiState(
+                    error = e.message ?: "Google login gagal"
+                )
+            }
         }
     }
 

@@ -21,6 +21,7 @@ sealed class Screen(val route: String) {
 
     // Main
     object Main : Screen("main_graph")
+
     object Home : Screen("home")
     object DashboardMBG : Screen("dashboard_mbg")
     object DashboardSekolah : Screen("dashboard_sekolah")

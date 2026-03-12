@@ -8,15 +8,18 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.mbg.feature.auth.presentation.GlobalAuthViewModel
-import com.example.mbg.feature.home.presentation.HomeScreen
+import com.example.mbg.feature.feedback.presentation.FeedbackViewModel
 import com.example.mbg.feature.home.presentation.mbg.DashboardMBGScreen
+import com.example.mbg.feature.home.presentation.parent.DashboardParentScreen
+import com.example.mbg.feature.home.presentation.school.DashboardSchoolScreen
 import com.example.mbg.feature.verificationMBG.presentation.VerificationStatusScreen
 import com.example.mbg.feature.verificationMBG.presentation.VerifStatus
 
 fun NavGraphBuilder.mainNavGraph(
     navController: NavHostController,
     role: String?,
-    verificationStatus: String?
+    verificationStatus: String?,
+    feedbackViewModel: FeedbackViewModel
 ) {
     val startDestination = when (role) {
         "DAPUR_MBG" -> {
@@ -25,11 +28,18 @@ fun NavGraphBuilder.mainNavGraph(
         }
         "SEKOLAH" -> Screen.DashboardSekolah.route
         "ORANG_TUA" -> Screen.DashboardOrangTua.route
-        else -> Screen.VerificationStatus.route
+        else -> Screen.Home.route // Fallback
     }
 
     navigation(route = Screen.Main.route, startDestination = startDestination) {
-        composable(Screen.DashboardMBG.route) { DashboardMBGScreen() }
+
+        composable(Screen.Home.route) {
+            // Kosong (Dari Staging)
+        }
+
+        composable(Screen.DashboardMBG.route) {
+            DashboardMBGScreen(feedbackViewModel)
+        }
 
         composable(Screen.VerificationStatus.route) {
             val globalViewModel: GlobalAuthViewModel = viewModel()
@@ -52,14 +62,13 @@ fun NavGraphBuilder.mainNavGraph(
                         navController.navigate(Screen.VerificationMBG.route)
                     }
                 },
-                // 🔥 TAMBAHAN: Biar user bisa refresh manual kalau lagi nunggu
                 onRefreshClick = {
                     globalViewModel.updateVerificationStatus()
                 }
             )
         }
 
-        composable(Screen.DashboardSekolah.route) { HomeScreen(navController) }
-        composable(Screen.DashboardOrangTua.route) { HomeScreen(navController) }
+        composable(Screen.DashboardSekolah.route) { DashboardSchoolScreen() }
+        composable(Screen.DashboardOrangTua.route) { DashboardParentScreen() }
     }
 }

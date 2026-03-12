@@ -11,6 +11,7 @@ import io.github.jan.supabase.gotrue.SessionStatus
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Order
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -48,23 +49,36 @@ class GlobalAuthViewModel : ViewModel() {
                     refreshAllData()
                 } else {
                     roleLoaded = false
+                    _userRole.value = null
+                    _verificationStatus.value = null
                     _authState.value = AuthState.Unauthenticated
                 }
             }
         }
     }
 
-    // 🔥 FUNGSI SAKTI: Narik ulang semua data termasuk status verifikasi
     fun refreshAllData() {
         viewModelScope.launch {
             try {
-                val roleResult = repository.getUserRole()
-                val role = roleResult.getOrNull()
+                val userId = supabase.auth.currentSessionOrNull()?.user?.id
+                if (userId == null) {
+                    _authState.value = AuthState.Unauthenticated
+                    return@launch
+                }
+
+                // Trik Staging: delay kecil anti race-condition
+                var role = repository.getUserRole(userId).getOrNull()
+                if (role == null) {
+                    delay(250)
+                    role = repository.getUserRole(userId).getOrNull()
+                }
+
                 _userRole.value = role
 
                 if (role == "DAPUR_MBG") {
-                    updateVerificationStatus()
+                    updateVerificationStatus(userId)
                 }
+
                 _authState.value = if (role != null) AuthState.Authenticated else AuthState.NeedRole
             } catch (e: Exception) {
                 _authState.value = AuthState.Unauthenticated
@@ -72,21 +86,20 @@ class GlobalAuthViewModel : ViewModel() {
         }
     }
 
-    fun updateVerificationStatus() {
+    // Fix Farrell + param userId
+    fun updateVerificationStatus(userId: String? = null) {
         viewModelScope.launch {
             try {
-                val userId = supabase.auth.currentSessionOrNull()?.user?.id
-                if (userId != null) {
-                    // 🔥 AMBIL DATA TERBARU (Sorted by created_at)
+                val currentUserId = userId ?: supabase.auth.currentSessionOrNull()?.user?.id
+                if (currentUserId != null) {
                     val verifList = supabase.from("dapur_verifications")
                         .select {
-                            filter { eq("user_id", userId) }
+                            filter { eq("user_id", currentUserId) }
                             order("created_at", Order.DESCENDING)
                         }.decodeList<JsonObject>()
 
                     val statusStr = verifList.firstOrNull()?.get("status")?.jsonPrimitive?.content ?: "pending"
 
-                    println("DEBUG_VERIF: Status dapetnya -> $statusStr")
                     _verificationStatus.value = statusStr
                     SessionManager.setVerificationStatus(statusStr)
                 }
@@ -100,12 +113,14 @@ class GlobalAuthViewModel : ViewModel() {
         viewModelScope.launch {
             repository.logout()
             SessionManager.clearSession()
+            roleLoaded = false
             _authState.value = AuthState.Unauthenticated
         }
     }
 
     fun setVerificationPending() {
         _verificationStatus.value = "pending"
+        SessionManager.setVerificationStatus("pending")
         _authState.value = AuthState.Authenticated
     }
 }

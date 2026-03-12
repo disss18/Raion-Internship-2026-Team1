@@ -2,14 +2,14 @@ package com.example.mbg.feature.auth.presentation.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mbg.feature.auth.domain.AuthRepository
+import com.example.mbg.core.di.AuthModule
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class LoginViewModel(
-    private val repository: AuthRepository
-) : ViewModel() {
+class LoginViewModel : ViewModel() {
+
+    private val repository = AuthModule.repository
 
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState
@@ -25,15 +25,11 @@ class LoginViewModel(
             _uiState.value = result.fold(
 
                 onSuccess = {
-                    LoginUiState(
-                        isSuccess = true
-                    )
+                    LoginUiState(isSuccess = true)
                 },
 
                 onFailure = {
-                    LoginUiState(
-                        error = it.message ?: "Login gagal"
-                    )
+                    LoginUiState(error = it.message ?: "Login gagal")
                 }
             )
         }
@@ -41,26 +37,16 @@ class LoginViewModel(
 
     fun loginWithGoogle() {
 
-        _uiState.value = LoginUiState(isLoading = true)
-
         viewModelScope.launch {
 
-            val result = repository.loginWithGoogle()
+            try {
+                repository.loginWithGoogle()
+            } catch (e: Exception) {
 
-            _uiState.value = result.fold(
-
-                onSuccess = {
-                    LoginUiState(
-                        isSuccess = true
-                    )
-                },
-
-                onFailure = {
-                    LoginUiState(
-                        error = it.message ?: "Google login gagal"
-                    )
-                }
-            )
+                _uiState.value = LoginUiState(
+                    error = e.message ?: "Google login gagal"
+                )
+            }
         }
     }
 
