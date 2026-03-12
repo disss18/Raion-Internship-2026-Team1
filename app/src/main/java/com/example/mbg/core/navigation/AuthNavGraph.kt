@@ -40,14 +40,32 @@ fun NavGraphBuilder.authNavGraph(
 
         // ================= ROLE =================
         composable(Screen.Role.route) {
+            val globalAuthViewModel: GlobalAuthViewModel =
+                androidx.lifecycle.viewmodel.compose.viewModel()
+
             RoleScreen(
                 onRoleSelected = { role ->
-                    if (role == "DAPUR_MBG") {
-                        navController.navigate(Screen.VerificationMBG.route)
-                    } else {
-                        navController.navigate(Screen.Main.route) {
-                            popUpTo(Screen.Auth.route) { inclusive = true }
-                            launchSingleTop = true
+
+                    globalAuthViewModel.refreshAllData()
+
+                    when (role) {
+
+                        "DAPUR_MBG" -> {
+                            navController.navigate(Screen.VerificationMBG.route)
+                        }
+
+                        "SEKOLAH" -> {
+                            navController.navigate(Screen.DashboardSekolah.route) {
+                                popUpTo(Screen.Auth.route) { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        }
+
+                        "ORANG_TUA" -> {
+                            navController.navigate(Screen.DashboardOrangTua.route) {
+                                popUpTo(Screen.Auth.route) { inclusive = true }
+                                launchSingleTop = true
+                            }
                         }
                     }
                 }
@@ -56,13 +74,17 @@ fun NavGraphBuilder.authNavGraph(
 
         // ================= VERIFICATION MBG =================
         composable(Screen.VerificationMBG.route) {
-            val globalAuthViewModel: GlobalAuthViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+            val globalAuthViewModel: GlobalAuthViewModel =
+                androidx.lifecycle.viewmodel.compose.viewModel()
+
             VerificationScreen(
                 onBackClick = { navController.popBackStack() },
                 onSubmitSuccess = {
+
                     globalAuthViewModel.setVerificationPending()
-                    navController.navigate(Screen.Main.route) {
-                        popUpTo(0) { inclusive = true }
+
+                    navController.navigate(Screen.VerificationStatus.route) {
+                        popUpTo(Screen.Auth.route) { inclusive = true }
                         launchSingleTop = true
                     }
                 }
