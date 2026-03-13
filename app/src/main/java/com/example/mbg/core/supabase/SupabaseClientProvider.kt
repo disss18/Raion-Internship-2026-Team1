@@ -4,6 +4,7 @@ import com.example.mbg.BuildConfig
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.gotrue.Auth
 import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.realtime.Realtime
 import io.github.jan.supabase.storage.Storage
 
 object SupabaseClientProvider {
@@ -19,5 +20,6 @@ object SupabaseClientProvider {
         install(Postgrest)
         // biar fitur upload foto UMKM  jalan
         install(Storage)
+        install(Realtime)
     }
 }

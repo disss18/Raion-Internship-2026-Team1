@@ -12,6 +12,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.mbg.R
+import com.example.mbg.core.navigation.BottomNavConfig
 import com.example.mbg.core.navigation.BottomNavItem
 import com.example.mbg.core.navigation.Screen
 import com.example.mbg.core.ui.component.*
@@ -37,39 +38,14 @@ fun DashboardMBGScreen(
 
     println("UI FEEDBACK SIZE = ${feedbackList.size}")
 
-    val mbgBottomNav = listOf(
-
-        BottomNavItem(
-            "Beranda",
-            R.drawable.beranda_botom,
-            Screen.DashboardMBG.route
-        ),
-
-        BottomNavItem(
-            "Menu",
-            R.drawable.menu_bottom,
-            Screen.Home.route
-        ),
-
-        BottomNavItem(
-            "Distribusi",
-            R.drawable.distribusi_bottom,
-            Screen.Feedback.route
-        ),
-
-        BottomNavItem(
-            "Profil",
-            R.drawable.profil_bottom,
-            Screen.Role.route
-        )
-    )
-
     Scaffold(
         containerColor = Color.White,
-        bottomBar = { DashboardBottomBar(
-            navController = navController,
-            items = mbgBottomNav
-        )}
+        bottomBar = {
+            DashboardBottomBar(
+                navController = navController,
+                items = BottomNavConfig.mbg
+            )
+        }
     ) { padding ->
 
         Column(

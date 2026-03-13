@@ -6,17 +6,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.mbg.core.navigation.BottomNavConfig
 import com.example.mbg.core.navigation.BottomNavItem
 import com.example.mbg.core.navigation.Screen
 
 @Composable
 fun DashboardBottomBar(
-
     navController: NavController,
-
-    items: List<BottomNavItem>
-
-) {
+    items: List<BottomNavItem> = BottomNavConfig.parent
+){
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 

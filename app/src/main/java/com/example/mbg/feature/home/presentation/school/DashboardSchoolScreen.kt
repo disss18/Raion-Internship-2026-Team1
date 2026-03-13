@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.mbg.R
+import com.example.mbg.core.navigation.BottomNavConfig
 import com.example.mbg.core.navigation.BottomNavItem
 import com.example.mbg.core.navigation.Screen
 import com.example.mbg.core.ui.component.*
@@ -21,40 +22,15 @@ import com.example.mbg.feature.home.presentation.component.*
 @Composable
 fun DashboardSchoolScreen(navController: NavController,
                           feedbackViewModel: FeedbackViewModel) {
-    val schoolBottomNav = listOf(
-
-        BottomNavItem(
-            "Beranda",
-            R.drawable.beranda_botom,
-            Screen.DashboardSekolah.route
-        ),
-
-        BottomNavItem(
-            "Siswa",
-            R.drawable.siswa_bottom,
-            Screen.SchoolStudent.route
-        ),
-
-        BottomNavItem(
-            "Aktivitas",
-            R.drawable.distribusi_bottom,
-            Screen.Feedback.route
-        ),
-
-        BottomNavItem(
-            "Profil",
-            R.drawable.profil_bottom,
-            Screen.Role.route
-        )
-    )
-
     Scaffold(
         containerColor = Color.White,
-        bottomBar = { DashboardBottomBar(
-            navController = navController,
-            items = schoolBottomNav
-        ) }
-    ) { padding ->
+        bottomBar = {
+            DashboardBottomBar(
+                navController = navController,
+                items = BottomNavConfig.school
+            )
+        }
+    ){ padding ->
 
         Column(
             modifier = Modifier

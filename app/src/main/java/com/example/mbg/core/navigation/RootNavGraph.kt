@@ -9,6 +9,7 @@ import com.example.mbg.feature.auth.presentation.AuthState
 import com.example.mbg.feature.auth.presentation.GlobalAuthViewModel
 import com.example.mbg.feature.feedback.presentation.FeedbackViewModel
 import com.example.mbg.feature.onboarding.presentation.OnboardingScreen
+import com.example.mbg.feature.reward.presentation.screen.RewardScreen
 import com.example.mbg.feature.splashscreen.presentation.AnimatedSplashScreen
 import com.example.mbg.feature.splashscreen.components.WelcomeScreen
 import kotlinx.coroutines.delay

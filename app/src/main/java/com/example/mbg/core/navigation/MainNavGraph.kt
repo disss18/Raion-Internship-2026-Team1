@@ -14,6 +14,7 @@ import com.example.mbg.feature.feedback.presentation.FeedbackViewModel
 import com.example.mbg.feature.home.presentation.mbg.DashboardMBGScreen
 import com.example.mbg.feature.home.presentation.parent.DashboardParentScreen
 import com.example.mbg.feature.home.presentation.school.DashboardSchoolScreen
+import com.example.mbg.feature.reward.presentation.screen.RewardScreen
 import com.example.mbg.feature.school.presentation.SchoolStudentScreen
 import com.example.mbg.feature.verificationMBG.presentation.VerificationStatusScreen
 import com.example.mbg.feature.verificationMBG.presentation.VerifStatus
@@ -147,6 +148,12 @@ fun NavGraphBuilder.mainNavGraph(
             DashboardParentScreen(
                 navController = navController
             )
+        }
+
+        composable(Screen.Reward.route) {
+
+            RewardScreen()
+
         }
 
         composable(Screen.Distribution.route) {

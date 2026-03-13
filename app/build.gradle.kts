@@ -74,6 +74,7 @@ dependencies {
     implementation("io.github.jan-tennert.supabase:postgrest-kt:2.5.4")
     implementation("io.github.jan-tennert.supabase:storage-kt:2.5.4")
     implementation("io.ktor:ktor-client-android:2.3.7")
+    implementation("io.github.jan-tennert.supabase:realtime-kt:2.5.4")
 
     implementation("io.coil-kt:coil-compose:2.4.0")
 
@@ -81,6 +82,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.text)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.compose.remote.creation.core)
+    implementation(libs.androidx.compose.runtime)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

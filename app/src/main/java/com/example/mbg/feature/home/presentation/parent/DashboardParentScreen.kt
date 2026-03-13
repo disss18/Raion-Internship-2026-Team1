@@ -5,6 +5,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -14,50 +15,45 @@ import com.example.mbg.core.ui.component.*
 import com.example.mbg.feature.home.presentation.component.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.mbg.core.navigation.BottomNavConfig
 import com.example.mbg.core.navigation.Screen
 import com.example.mbg.feature.feedback.presentation.FeedbackViewModel
 import com.example.mbg.feature.feedback.component.FeedbackRatingCard
+import com.example.mbg.core.supabase.SupabaseClientProvider
+import com.example.mbg.feature.reward.presentation.viewmodel.RewardViewModel
+import io.github.jan.supabase.gotrue.auth
 
 @Composable
 fun DashboardParentScreen(
     feedbackViewModel: FeedbackViewModel = viewModel(),
+    rewardViewModel: RewardViewModel = viewModel(),
     navController: NavController
 ) {
 
-    val parentBottomNav = listOf(
+    val userId = SupabaseClientProvider.client.auth.currentUserOrNull()?.id
 
-        BottomNavItem(
-            "Beranda",
-            R.drawable.beranda_botom,
-            Screen.DashboardOrangTua.route
-        ),
+    /**
+     * AUTO POINT SAAT BUKA DASHBOARD
+     */
 
-        BottomNavItem(
-            "Menu",
-            R.drawable.menu_bottom,
-            Screen.Home.route
-        ),
+    LaunchedEffect(userId) {
 
-        BottomNavItem(
-            "Aktivitas",
-            R.drawable.aktivitas_bottom,
-            Screen.Feedback.route
-        ),
+        userId?.let {
 
-        BottomNavItem(
-            "Profil",
-            R.drawable.profil_bottom,
-            Screen.Role.route
-        )
-    )
+            rewardViewModel.addDashboardPoint(it)
+
+        }
+    }
 
     Scaffold(
         containerColor = Color.White,
-        bottomBar = { DashboardBottomBar(
-            navController = navController,
-            items = parentBottomNav
-        ) }
-    ) { padding ->
+        bottomBar = {
+            DashboardBottomBar(
+                navController = navController,
+                items = BottomNavConfig.parent
+            )
+        }
+    ){ padding ->
 
         Column(
             modifier = Modifier
@@ -82,8 +78,6 @@ fun DashboardParentScreen(
                 NutritionSummaryGrid()
 
                 Spacer(modifier = Modifier.height(16.dp))
-
-                /** FEEDBACK */
 
                 Spacer(modifier = Modifier.height(24.dp))
             }
