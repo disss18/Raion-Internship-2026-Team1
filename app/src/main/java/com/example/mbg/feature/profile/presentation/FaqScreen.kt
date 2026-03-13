@@ -53,24 +53,11 @@ fun FaqScreen(onBackClick: () -> Unit) {
             modifier = Modifier.fillMaxSize().padding(paddingValues).verticalScroll(rememberScrollState())
         ) {
             // Background Hijau Melengkung
-            Box(modifier = Modifier.fillMaxWidth().height(40.dp).background(GreenPrimary, RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)))
 
             Column(modifier = Modifier.padding(horizontal = 20.dp).offset(y = (-20).dp)) {
 
                 // SEARCH BAR
-                TextField(
-                    value = searchQuery, onValueChange = { searchQuery = it },
-                    placeholder = { Text("Cari Pertanyaan Anda di sini...", color = TextGray, fontSize = 14.sp) },
-                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = TextGray) },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = White, unfocusedContainerColor = White,
-                        focusedIndicatorColor = Color.Transparent, unfocusedIndicatorColor = Color.Transparent
-                    ),
-                    shape = RoundedCornerShape(12.dp), singleLine = true
-                )
 
-                Spacer(modifier = Modifier.height(24.dp))
 
                 // PERTANYAAN UMUM
                 Text("PERTANYAAN UMUM", fontWeight = FontWeight.Bold, color = GreenPrimary, fontSize = 12.sp)

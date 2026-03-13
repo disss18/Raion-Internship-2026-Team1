@@ -21,12 +21,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.mbg.R
+import com.example.mbg.core.navigation.BottomNavConfig
+// 🔥 INI IMPORT YANG BIKIN ERROR TADI UDAH GUE BENERIN
+import com.example.mbg.core.ui.component.*
+import com.example.mbg.feature.home.presentation.component.*
 import com.example.mbg.ui.theme.*
 
-enum class UserRole {
-    SEKOLAH, DAPUR, ORANGTUA
-}
+enum class UserRole { SEKOLAH, DAPUR, ORANGTUA }
 
 data class UserProfile(
     val role: UserRole,
@@ -38,6 +41,8 @@ data class UserProfile(
 
 @Composable
 fun ProfileScreen(
+    navController: NavController,
+    roleString: String?,
     userProfile: UserProfile,
     onEditClick: () -> Unit = {},
     onFaqClick: () -> Unit = {},
@@ -45,104 +50,124 @@ fun ProfileScreen(
 ) {
     val scrollState = rememberScrollState()
 
-    // Udah disesuaikan sama nama asset lu
     val avatarRes = when (userProfile.role) {
         UserRole.SEKOLAH -> R.drawable.school_emoji
         UserRole.DAPUR -> R.drawable.chef_emoji
-        UserRole.ORANGTUA -> R.drawable.oeangtua_emoji // (Kalau ini blm ada di folder, pake yg lama)
+        UserRole.ORANGTUA -> R.drawable.oeangtua_emoji
     }
 
-    Box(
-        modifier = Modifier.fillMaxSize().background(Gray50)
-    ) {
+    val bottomNavItems = when (roleString) {
+        "DAPUR_MBG" -> BottomNavConfig.mbg
+        "SEKOLAH" -> BottomNavConfig.school
+        else -> BottomNavConfig.parent
+    }
+
+    Scaffold(
+        bottomBar = {
+            DashboardBottomBar(
+                navController = navController,
+                items = bottomNavItems
+            )
+        }
+    ) { paddingValues ->
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(220.dp)
-                .clip(RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp))
-                .background(GreenPrimary)
-        )
-
-        Column(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp).verticalScroll(scrollState)
+                .fillMaxSize()
+                .background(Gray50)
+                .padding(paddingValues)
         ) {
-            Text(
-                text = "Profil",
-                color = White,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.padding(top = 40.dp, bottom = 24.dp)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(180.dp)
+                    .clip(RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp))
+                    .background(GreenPrimary)
             )
 
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = White),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp)
+                    .verticalScroll(scrollState)
             ) {
-                Column(modifier = Modifier.padding(20.dp)) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(
-                            modifier = Modifier.size(64.dp).clip(CircleShape).background(GreenLight),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Image(painter = painterResource(id = avatarRes), contentDescription = "Avatar", modifier = Modifier.size(40.dp))
+                Text(
+                    text = "Profil",
+                    color = White,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(top = 40.dp, bottom = 24.dp)
+                )
+
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = White),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                ) {
+                    Column(modifier = Modifier.padding(20.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Box(
+                                modifier = Modifier.size(64.dp).clip(CircleShape).background(GreenLight),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Image(painter = painterResource(id = avatarRes), contentDescription = "Avatar", modifier = Modifier.size(40.dp))
+                            }
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Column {
+                                Text(text = userProfile.name, fontSize = 16.sp, fontWeight = FontWeight.SemiBold, color = black)
+                                Text(text = userProfile.subtitle, fontSize = 12.sp, color = TextGray)
+                            }
                         }
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Column {
-                            Text(text = userProfile.name, fontSize = 16.sp, fontWeight = FontWeight.SemiBold, color = black)
-                            Text(text = userProfile.subtitle, fontSize = 12.sp, color = TextGray)
-                        }
+                        Spacer(modifier = Modifier.height(20.dp))
+                        ContactRow(iconRes = R.drawable.email_icon, text = userProfile.email)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        ContactRow(iconRes = R.drawable.phone_icon, text = userProfile.phone)
                     }
-                    Spacer(modifier = Modifier.height(20.dp))
-                    ContactRow(iconRes = R.drawable.email_icon, text = userProfile.email)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    ContactRow(iconRes = R.drawable.phone_icon, text = userProfile.phone)
                 }
-            }
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-            Card(
-                modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = White),
-                border = BorderStroke(1.dp, BorderGray)
-            ) {
-                Column {
-                    Text(
-                        text = "Pengaturan", fontSize = 12.sp, fontWeight = FontWeight.Medium,
-                        color = TextGray, modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 12.dp)
-                    )
-                    HorizontalDivider(color = BorderGray)
+                Card(
+                    modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp),
+                    colors = CardDefaults.cardColors(containerColor = White),
+                    border = BorderStroke(1.dp, BorderGray)
+                ) {
+                    Column {
+                        Text(
+                            text = "Pengaturan", fontSize = 12.sp, fontWeight = FontWeight.Medium,
+                            color = TextGray, modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 12.dp)
+                        )
+                        HorizontalDivider(color = BorderGray)
 
-                    SettingsItem(iconRes = R.drawable.profil_icon_blue, title = "Edit Profil", onClick = onEditClick)
-                    HorizontalDivider(color = BorderGray, modifier = Modifier.padding(start = 52.dp))
-                    SettingsItem(iconRes = R.drawable.notification_icon, title = "Notifikasi")
-                    HorizontalDivider(color = BorderGray, modifier = Modifier.padding(start = 52.dp))
-                    SettingsItem(iconRes = R.drawable.shield_icon, title = "Privasi & Keamanan")
-                    HorizontalDivider(color = BorderGray, modifier = Modifier.padding(start = 52.dp))
-                    SettingsItem(iconRes = R.drawable.faq_icon, title = "FAQ", onClick = onFaqClick)
+                        SettingsItem(iconRes = R.drawable.profil_icon_blue, title = "Edit Profil", onClick = onEditClick)
+                        HorizontalDivider(color = BorderGray, modifier = Modifier.padding(start = 52.dp))
+                        SettingsItem(iconRes = R.drawable.notification_icon, title = "Notifikasi")
+                        HorizontalDivider(color = BorderGray, modifier = Modifier.padding(start = 52.dp))
+                        SettingsItem(iconRes = R.drawable.shield_icon, title = "Privasi & Keamanan")
+                        HorizontalDivider(color = BorderGray, modifier = Modifier.padding(start = 52.dp))
+                        SettingsItem(iconRes = R.drawable.faq_icon, title = "FAQ", onClick = onFaqClick)
+                    }
                 }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                StatsCardBasedOnRole(role = userProfile.role)
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                OutlinedButton(
+                    onClick = onLogoutClick,
+                    modifier = Modifier.fillMaxWidth().height(50.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    border = BorderStroke(1.dp, Error300),
+                    colors = ButtonDefaults.outlinedButtonColors(containerColor = White, contentColor = Error700)
+                ) {
+                    Icon(painter = painterResource(id = R.drawable.keluar_merah), contentDescription = null, modifier = Modifier.size(20.dp), tint = Color.Unspecified)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Keluar", fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                }
+                Spacer(modifier = Modifier.height(32.dp))
             }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            StatsCardBasedOnRole(role = userProfile.role)
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            OutlinedButton(
-                onClick = onLogoutClick,
-                modifier = Modifier.fillMaxWidth().height(50.dp),
-                shape = RoundedCornerShape(12.dp),
-                border = BorderStroke(1.dp, Error300),
-                colors = ButtonDefaults.outlinedButtonColors(containerColor = White, contentColor = Error700)
-            ) {
-                Icon(painter = painterResource(id = R.drawable.keluar_merah), contentDescription = null, modifier = Modifier.size(20.dp), tint = Color.Unspecified)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Keluar", fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
-            }
-            Spacer(modifier = Modifier.height(100.dp))
         }
     }
 }

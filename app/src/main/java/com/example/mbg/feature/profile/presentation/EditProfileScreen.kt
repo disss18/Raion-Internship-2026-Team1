@@ -49,12 +49,35 @@ fun EditProfileScreen(
         containerColor = BackgroundGray
     ) { paddingValues ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(paddingValues).verticalScroll(rememberScrollState()),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(modifier = Modifier.fillMaxWidth().height(100.dp).background(GreenPrimary), contentAlignment = Alignment.TopCenter) {
-                Box(modifier = Modifier.padding(top = 16.dp)) {
-                    Box(modifier = Modifier.size(80.dp).clip(CircleShape).background(White), contentAlignment = Alignment.Center) {
+
+            // 🔥 STRUKTUR BARU BIAR GAK NUMPUK
+            Box(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                // Background hijau
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(100.dp)
+                        .background(GreenPrimary)
+                )
+
+                // Avatar (posisinya di tengah dan nonjol ke bawah)
+                Box(
+                    modifier = Modifier
+                        .padding(top = 60.dp) // Dorong ke bawah biar nonjol
+                        .align(Alignment.TopCenter)
+                ) {
+                    Box(
+                        modifier = Modifier.size(80.dp).clip(CircleShape).background(White),
+                        contentAlignment = Alignment.Center
+                    ) {
                         val avatarRes = when(role) {
                             UserRole.SEKOLAH -> R.drawable.school_emoji
                             UserRole.DAPUR -> R.drawable.chef_emoji
@@ -71,8 +94,10 @@ fun EditProfileScreen(
                 }
             }
 
+            Spacer(modifier = Modifier.height(16.dp)) // Jarak aman foto sama card
+
             Card(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp).offset(y = (-20).dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = White),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -104,6 +129,7 @@ fun EditProfileScreen(
                     }
                 }
             }
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 
