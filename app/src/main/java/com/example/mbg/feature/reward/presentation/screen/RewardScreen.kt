@@ -159,7 +159,7 @@ fun RewardScreen(
     }
 
     /**
-     * POPUP VOUCHER
+     * POPUP VOUCHER SUCCESS
      */
     voucherCode?.let { code ->
 
@@ -178,6 +178,23 @@ fun RewardScreen(
             onDismiss = {
 
                 voucherCode = null
+
+            }
+
+        )
+
+    }
+
+    /**
+     * POPUP POINT NOT ENOUGH
+     */
+    if (uiState.notEnoughPoint) {
+
+        PointNotEnoughDialog(
+
+            onDismiss = {
+
+                viewModel.resetNotEnoughPoint()
 
             }
 

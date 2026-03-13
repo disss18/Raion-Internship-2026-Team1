@@ -16,48 +16,11 @@ class RewardRepository {
     private val TAG = "RewardRepository"
 
     /**
-     * ENSURE USER POINT ROW EXISTS
-     */
-    suspend fun ensureUserPoint(userId: String) {
-
-        try {
-
-            val existing = supabase
-                .from("user_points")
-                .select {
-                    filter { eq("user_id", userId) }
-                }
-                .decodeList<UserPointDto>()
-
-            if (existing.isEmpty()) {
-
-                Log.d(TAG, "CREATE NEW USER POINT ROW")
-
-                supabase
-                    .from("user_points")
-                    .insert(
-                        mapOf(
-                            "user_id" to userId,
-                            "total_point" to 0
-                        )
-                    )
-            }
-
-        } catch (e: Exception) {
-
-            Log.e(TAG, "ENSURE USER POINT ERROR", e)
-        }
-    }
-
-
-    /**
      * GET USER POINT
      */
     suspend fun getUserPoint(userId: String): Int {
 
         return try {
-
-            ensureUserPoint(userId)
 
             Log.d(TAG, "GET USER POINT START userId=$userId")
 
@@ -92,18 +55,32 @@ class RewardRepository {
         userId: String,
         rewardId: String,
         pointCost: Int
-    ): String {
+    ): Result<String> {
 
         val voucherCode = generateVoucherCode()
 
-        try {
+        return try {
 
-            ensureUserPoint(userId)
+            Log.d(TAG, "START REDEEM userId=$userId cost=$pointCost")
 
             val currentPoint = getUserPoint(userId)
 
+            if (currentPoint < pointCost) {
+
+                Log.d(TAG, "POINT NOT ENOUGH")
+
+                return Result.failure(
+                    Exception("POINT_NOT_ENOUGH")
+                )
+            }
+
             val newPoint = currentPoint - pointCost
 
+            Log.d(TAG, "NEW POINT AFTER REDEEM = $newPoint")
+
+            /**
+             * INSERT REDEEM HISTORY
+             */
             supabase
                 .from("redeem_history")
                 .insert(
@@ -114,6 +91,9 @@ class RewardRepository {
                     )
                 )
 
+            /**
+             * UPDATE USER POINT
+             */
             supabase
                 .from("user_points")
                 .update(
@@ -124,13 +104,15 @@ class RewardRepository {
                     }
                 }
 
-            return voucherCode
+            Log.d(TAG, "POINT UPDATED SUCCESS")
+
+            Result.success(voucherCode)
 
         } catch (e: Exception) {
 
             Log.e(TAG, "REDEEM ERROR", e)
 
-            return ""
+            Result.failure(e)
         }
     }
 
@@ -143,6 +125,8 @@ class RewardRepository {
         onPointUpdate: (Int) -> Unit
     ) {
 
+        Log.d(TAG, "START REALTIME LISTENER")
+
         val channel = supabase.channel("user_points_channel")
 
         channel.subscribe()
@@ -150,7 +134,9 @@ class RewardRepository {
         channel.postgresChangeFlow<PostgresAction.Update>(
             schema = "public"
         ) {
+
             table = "user_points"
+
         }.collect { change ->
 
             val changedUserId =
@@ -162,6 +148,8 @@ class RewardRepository {
                     change.record["total_point"]
                         ?.toString()
                         ?.toIntOrNull() ?: 0
+
+                Log.d(TAG, "REALTIME POINT UPDATE = $newPoint")
 
                 onPointUpdate(newPoint)
             }
@@ -193,7 +181,7 @@ class RewardRepository {
 
         try {
 
-            ensureUserPoint(userId)
+            Log.d(TAG, "ADD POINT CHECK activity=$activityType")
 
             val today = java.text.SimpleDateFormat(
                 "yyyy-MM-dd",
@@ -218,6 +206,9 @@ class RewardRepository {
                 return
             }
 
+            /**
+             * INSERT ACTIVITY
+             */
             supabase
                 .from("point_activity")
                 .insert(
@@ -231,6 +222,8 @@ class RewardRepository {
             val currentPoint = getUserPoint(userId)
 
             val newPoint = currentPoint + point
+
+            Log.d(TAG, "ADD POINT newPoint=$newPoint")
 
             supabase
                 .from("user_points")
