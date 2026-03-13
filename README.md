@@ -1,90 +1,348 @@
 # 🥗 MBG+ - Platform Integrasi Makan Bergizi Gratis
 
-MBG+ adalah aplikasi berbasis Android yang bertujuan untuk memastikan program **Makan Bergizi Gratis (MBG)** berjalan secara **aman, terukur, dan transparan** melalui integrasi antara Sekolah, Orang Tua, dan Dapur UMKM dalam satu sistem digital.
+MBG+ adalah aplikasi Android yang dirancang untuk mendukung implementasi program **Makan Bergizi Gratis (MBG)** agar berjalan **aman, transparan, dan terukur** melalui integrasi antara **Sekolah, Orang Tua, dan Dapur UMKM** dalam satu sistem digital.
+
+Aplikasi ini membantu memastikan makanan yang diterima siswa:
+
+* Aman dari alergi
+* Memenuhi standar gizi
+* Terdokumentasi secara transparan
+* Dapat dimonitor oleh semua pihak terkait
 
 ---
 
-## 🎯 Background
+# 🎯 Background
 
-### 📌 Situation
-Program MBG melibatkan banyak pihak seperti sekolah, siswa, dan UMKM penyedia makanan.
+## 📌 Situation
 
-### ⚠️ Complication
-- Tidak adanya database alergi siswa yang akurat
-- Gizi makanan tidak terpantau secara real-time
-- Distribusi makanan tidak transparan
-- Sulit memverifikasi UMKM yang layak
+Program **Makan Bergizi Gratis (MBG)** melibatkan banyak pihak seperti:
 
-### ❓ Question
-Bagaimana memastikan makanan yang diterima siswa aman, bergizi, dan terdistribusi dengan transparan?
+* Sekolah
+* Siswa
+* Orang Tua
+* UMKM penyedia makanan
 
-### ✅ Answer
-MBG+ hadir sebagai platform integrasi digital dengan sistem monitoring, verifikasi, dan transparansi distribusi.
+Koordinasi antar pihak membutuhkan sistem digital yang terintegrasi.
 
 ---
 
-# 👥 User Roles & Features
+## ⚠️ Complication
 
-## 🏪 Role: Dapur MBG (UMKM)
-- Dapur MBG Verification System
-- Input Data Gizi & Menu MBG
-- Dashboard Monitoring Gizi Siswa
-- Track Record Pengiriman MBG
-- Melihat Data Alergi & Feedback
+Beberapa masalah yang sering muncul:
 
-## 🏫 Role: Sekolah
-- Input Database Alergi & Kebutuhan MBG
-- Dashboard Monitoring Gizi Siswa
-- Track Record MBG
-- Input Feedback & Rating
-
-## 👨‍👩‍👧 Role: Orang Tua
-- Dashboard Monitoring Gizi Anak
-- Artikel Edukasi (Gamifikasi)
-- Rewards & Redeem Poin
-- Transparansi menu harian anak
+* Tidak adanya **database alergi siswa yang terpusat**
+* Gizi makanan **tidak terpantau secara real-time**
+* Distribusi makanan **kurang transparan**
+* Sulit melakukan **verifikasi dapur UMKM**
 
 ---
 
-# 🧠 Core Features
+## ❓ Question
 
-## 📊 Dashboard Monitoring Gizi
-- Informasi Kalori
-- Protein, Karbohidrat, Lemak
-- Status kecukupan gizi
-- Riwayat konsumsi harian
+Bagaimana memastikan makanan yang diterima siswa:
 
-## 🗄️ Database System
-- Database Menu & Gizi MBG
-- Database Alergi Siswa
-- Database Kebutuhan MBG
-- Feedback & Rating System
-- Edukasi Artikel
-- Reward & Point System
-
-## 🚚 Track Record MBG
-- Status pengiriman makanan
-- Riwayat distribusi
-- Konfirmasi penerimaan sekolah
+* Aman
+* Bergizi
+* Terdistribusi secara transparan
 
 ---
 
-# 📁 Project Structure
+## ✅ Answer
+
+MBG+ menyediakan platform digital yang mengintegrasikan:
+
+* Monitoring gizi siswa
+* Database alergi siswa
+* Sistem verifikasi dapur
+* Transparansi distribusi makanan
+
+---
+
+# 👥 User Roles
+
+Aplikasi MBG+ memiliki **3 jenis pengguna utama**.
+
+---
+
+## 🏪 Dapur MBG (UMKM)
+
+Pengguna dari pihak penyedia makanan.
+
+**Fitur:**
+
+* Verifikasi Dapur MBG **(MVP)**
+* Input Data Menu & Gizi **(MVP)**
+* Dashboard Monitoring Gizi
+* Track Record Pengiriman **(MVP)**
+* Melihat Data Alergi Siswa **(MVP)**
+
+---
+
+## 🏫 Sekolah
+
+Sekolah bertugas mengelola data siswa dan melakukan monitoring program MBG.
+
+**Fitur:**
+
+* Input Database Alergi Siswa **(MVP)**
+* Dashboard Monitoring Gizi **(MVP)**
+* Track Record Distribusi MBG **(MVP)**
+* Feedback & Rating Makanan **(MVP)**
+
+---
+
+## 👨‍👩‍👧 Orang Tua
+
+Orang tua dapat memantau gizi anak secara transparan.
+
+**Fitur:**
+
+* Dashboard Monitoring Gizi Anak **(MVP)**
+* Transparansi Menu Harian **(MVP)**
+* Artikel Edukasi Gizi
+* Reward & Redeem Poin
+
+---
+
+# 🚀 Core Features
+
+## 📊 Dashboard Monitoring Gizi **(MVP)**
+
+Dashboard menampilkan informasi gizi makanan siswa.
+
+Informasi yang ditampilkan:
+
+* Kalori
+* Protein
+* Karbohidrat
+* Lemak
+* Status kecukupan gizi
+* Riwayat konsumsi harian
+
+---
+
+## 🧬 Database Alergi Siswa **(MVP)**
+
+Sistem penyimpanan data alergi siswa untuk memastikan makanan yang diberikan aman.
+
+Fungsi:
+
+* Input alergi oleh sekolah
+* Akses data alergi oleh dapur
+* Pencegahan pemberian makanan berbahaya
+
+---
+
+## 🥗 Input Menu & Data Gizi **(MVP)**
+
+Dapur MBG dapat memasukkan informasi menu dan kandungan gizi.
+
+Data yang diinput:
+
+* Nama menu
+* Kalori
+* Protein
+* Karbohidrat
+* Lemak
+
+---
+
+## 🚚 Track Record Distribusi **(MVP)**
+
+Sistem pelacakan distribusi makanan dari dapur ke sekolah.
+
+Informasi yang dicatat:
+
+* Tanggal pengiriman
+* Menu yang dikirim
+* Status penerimaan sekolah
+
+---
+
+## ⭐ Feedback & Rating System **(MVP)**
+
+Sekolah dapat memberikan feedback terhadap makanan yang diberikan.
+
+Tujuan:
+
+* Menjaga kualitas makanan
+* Memberikan evaluasi untuk dapur MBG
+
+---
+
+## 🎮 Reward & Gamification
+
+Fitur tambahan untuk meningkatkan engagement orang tua dan siswa.
+
+Fitur:
+
+* Sistem poin
+* Reward penukaran poin
+* Artikel edukasi gizi
+
+---
+
+# 🔐 Authentication
+
+Aplikasi menggunakan sistem autentikasi berbasis **Supabase Authentication**.
+
+Metode login yang tersedia:
+
+* Email & Password
+* **Google OAuth Login**
+
+Google OAuth memungkinkan pengguna untuk login atau register menggunakan akun Google secara langsung.
+
+Flow autentikasi:
 
 ```
-app/src/main/java/com/example/mbgconnect/
+User Login
+     ↓
+Google OAuth / Email Login
+     ↓
+Supabase Authentication
+     ↓
+Session Management
+     ↓
+User Role Routing (Sekolah / Dapur / Orang Tua)
 ```
+
 ---
+
 # 🏗️ Tech Stack
 
-## Core Technologies
-- Kotlin
-- Jetpack Compose
-- MVVM Architecture
+## Mobile Development
+
+* Kotlin
+* Jetpack Compose
+* Android Architecture Components
+* MVVM Architecture
+
+## Backend & Database
+
+* Supabase
+* PostgreSQL Database
+* Supabase Auth
+* Supabase REST API
+
+## Authentication
+
+* Google OAuth
+* Email Authentication
+
+## Data Format
+
+* JSON
+
+## UI / Content
+
+* HTML (untuk artikel edukasi)
+
+## Development Tools
+
+* Android Studio
+* Git
+* GitHub
+
+---
+
+# 🧠 Application Architecture
+
+Aplikasi menggunakan **MVVM (Model - View - ViewModel)** dengan pendekatan **feature-based architecture** agar code lebih modular dan scalable.
+
+### Architecture Pattern
+
+```
+UI (Jetpack Compose Screen)
+        ↓
+ViewModel
+        ↓
+Repository
+        ↓
+Supabase Client
+        ↓
+Supabase Database
+```
+
+---
+
+# 📦 Project Structure
+
+Struktur project mengikuti **feature modular architecture**.
+
+```
+app/src/main/java/com/example/mbg
+│
+├── core
+│   ├── di
+│   │   Dependency Injection
+│   │
+│   ├── navigation
+│   │   Navigation Graph aplikasi
+│   │
+│   ├── session
+│   │   User session management
+│   │
+│   ├── supabase
+│   │   Supabase client & configuration
+│   │
+│   ├── ui
+│   │   └── component
+│   │       Reusable UI components
+│   │
+│   └── util
+│       Utility helper classes
+│
+├── feature
+│   │
+│   ├── auth
+│   │   Login, Register, Google OAuth
+│   │
+│   ├── dashboard
+│   │   Dashboard monitoring gizi
+│   │
+│   ├── feedback
+│   │   Feedback dan rating makanan
+│   │
+│   ├── school
+│   │   Input data alergi siswa
+│   │
+│   ├── kitchen
+│   │   Verifikasi dapur dan input menu
+│   │
+│   ├── reward
+│   │   Sistem poin dan reward
+│   │
+│   └── article
+│       Artikel edukasi gizi
+```
+
+---
+
+# 🔄 Data Flow Example
+
+Contoh alur data ketika sekolah menambahkan data alergi siswa.
+
+```
+SchoolScreen
+      ↓
+SchoolViewModel
+      ↓
+AllergyRepository
+      ↓
+Supabase Client
+      ↓
+Supabase Database
+```
+
+---
+
+# 📱 Platform
+
+* Android
+
 ---
 
 # 📄 License
 
 This project is created for educational purposes as part of Raion Internships.
-
----
