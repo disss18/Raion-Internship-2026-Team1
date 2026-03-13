@@ -209,40 +209,30 @@ User Role Routing (Sekolah / Dapur / Orang Tua)
 
 ---
 
-# 🏗️ Tech Stack
+# 🏗 Tech Stack
 
 ## Mobile Development
-
-* Kotlin
-* Jetpack Compose
-* Android Architecture Components
-* MVVM Architecture
+- Kotlin
+- Jetpack Compose
+- MVVM Architecture
+- Material Design 3
 
 ## Backend & Database
-
-* Supabase
-* PostgreSQL Database
-* Supabase Auth
-* Supabase REST API
+- Supabase
+- PostgreSQL
 
 ## Authentication
+- Supabase Auth
+- Google OAuth
 
-* Google OAuth
-* Email Authentication
-
-## Data Format
-
-* JSON
-
-## UI / Content
-
-* HTML
+## API Communication
+- REST API
+- JSON
 
 ## Development Tools
-
-* Android Studio
-* Git
-* GitHub
+- Android Studio
+- Git
+- GitHub
 
 ---
 
