@@ -236,7 +236,7 @@ User Role Routing (Sekolah / Dapur / Orang Tua)
 
 ## UI / Content
 
-* HTML (untuk artikel edukasi)
+* HTML
 
 ## Development Tools
 
