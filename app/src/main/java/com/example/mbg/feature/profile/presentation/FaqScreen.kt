@@ -26,7 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mbg.R
-import com.example.mbg.core.ui.component.PrimaryButton
+import com.example.mbg.core.ui.component.button.PrimaryButton
 import com.example.mbg.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
