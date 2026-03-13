@@ -1,4 +1,4 @@
-package com.example.mbg.feature.feedback.component
+package com.example.mbg.feature.allergy.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.mbg.feature.feedback.domain.model.AllergyModel
+import com.example.mbg.feature.allergy.domain.model.AllergyModel
 
 @Composable
 fun AllergySummaryItem(

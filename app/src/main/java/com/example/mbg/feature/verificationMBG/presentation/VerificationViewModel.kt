@@ -34,14 +34,30 @@ class VerificationViewModel : ViewModel() {
 
         viewModelScope.launch {
 
+            println("VERIF START")
+
             try {
+
                 val client = SupabaseClientProvider.client
 
+                // ================= SESSION =================
                 val session = client.auth.currentSessionOrNull()
-                    ?: throw Exception("Session tidak ditemukan")
 
-                val userId = session.user?.id ?: throw Exception("User ID tidak ditemukan")
+                if (session == null) {
+                    println("SESSION NULL")
+                    return@launch
+                }
 
+                val userId = session.user?.id
+
+                if (userId == null) {
+                    println("USER ID NULL")
+                    return@launch
+                }
+
+                println("USER ID = $userId")
+
+                // ================= PROFILE =================
                 val profile = client.from("profiles")
                     .select {
                         filter {
@@ -51,17 +67,69 @@ class VerificationViewModel : ViewModel() {
 
                 val userEmail = profile?.email ?: session.user?.email ?: ""
 
+                println("USER EMAIL = $userEmail")
+
+                // ================= VALIDASI FILE =================
+                if (
+                    fotoUsahaUri == null ||
+                    fotoKtpUri == null ||
+                    dokumenUri == null ||
+                    buktiTransferUri == null
+                ) {
+                    println("FILE BELUM LENGKAP")
+                    return@launch
+                }
+
+                // ================= EXTENSION =================
                 val extUsaha = getFileExtension(context, fotoUsahaUri)
                 val extKtp = getFileExtension(context, fotoKtpUri)
                 val extDoc = getFileExtension(context, dokumenUri)
                 val extTransfer = getFileExtension(context, buktiTransferUri)
 
-                // 🔥 PERBAIKAN: Tambahin "$userId/" di depan nama file.
-                // Supabase bakal otomatis bikinin folder pake ID KTP si Dapur!
-                val usahaUrl = uploadFile(context, "$userId/usaha_${UUID.randomUUID()}.$extUsaha", fotoUsahaUri)
-                val ktpUrl = uploadFile(context, "$userId/ktp_${UUID.randomUUID()}.$extKtp", fotoKtpUri)
-                val dokumenUrl = uploadFile(context, "$userId/doc_${UUID.randomUUID()}.$extDoc", dokumenUri)
-                val transferUrl = uploadFile(context, "$userId/transfer_${UUID.randomUUID()}.$extTransfer", buktiTransferUri)
+                // ================= UPLOAD STORAGE =================
+                val usahaUrl = uploadFile(
+                    context,
+                    "$userId/usaha_${UUID.randomUUID()}.$extUsaha",
+                    fotoUsahaUri
+                )
+
+                val ktpUrl = uploadFile(
+                    context,
+                    "$userId/ktp_${UUID.randomUUID()}.$extKtp",
+                    fotoKtpUri
+                )
+
+                val dokumenUrl = uploadFile(
+                    context,
+                    "$userId/doc_${UUID.randomUUID()}.$extDoc",
+                    dokumenUri
+                )
+
+                val transferUrl = uploadFile(
+                    context,
+                    "$userId/transfer_${UUID.randomUUID()}.$extTransfer",
+                    buktiTransferUri
+                )
+
+                println("UPLOAD RESULT")
+                println("usahaUrl = $usahaUrl")
+                println("ktpUrl = $ktpUrl")
+                println("dokumenUrl = $dokumenUrl")
+                println("transferUrl = $transferUrl")
+
+                // ================= VALIDASI UPLOAD =================
+                if (
+                    usahaUrl.isBlank() ||
+                    ktpUrl.isBlank() ||
+                    dokumenUrl.isBlank() ||
+                    transferUrl.isBlank()
+                ) {
+                    println("UPLOAD GAGAL")
+                    return@launch
+                }
+
+                // ================= INSERT DATABASE =================
+                println("INSERT DATABASE")
 
                 client.from("dapur_verifications").insert(
                     mapOf(
@@ -79,37 +147,70 @@ class VerificationViewModel : ViewModel() {
                 )
 
                 println("VERIFICATION INSERT SUCCESS")
+
                 onSuccess()
 
             } catch (e: Exception) {
+
                 e.printStackTrace()
                 println("VERIFICATION ERROR: ${e.message}")
+
             }
         }
     }
 
+    // ================= STORAGE UPLOAD =================
+
     private suspend fun uploadFile(
         context: Context,
         fileName: String,
-        uri: Uri?
+        uri: Uri
     ): String {
-        if (uri == null) return ""
+
         return try {
-            val bytes = context.contentResolver.openInputStream(uri)?.readBytes()
+
+            val inputStream = context.contentResolver.openInputStream(uri)
                 ?: return ""
+
+            val bytes = inputStream.readBytes()
+
             val bucket = SupabaseClientProvider.client.storage.from("berkas_dapur")
-            bucket.upload(fileName, bytes)
-            bucket.publicUrl(fileName)
+
+            bucket.upload(
+                path = fileName,
+                data = bytes
+            )
+
+            val publicUrl = bucket.publicUrl(fileName)
+
+            println("UPLOAD SUCCESS: $publicUrl")
+
+            publicUrl
+
         } catch (e: Exception) {
+
             e.printStackTrace()
+            println("UPLOAD ERROR: ${e.message}")
+
             ""
+
         }
     }
 
-    private fun getFileExtension(context: Context, uri: Uri?): String {
+    // ================= FILE EXTENSION =================
+
+    private fun getFileExtension(
+        context: Context,
+        uri: Uri?
+    ): String {
+
         if (uri == null) return "jpg"
+
         val contentResolver = context.contentResolver
         val mimeTypeMap = MimeTypeMap.getSingleton()
-        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri)) ?: "jpg"
+
+        return mimeTypeMap.getExtensionFromMimeType(
+            contentResolver.getType(uri)
+        ) ?: "jpg"
     }
 }

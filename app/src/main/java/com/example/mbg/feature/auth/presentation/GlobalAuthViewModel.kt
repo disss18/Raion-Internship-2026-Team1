@@ -38,13 +38,21 @@ class GlobalAuthViewModel : ViewModel() {
     private fun observeSession() {
         viewModelScope.launch {
             supabase.auth.sessionStatus.collect { status ->
-                if (status is SessionStatus.Authenticated) {
-                    refreshAllData()
-                } else {
-                    roleLoaded = false
-                    _userRole.value = null
-                    _verificationStatus.value = null
-                    _authState.value = AuthState.Unauthenticated
+
+                when (status) {
+
+                    is SessionStatus.Authenticated -> {
+                        refreshAllData()
+                    }
+
+                    // 🔥 Jangan reset auth kalau cuma sementara
+                    is SessionStatus.NotAuthenticated -> {
+                        _authState.value = AuthState.Unauthenticated
+                    }
+
+                    else -> {
+                        // ignore state lain (Loading / Refreshing)
+                    }
                 }
             }
         }

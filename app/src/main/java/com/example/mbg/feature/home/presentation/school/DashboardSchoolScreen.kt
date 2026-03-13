@@ -15,6 +15,7 @@ import com.example.mbg.core.navigation.BottomNavConfig
 import com.example.mbg.core.navigation.BottomNavItem
 import com.example.mbg.core.navigation.Screen
 import com.example.mbg.core.ui.component.*
+import com.example.mbg.feature.allergy.presentation.AllergyViewModel
 import com.example.mbg.feature.feedback.component.FeedbackRatingCard
 import com.example.mbg.feature.feedback.presentation.FeedbackViewModel
 import com.example.mbg.feature.home.presentation.component.*
@@ -22,6 +23,11 @@ import com.example.mbg.feature.home.presentation.component.*
 @Composable
 fun DashboardSchoolScreen(navController: NavController,
                           feedbackViewModel: FeedbackViewModel) {
+
+    val allergyViewModel: AllergyViewModel = viewModel()
+
+    val allergyList by allergyViewModel.allergyList.collectAsState()
+
     Scaffold(
         containerColor = Color.White,
         bottomBar = {

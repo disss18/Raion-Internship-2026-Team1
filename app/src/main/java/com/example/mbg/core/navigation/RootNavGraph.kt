@@ -54,7 +54,8 @@ fun RootNavGraph(
         val currentRoute = navController.currentBackStackEntry?.destination?.route
         val authRoutes = listOf(
             Screen.Splash.route, Screen.Onboarding.route, Screen.Welcome.route,
-            Screen.Login.route, Screen.Register.route, Screen.Role.route
+            Screen.Login.route, Screen.Register.route, Screen.Role.route,Screen.VerificationMBG.route,      // ✅ TAMBAH
+            Screen.VerificationStatus.route
         )
         val isInAuthScreen = authRoutes.contains(currentRoute)
 

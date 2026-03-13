@@ -1,4 +1,4 @@
-package com.example.mbg.feature.feedback.component
+package com.example.mbg.feature.mbgamount.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*

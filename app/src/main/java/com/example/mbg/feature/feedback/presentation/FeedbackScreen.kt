@@ -20,7 +20,6 @@ import com.example.mbg.core.navigation.Screen
 import com.example.mbg.core.ui.component.DashboardBottomBar
 import com.example.mbg.core.util.formatTimeAgo
 import com.example.mbg.feature.feedback.component.*
-import com.example.mbg.feature.feedback.domain.model.AllergyModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,37 +30,6 @@ fun FeedbackScreen(
 ) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-
-    /**
-     * Dummy Allergy Summary
-     * (sementara sebelum dari Supabase)
-     */
-    val allergyList = listOf(
-
-        AllergyModel(
-            schoolName = "SDN 01",
-            allergyName = "Alergi Kacang",
-            totalStudent = 6
-        ),
-
-        AllergyModel(
-            schoolName = "SDN 01",
-            allergyName = "Alergi Telur",
-            totalStudent = 5
-        ),
-
-        AllergyModel(
-            schoolName = "SDN 01",
-            allergyName = "Vegetarian",
-            totalStudent = 2
-        ),
-
-        AllergyModel(
-            schoolName = "SDN 01",
-            allergyName = "Alergi Ayam",
-            totalStudent = 1
-        )
-    )
 
     val mbgBottomNav = listOf(
 
@@ -101,7 +69,7 @@ fun FeedbackScreen(
 
             TopAppBar(
                 title = {
-                    Text("Feedback & Alergi")
+                    Text("Feedback")
                 },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
@@ -153,74 +121,6 @@ fun FeedbackScreen(
                         totalReview = state.totalReview,
                         ratingDistribution = state.ratingDistribution
                     )
-                }
-
-                /**
-                 * Card Daftar Alergi
-                 */
-                item {
-
-                    Card(
-                        shape = RoundedCornerShape(16.dp),
-                        elevation = CardDefaults.cardElevation(4.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color.White
-                        )
-                    ) {
-
-                        Column(
-                            modifier = Modifier.padding(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(10.dp)
-                        ) {
-
-                            Column {
-
-                                Text(
-                                    text = "Daftar Alergi siswa",
-                                    style = MaterialTheme.typography.titleSmall
-                                )
-
-                                Spacer(Modifier.height(8.dp))
-
-                                Divider(
-                                    color = Color(0xFFE6E6E6),
-                                    thickness = 1.dp
-                                )
-                            }
-
-                            Column(
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-
-                                /**
-                                 * Grid 2 Column
-                                 */
-                                allergyList.chunked(2).forEach { row ->
-
-                                    Row(
-                                        horizontalArrangement = Arrangement.spacedBy(10.dp)
-                                    ) {
-
-                                        row.forEach { allergy ->
-
-                                            Box(
-                                                modifier = Modifier.weight(1f)
-                                            ) {
-
-                                                AllergySummaryItem(
-                                                    allergy = allergy
-                                                )
-                                            }
-                                        }
-
-                                        if (row.size == 1) {
-                                            Spacer(Modifier.weight(1f))
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
 
                 /**

@@ -1,7 +1,7 @@
-package com.example.mbg.feature.feedback.data
+package com.example.mbg.feature.mbg.data
 
 import com.example.mbg.core.supabase.SupabaseClientProvider
-import com.example.mbg.feature.feedback.domain.model.MBGNeedModel
+import com.example.mbg.feature.mbg.domain.model.MBGNeedModel
 import io.github.jan.supabase.postgrest.from
 
 class MBGRepository {

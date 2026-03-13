@@ -1,4 +1,4 @@
-package com.example.mbg.feature.feedback.presentation
+package com.example.mbg.feature.allergy.presentation
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.mbg.feature.feedback.component.AllergyItem
+import com.example.mbg.feature.allergy.component.AllergyItem
 
 @Composable
 fun InputAllergyScreen(

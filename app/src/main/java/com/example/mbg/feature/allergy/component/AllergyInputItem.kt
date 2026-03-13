@@ -1,4 +1,4 @@
-package com.example.mbg.feature.school.component
+package com.example.mbg.feature.allergy.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -12,7 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.mbg.feature.feedback.domain.model.AllergyModel
+import com.example.mbg.feature.allergy.domain.model.AllergyModel
 
 @Composable
 fun AllergyInputItem(
@@ -28,6 +28,7 @@ fun AllergyInputItem(
                 RoundedCornerShape(10.dp)
             )
             .padding(10.dp),
+
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -43,13 +44,13 @@ fun AllergyInputItem(
                         Color(0xFF5BA37B),
                         CircleShape
                     ),
+
                 contentAlignment = Alignment.Center
             ) {
 
                 Text(
                     text = allergy.totalStudent.toString(),
-                    color = Color.White,
-                    style = MaterialTheme.typography.bodySmall
+                    color = Color.White
                 )
             }
 
@@ -58,7 +59,9 @@ fun AllergyInputItem(
             Text(allergy.allergyName)
         }
 
-        IconButton(onClick = onDelete) {
+        IconButton(
+            onClick = onDelete
+        ) {
 
             Icon(
                 imageVector = Icons.Default.Delete,
@@ -67,4 +70,3 @@ fun AllergyInputItem(
         }
     }
 }
-

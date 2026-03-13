@@ -10,14 +10,19 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.mbg.R
 import com.example.mbg.core.navigation.BottomNavItem
 import com.example.mbg.core.navigation.Screen
 import com.example.mbg.core.ui.component.DashboardBottomBar
-import com.example.mbg.feature.feedback.component.*
-import com.example.mbg.feature.feedback.domain.model.AllergyModel
-import com.example.mbg.feature.school.component.AllergyInputItem
+import com.example.mbg.feature.allergy.component.AllergyInputCard
+import com.example.mbg.feature.allergy.presentation.AllergyViewModel
+import com.example.mbg.feature.feedback.component.FeedbackRatingCard
+import com.example.mbg.feature.feedback.presentation.FeedbackViewModel
+import com.example.mbg.feature.mbg.presentation.MBGViewModel
+import com.example.mbg.feature.mbgamount.component.MBGNeedsCard
 import com.example.mbg.ui.theme.*
 
 @Composable
@@ -25,13 +30,28 @@ fun SchoolStudentScreen(
     navController: NavController
 ) {
 
+    /** VIEWMODEL */
+
+    val allergyViewModel: AllergyViewModel = viewModel()
+    val mbgViewModel: MBGViewModel = viewModel()
+    val feedbackViewModel: FeedbackViewModel = viewModel()
+
+    /** LOAD DATA FROM SUPABASE */
+
+    LaunchedEffect(Unit) {
+        allergyViewModel.loadAllergy()
+    }
+
+    /** UI STATE */
+
     var allergy by remember { mutableStateOf("") }
     var studentCount by remember { mutableStateOf("") }
     var mbgNeeds by remember { mutableStateOf("") }
 
-    val allergyList = remember {
-        mutableStateListOf<AllergyModel>()
-    }
+    val allergyList by allergyViewModel
+        .allergyList
+        .collectAsStateWithLifecycle()
+
     val schoolBottomNav = listOf(
 
         BottomNavItem(
@@ -79,9 +99,7 @@ fun SchoolStudentScreen(
                 .fillMaxSize()
         ) {
 
-            /**
-             * HEADER
-             */
+            /** HEADER */
 
             Column(
                 modifier = Modifier
@@ -99,13 +117,11 @@ fun SchoolStudentScreen(
                 Text(
                     text = "Kelola alergi, kebutuhan & feedback harian program MBG sekolah Anda",
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color(0xFFFFFFFF)
+                    color = Color.White
                 )
             }
 
-            /**
-             * CONTENT CONTAINER
-             */
+            /** CONTENT */
 
             Column(
                 modifier = Modifier
@@ -118,45 +134,71 @@ fun SchoolStudentScreen(
                     .verticalScroll(rememberScrollState())
             ) {
 
+                /** ALLERGY INPUT */
+
                 AllergyInputCard(
                     allergy = allergy,
                     studentCount = studentCount,
                     allergyList = allergyList,
+
                     onAllergyChange = { allergy = it },
                     onStudentChange = { studentCount = it },
+
                     onSave = {
 
                         if (allergy.isNotBlank() && studentCount.isNotBlank()) {
 
-                            allergyList.add(
-                                AllergyModel(
-                                    schoolName = "SDN 01",
-                                    allergyName = allergy,
-                                    totalStudent = studentCount.toInt()
-                                )
+                            allergyViewModel.insertAllergy(
+                                school = "SDN 01",
+                                allergyName = allergy,
+                                total = studentCount.toInt()
                             )
 
                             allergy = ""
                             studentCount = ""
                         }
                     },
-                    onDelete = { index ->
-                        allergyList.removeAt(index)
+
+                    onDelete = { }
+                )
+
+                Spacer(Modifier.height(16.dp))
+
+                /** MBG NEED */
+
+                MBGNeedsCard(
+                    value = mbgNeeds,
+                    onValueChange = { mbgNeeds = it },
+
+                    onSave = {
+
+                        if (mbgNeeds.isNotBlank()) {
+
+                            mbgViewModel.insertMBGNeed(
+                                school = "SDN 01",
+                                total = mbgNeeds.toInt()
+                            )
+
+                            mbgNeeds = ""
+                        }
                     }
                 )
 
                 Spacer(Modifier.height(16.dp))
 
-                MBGNeedsCard(
-                    value = mbgNeeds,
-                    onValueChange = { mbgNeeds = it },
-                    onSave = {}
-                )
-
-                Spacer(Modifier.height(16.dp))
+                /** FEEDBACK */
 
                 FeedbackRatingCard(
-                    onSubmit = { rating, comment -> }
+
+                    onSubmit = { rating, comment ->
+
+                        feedbackViewModel.sendFeedback(
+                            school = "SDN 01",
+                            parent = "Sekolah",
+                            comment = comment,
+                            rating = rating
+                        )
+                    }
                 )
             }
         }

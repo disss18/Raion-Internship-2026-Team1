@@ -1,4 +1,4 @@
-package com.example.mbg.feature.feedback.component
+package com.example.mbg.feature.allergy.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
@@ -10,11 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.example.mbg.R
 import com.example.mbg.ui.theme.MBGBorder
 import com.example.mbg.ui.theme.MBGButton
-import com.example.mbg.R
-import com.example.mbg.feature.feedback.domain.model.AllergyModel
-import com.example.mbg.feature.school.component.AllergyInputItem
+import com.example.mbg.feature.allergy.domain.model.AllergyModel
 
 @Composable
 fun AllergyInputCard(
@@ -68,19 +67,13 @@ fun AllergyInputCard(
             OutlinedTextField(
                 value = allergy,
                 onValueChange = onAllergyChange,
-                placeholder = { Text("Masukkan jenis alergi",
-                    color = Color.Gray) },
+                placeholder = { Text("Masukkan jenis alergi") },
                 modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
-
                     focusedContainerColor = Color(0xFFEDEFF3),
                     unfocusedContainerColor = Color(0xFFEDEFF3),
-
                     focusedBorderColor = Color.Transparent,
-                    unfocusedBorderColor = Color.Transparent,
-
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black
+                    unfocusedBorderColor = Color.Transparent
                 ),
                 shape = RoundedCornerShape(10.dp)
             )
@@ -94,25 +87,13 @@ fun AllergyInputCard(
                 OutlinedTextField(
                     value = studentCount,
                     onValueChange = onStudentChange,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(52.dp),
-                    placeholder = {
-                        Text(
-                            "0",
-                            color = Color.Gray
-                        )
-                    },
+                    modifier = Modifier.weight(1f),
+                    placeholder = { Text("0") },
                     colors = OutlinedTextFieldDefaults.colors(
-
                         focusedContainerColor = Color(0xFFEDEFF3),
                         unfocusedContainerColor = Color(0xFFEDEFF3),
-
                         focusedBorderColor = Color.Transparent,
-                        unfocusedBorderColor = Color.Transparent,
-
-                        focusedTextColor = Color.Black,
-                        unfocusedTextColor = Color.Black
+                        unfocusedBorderColor = Color.Transparent
                     ),
                     shape = RoundedCornerShape(10.dp)
                 )
@@ -123,14 +104,16 @@ fun AllergyInputCard(
                     onClick = onSave,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MBGButton
-                    ),
-                    shape = RoundedCornerShape(24.dp)
+                    )
                 ) {
 
-                    Text("Simpan",
-                        color = Color.White)
+                    Text(
+                        "Simpan",
+                        color = Color.White
+                    )
                 }
             }
+
             Spacer(Modifier.height(10.dp))
 
             allergyList.forEachIndexed { index, item ->

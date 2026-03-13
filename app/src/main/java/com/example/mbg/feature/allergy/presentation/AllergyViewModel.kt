@@ -1,9 +1,9 @@
-package com.example.mbg.feature.feedback.presentation
+package com.example.mbg.feature.allergy.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mbg.feature.feedback.data.AllergyRepository
-import com.example.mbg.feature.feedback.domain.model.AllergyModel
+import com.example.mbg.feature.allergy.data.AllergyRepository
+import com.example.mbg.feature.allergy.domain.model.AllergyModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -18,14 +18,6 @@ class AllergyViewModel : ViewModel() {
     val allergyList: StateFlow<List<AllergyModel>>
         get() = _allergyList
 
-    fun loadAllergy() {
-
-        viewModelScope.launch {
-
-            _allergyList.value =
-                repository.getAllergySummary()
-        }
-    }
 
     fun insertAllergy(
         school: String,
@@ -45,6 +37,15 @@ class AllergyViewModel : ViewModel() {
             )
 
             loadAllergy()
+        }
+    }
+
+    fun loadAllergy() {
+
+        viewModelScope.launch {
+
+            _allergyList.value =
+                repository.getAllergySummary()
         }
     }
 }
