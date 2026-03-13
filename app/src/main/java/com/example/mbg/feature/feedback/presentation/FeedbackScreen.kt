@@ -13,13 +13,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.mbg.R
-import com.example.mbg.core.navigation.BottomNavItem
-import com.example.mbg.core.navigation.Screen
+import com.example.mbg.core.navigation.BottomNavConfig
 import com.example.mbg.core.ui.component.DashboardBottomBar
 import com.example.mbg.core.util.formatTimeAgo
 import com.example.mbg.feature.feedback.component.*
+import com.example.mbg.feature.allergy.component.AllergyItem
+import com.example.mbg.feature.allergy.presentation.AllergyViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,51 +30,33 @@ fun FeedbackScreen(
     onBackClick: () -> Unit = {}
 ) {
 
+    /** VIEWMODELS */
+    val allergyViewModel: AllergyViewModel = viewModel()
+
+    /** STATE */
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val allergyList by allergyViewModel
+        .allergyList
+        .collectAsStateWithLifecycle()
 
-    val mbgBottomNav = listOf(
+    /** BOTTOM NAV (pakai config) */
+    val mbgBottomNav = BottomNavConfig.mbg
 
-        BottomNavItem(
-            "Beranda",
-            R.drawable.beranda_botom,
-            Screen.DashboardMBG.route
-        ),
-
-        BottomNavItem(
-            "Menu",
-            R.drawable.menu_bottom,
-            Screen.Home.route
-        ),
-
-        BottomNavItem(
-            "Distribusi",
-            R.drawable.distribusi_bottom,
-            Screen.Distribution.route
-        ),
-
-        BottomNavItem(
-            "Profil",
-            R.drawable.profil_bottom,
-            Screen.Role.route
-        )
-    )
-
+    /** LOAD DATA */
     LaunchedEffect(Unit) {
         viewModel.refresh()
+        allergyViewModel.loadAllergy()
     }
 
     Scaffold(
         containerColor = Color(0xFF5BA37B),
 
         topBar = {
-
             TopAppBar(
-                title = {
-                    Text("Feedback")
-                },
+                title = { Text("Feedback") },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(Icons.Default.ArrowBack, null)
+                        Icon(Icons.Default.ArrowBack, contentDescription = null)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -115,7 +98,6 @@ fun FeedbackScreen(
                  * Rating Summary
                  */
                 item {
-
                     RatingSummaryCard(
                         ratingAverage = state.ratingAverage,
                         totalReview = state.totalReview,
@@ -124,10 +106,80 @@ fun FeedbackScreen(
                 }
 
                 /**
-                 * Title Feedback
+                 * Card Daftar Alergi
                  */
                 item {
 
+                    Card(
+                        shape = RoundedCornerShape(16.dp),
+                        elevation = CardDefaults.cardElevation(4.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.White
+                        )
+                    ) {
+
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+
+                            Column {
+
+                                Text(
+                                    text = "Daftar Alergi siswa",
+                                    style = MaterialTheme.typography.titleSmall
+                                )
+
+                                Spacer(Modifier.height(8.dp))
+
+                                Divider(
+                                    color = Color(0xFFE6E6E6),
+                                    thickness = 1.dp
+                                )
+                            }
+
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+
+                                /**
+                                 * GRID 2 COLUMN
+                                 */
+                                allergyList.chunked(2).forEach { row ->
+
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                                    ) {
+
+                                        row.forEach { allergy ->
+
+                                            Box(
+                                                modifier = Modifier.weight(1f)
+                                            ) {
+
+                                                AllergyItem(
+                                                    allergy = allergy
+                                                )
+                                            }
+                                        }
+
+                                        /**
+                                         * supaya grid tetap rapi jika jumlah item ganjil
+                                         */
+                                        if (row.size == 1) {
+                                            Spacer(modifier = Modifier.weight(1f))
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                /**
+                 * Title Feedback
+                 */
+                item {
                     Text(
                         text = "Feedback Terbaru",
                         style = MaterialTheme.typography.titleSmall

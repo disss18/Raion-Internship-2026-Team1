@@ -13,7 +13,7 @@ import com.example.mbg.feature.reward.presentation.screen.RewardScreen
 import com.example.mbg.feature.splashscreen.presentation.AnimatedSplashScreen
 import com.example.mbg.feature.splashscreen.components.WelcomeScreen
 import kotlinx.coroutines.delay
-
+private const val DEV_BYPASS_MBG = true
 @Composable
 fun RootNavGraph(
     deepLinkRoute: String? = null
@@ -28,6 +28,7 @@ fun RootNavGraph(
 
     var splashFinished by remember { mutableStateOf(false) }
     var isResetFlow by remember { mutableStateOf(false) }
+
 
     LaunchedEffect(Unit) {
         delay(2000)
