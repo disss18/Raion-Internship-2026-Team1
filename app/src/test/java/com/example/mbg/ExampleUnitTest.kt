@@ -1,4 +1,4 @@
-package com.example.mbg
+    package com.example.mbg
 
 import org.junit.Test
 

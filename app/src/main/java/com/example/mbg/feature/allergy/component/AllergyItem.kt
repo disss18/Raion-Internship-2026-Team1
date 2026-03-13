@@ -24,49 +24,38 @@ fun AllergyItem(
 ) {
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(64.dp),
+
         shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(2.dp)
+
+        elevation = CardDefaults.cardElevation(2.dp),
+
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFFE7F3EC)
+        )
     ) {
 
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
+                .fillMaxSize()
+                .padding(horizontal = 12.dp),
 
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            Box(
-                modifier = Modifier
-                    .size(30.dp)
-                    .background(
-                        Color(0xFFE6F4EA),
-                        CircleShape
-                    ),
-
-                contentAlignment = Alignment.Center
-            ) {
+            Column {
 
                 Text(
-                    text = allergy.totalStudent.toString()
+                    text = allergy.allergyName,
+                    style = MaterialTheme.typography.bodyMedium
                 )
-            }
 
-            Spacer(Modifier.width(10.dp))
-
-            Text(
-                text = allergy.allergyName,
-                modifier = Modifier.weight(1f)
-            )
-
-            IconButton(
-                onClick = { onDelete(allergy) }
-            ) {
-
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = null
+                Text(
+                    text = "${allergy.totalStudent} siswa",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray
                 )
             }
         }
