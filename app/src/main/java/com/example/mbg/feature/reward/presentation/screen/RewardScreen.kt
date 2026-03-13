@@ -2,9 +2,8 @@ package com.example.mbg.feature.reward.presentation.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -14,13 +13,17 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.mbg.core.supabase.SupabaseClientProvider
+import com.example.mbg.core.ui.component.DashboardBottomBar
 import com.example.mbg.feature.reward.presentation.component.*
 import com.example.mbg.feature.reward.presentation.viewmodel.RewardViewModel
 import io.github.jan.supabase.gotrue.auth
 
 @Composable
 fun RewardScreen(
+
+    navController: NavController,
 
     viewModel: RewardViewModel = viewModel()
 
@@ -46,6 +49,7 @@ fun RewardScreen(
             viewModel.startRealtimeListener(it)
 
         }
+
     }
 
     /**
@@ -57,138 +61,100 @@ fun RewardScreen(
 
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFF5F5F5))
-            .verticalScroll(rememberScrollState())
-    ) {
+    Scaffold(
 
-        Spacer(modifier = Modifier.height(16.dp))
+        bottomBar = {
 
-        /**
-         * POINT SUMMARY
-         */
-        PointSummaryCard(
-            totalPoint = uiState.point,
-            role = "Pejuang Nutrisi"
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        /**
-         * POINT PROGRESS
-         */
-        PointProgressCard(
-            currentPoint = uiState.point,
-            nextLevelPoint = 5000
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        /**
-         * CARA MENDAPATKAN POIN
-         */
-        SectionHeader(
-            title = "Cara Mendapatkan Koin"
-        )
-
-        CoinInfoCard()
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        /**
-         * ARTIKEL EDUKASI
-         */
-        SectionHeader(
-            title = "Artikel Edukasi Terbaru",
-            actionText = "Lihat Semua"
-        )
-
-        ArticleCard(
-
-            onClick = {
-
-                userId?.let {
-
-                    viewModel.addArticlePoint(it)
-
-                }
-
-            }
-
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        /**
-         * TUKAR POIN
-         */
-        SectionHeader(
-            title = "Tukar Poin",
-            actionText = "Lihat Semua"
-        )
-
-        val rewards = listOf(
-
-            RewardItem(
-                id = "reward1",
-                title = "Voucher Rp50.000",
-                cost = 5000
-            ),
-
-            RewardItem(
-                id = "reward2",
-                title = "Voucher Rp25.000",
-                cost = 2500
-            ),
-
-            RewardItem(
-                id = "reward3",
-                title = "Voucher Rp10.000",
-                cost = 1000
+            DashboardBottomBar(
+                navController = navController
             )
-        )
 
-        LazyRow(
+        }
 
-            contentPadding = PaddingValues(horizontal = 16.dp),
+    ) { padding ->
 
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-
+        Column(
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize()
         ) {
 
-            items(rewards) { reward ->
+            RewardHeader()
 
-                RewardCard(
+            Column(
 
-                    title = reward.title,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .offset(y = (-16).dp)
+                    .background(
+                        Color(0xFFF4F4F4),
+                        shape = RoundedCornerShape(
+                            topStart = 24.dp,
+                            topEnd = 24.dp
+                        )
+                    )
+                    .verticalScroll(rememberScrollState())
+                    .padding(top = 16.dp)
 
-                    point = reward.cost,
+            ) {
 
+                PointSummaryCard(
+                    totalPoint = uiState.point,
+                    role = "Pejuang Nutrisi"
+                )
+
+                Spacer(Modifier.height(20.dp))
+
+                SectionHeader(
+                    title = "Cara Mendapatkan Koin"
+                )
+
+                CoinInfoCard()
+
+                Spacer(Modifier.height(20.dp))
+
+                SectionHeader(
+                    title = "Artikel Edukasi Terbaru",
+                    actionText = "Lihat Semua"
+                )
+
+                ArticleCard(
+                    onClick = {
+                        userId?.let {
+                            viewModel.addArticlePoint(it)
+                        }
+                    }
+                )
+
+                Spacer(Modifier.height(20.dp))
+
+                SectionHeader(
+                    title = "Tukar Poin",
+                    actionText = "Lihat Semua"
+                )
+
+                RewardGrid(
                     userPoint = uiState.point,
-
-                    onRedeemClick = {
+                    onRedeem = { rewardId, cost ->
 
                         userId?.let {
 
                             viewModel.redeem(
                                 userId = it,
-                                rewardId = reward.id,
-                                cost = reward.cost
+                                rewardId = rewardId,
+                                cost = cost
                             )
 
                         }
 
                     }
-
                 )
+
+                Spacer(Modifier.height(40.dp))
 
             }
 
         }
-
-        Spacer(modifier = Modifier.height(32.dp))
 
     }
 
@@ -197,58 +163,21 @@ fun RewardScreen(
      */
     voucherCode?.let { code ->
 
-        AlertDialog(
+        RedeemDialog(
 
-            onDismissRequest = { voucherCode = null },
+            code = code,
 
-            confirmButton = {
+            onCopy = {
 
-                TextButton(
-                    onClick = { voucherCode = null }
-                ) {
-                    Text("Tutup")
-                }
+                clipboardManager.setText(
+                    AnnotatedString(code)
+                )
 
             },
 
-            title = {
-                Text("Kode Unik Anda")
-            },
+            onDismiss = {
 
-            text = {
-
-                Column {
-
-                    Text(
-                        text = code,
-                        style = MaterialTheme.typography.headlineMedium
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Button(
-
-                        onClick = {
-
-                            clipboardManager.setText(
-                                AnnotatedString(code)
-                            )
-
-                        }
-
-                    ) {
-
-                        Text("Salin Kode Referal")
-
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Text(
-                        text = "Kode ini dapat ditukarkan ke berbagai mitra di shopee untuk mendapatkan hadiah menarik!"
-                    )
-
-                }
+                voucherCode = null
 
             }
 

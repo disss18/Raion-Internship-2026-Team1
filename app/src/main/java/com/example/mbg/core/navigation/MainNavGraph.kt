@@ -152,7 +152,7 @@ fun NavGraphBuilder.mainNavGraph(
 
         composable(Screen.Reward.route) {
 
-            RewardScreen()
+            RewardScreen(navController = navController)
 
         }
 

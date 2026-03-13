@@ -16,11 +16,48 @@ class RewardRepository {
     private val TAG = "RewardRepository"
 
     /**
+     * ENSURE USER POINT ROW EXISTS
+     */
+    suspend fun ensureUserPoint(userId: String) {
+
+        try {
+
+            val existing = supabase
+                .from("user_points")
+                .select {
+                    filter { eq("user_id", userId) }
+                }
+                .decodeList<UserPointDto>()
+
+            if (existing.isEmpty()) {
+
+                Log.d(TAG, "CREATE NEW USER POINT ROW")
+
+                supabase
+                    .from("user_points")
+                    .insert(
+                        mapOf(
+                            "user_id" to userId,
+                            "total_point" to 0
+                        )
+                    )
+            }
+
+        } catch (e: Exception) {
+
+            Log.e(TAG, "ENSURE USER POINT ERROR", e)
+        }
+    }
+
+
+    /**
      * GET USER POINT
      */
     suspend fun getUserPoint(userId: String): Int {
 
         return try {
+
+            ensureUserPoint(userId)
 
             Log.d(TAG, "GET USER POINT START userId=$userId")
 
@@ -61,29 +98,11 @@ class RewardRepository {
 
         try {
 
-            Log.d(TAG, "========================")
-            Log.d(TAG, "START REDEEM")
-            Log.d(TAG, "userId=$userId")
-            Log.d(TAG, "rewardId=$rewardId")
-            Log.d(TAG, "pointCost=$pointCost")
-            Log.d(TAG, "voucherCode=$voucherCode")
+            ensureUserPoint(userId)
 
-            /**
-             * GET CURRENT POINT
-             */
             val currentPoint = getUserPoint(userId)
 
-            Log.d(TAG, "CURRENT POINT = $currentPoint")
-
             val newPoint = currentPoint - pointCost
-
-            Log.d(TAG, "NEW POINT = $newPoint")
-
-
-            /**
-             * INSERT HISTORY
-             */
-            Log.d(TAG, "INSERT REDEEM HISTORY")
 
             supabase
                 .from("redeem_history")
@@ -95,14 +114,6 @@ class RewardRepository {
                     )
                 )
 
-            Log.d(TAG, "INSERT HISTORY SUCCESS")
-
-
-            /**
-             * UPDATE USER POINT
-             */
-            Log.d(TAG, "UPDATE USER POINT")
-
             supabase
                 .from("user_points")
                 .update(
@@ -112,10 +123,6 @@ class RewardRepository {
                         eq("user_id", userId)
                     }
                 }
-
-            Log.d(TAG, "POINT UPDATED SUCCESS")
-
-            Log.d(TAG, "REDEEM SUCCESS")
 
             return voucherCode
 
@@ -136,8 +143,6 @@ class RewardRepository {
         onPointUpdate: (Int) -> Unit
     ) {
 
-        Log.d(TAG, "START REALTIME LISTENER")
-
         val channel = supabase.channel("user_points_channel")
 
         channel.subscribe()
@@ -145,15 +150,11 @@ class RewardRepository {
         channel.postgresChangeFlow<PostgresAction.Update>(
             schema = "public"
         ) {
-
             table = "user_points"
-
         }.collect { change ->
 
             val changedUserId =
                 change.record["user_id"]?.toString()
-
-            Log.d(TAG, "REALTIME EVENT DETECTED")
 
             if (changedUserId == userId) {
 
@@ -161,8 +162,6 @@ class RewardRepository {
                     change.record["total_point"]
                         ?.toString()
                         ?.toIntOrNull() ?: 0
-
-                Log.d(TAG, "REALTIME POINT UPDATE = $newPoint")
 
                 onPointUpdate(newPoint)
             }
@@ -177,13 +176,9 @@ class RewardRepository {
 
         val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-        val code = (1..10)
+        return (1..10)
             .map { chars.random() }
             .joinToString("")
-
-        Log.d(TAG, "GENERATED VOUCHER CODE = $code")
-
-        return code
     }
 
 
@@ -198,7 +193,7 @@ class RewardRepository {
 
         try {
 
-            Log.d(TAG, "ADD POINT CHECK activity=$activityType")
+            ensureUserPoint(userId)
 
             val today = java.text.SimpleDateFormat(
                 "yyyy-MM-dd",
@@ -223,8 +218,6 @@ class RewardRepository {
                 return
             }
 
-            Log.d(TAG, "INSERT POINT ACTIVITY")
-
             supabase
                 .from("point_activity")
                 .insert(
@@ -238,8 +231,6 @@ class RewardRepository {
             val currentPoint = getUserPoint(userId)
 
             val newPoint = currentPoint + point
-
-            Log.d(TAG, "ADD POINT newPoint=$newPoint")
 
             supabase
                 .from("user_points")
