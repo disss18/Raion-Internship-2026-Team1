@@ -63,3 +63,13 @@ val TextGray = Color(0xFF64748B)
 val BackgroundGray = Color(0xFFF6F7F9)
 val FoundationGreen = Color(0xFF519A66)
 val black = Color(0xFF000000)
+
+val MBGGreen = Color(0xFF5BA37B)
+
+val MBGButton = Color(0xFF4F9468)
+
+val MBGBackground = Color(0xFFF3F4F6)
+
+val MBGBorder = Color(0xFFE6E6E6)
+
+val MBGStar = Color(0xFF9E9E9E)

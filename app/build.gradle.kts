@@ -80,6 +80,7 @@ dependencies {
     implementation(libs.androidx.foundation)
     implementation(libs.androidx.compose.ui.text)
     implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.compose.remote.creation.core)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -9,41 +9,51 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.mbg.R
 import com.example.mbg.core.navigation.BottomNavItem
+import com.example.mbg.core.navigation.Screen
 import com.example.mbg.core.ui.component.*
 import com.example.mbg.feature.feedback.component.FeedbackRatingCard
 import com.example.mbg.feature.feedback.presentation.FeedbackViewModel
 import com.example.mbg.feature.home.presentation.component.*
 
 @Composable
-fun DashboardSchoolScreen(feedbackViewModel: FeedbackViewModel) {
+fun DashboardSchoolScreen(navController: NavController,
+                          feedbackViewModel: FeedbackViewModel) {
     val schoolBottomNav = listOf(
 
         BottomNavItem(
             "Beranda",
-            com.example.mbg.R.drawable.beranda_botom
+            R.drawable.beranda_botom,
+            Screen.DashboardSekolah.route
         ),
 
         BottomNavItem(
             "Siswa",
-            com.example.mbg.R.drawable.siswa_bottom
+            R.drawable.siswa_bottom,
+            Screen.SchoolStudent.route
         ),
 
         BottomNavItem(
             "Aktivitas",
-            com.example.mbg.R.drawable.distribusi_bottom
+            R.drawable.distribusi_bottom,
+            Screen.Feedback.route
         ),
 
         BottomNavItem(
             "Profil",
-            R.drawable.profil_bottom
+            R.drawable.profil_bottom,
+            Screen.Role.route
         )
     )
 
     Scaffold(
         containerColor = Color.White,
-        bottomBar = { DashboardBottomBar(schoolBottomNav) }
+        bottomBar = { DashboardBottomBar(
+            navController = navController,
+            items = schoolBottomNav
+        ) }
     ) { padding ->
 
         Column(

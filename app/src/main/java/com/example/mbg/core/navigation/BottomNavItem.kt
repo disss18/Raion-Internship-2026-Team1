@@ -7,6 +7,7 @@ data class BottomNavItem(
     val label: String,
 
     @DrawableRes
-    val icon: Int
+    val icon: Int,
 
+    val route: String
 )

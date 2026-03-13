@@ -13,26 +13,81 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.example.mbg.R
 import com.example.mbg.core.navigation.BottomNavItem
+import com.example.mbg.core.navigation.Screen
 import com.example.mbg.core.ui.component.DashboardBottomBar
 import com.example.mbg.core.util.formatTimeAgo
 import com.example.mbg.feature.feedback.component.*
+import com.example.mbg.feature.feedback.domain.model.AllergyModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FeedbackScreen(
+    navController: NavController,
     viewModel: FeedbackViewModel,
     onBackClick: () -> Unit = {}
 ) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
+    /**
+     * Dummy Allergy Summary
+     * (sementara sebelum dari Supabase)
+     */
+    val allergyList = listOf(
+
+        AllergyModel(
+            schoolName = "SDN 01",
+            allergyName = "Alergi Kacang",
+            totalStudent = 6
+        ),
+
+        AllergyModel(
+            schoolName = "SDN 01",
+            allergyName = "Alergi Telur",
+            totalStudent = 5
+        ),
+
+        AllergyModel(
+            schoolName = "SDN 01",
+            allergyName = "Vegetarian",
+            totalStudent = 2
+        ),
+
+        AllergyModel(
+            schoolName = "SDN 01",
+            allergyName = "Alergi Ayam",
+            totalStudent = 1
+        )
+    )
+
     val mbgBottomNav = listOf(
-        BottomNavItem("Beranda", R.drawable.beranda_botom),
-        BottomNavItem("Menu", R.drawable.menu_bottom),
-        BottomNavItem("Distribusi", R.drawable.distribusi_bottom),
-        BottomNavItem("Profil", R.drawable.profil_bottom)
+
+        BottomNavItem(
+            "Beranda",
+            R.drawable.beranda_botom,
+            Screen.DashboardMBG.route
+        ),
+
+        BottomNavItem(
+            "Menu",
+            R.drawable.menu_bottom,
+            Screen.Home.route
+        ),
+
+        BottomNavItem(
+            "Distribusi",
+            R.drawable.distribusi_bottom,
+            Screen.Distribution.route
+        ),
+
+        BottomNavItem(
+            "Profil",
+            R.drawable.profil_bottom,
+            Screen.Role.route
+        )
     )
 
     LaunchedEffect(Unit) {
@@ -62,7 +117,10 @@ fun FeedbackScreen(
         },
 
         bottomBar = {
-            DashboardBottomBar(mbgBottomNav)
+            DashboardBottomBar(
+                navController = navController,
+                items = mbgBottomNav
+            )
         }
 
     ) { padding ->
@@ -81,8 +139,7 @@ fun FeedbackScreen(
         ) {
 
             LazyColumn(
-                modifier = Modifier
-                    .padding(16.dp),
+                modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
 
@@ -113,7 +170,7 @@ fun FeedbackScreen(
 
                         Column(
                             modifier = Modifier.padding(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(10.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
 
                             Column {
@@ -135,41 +192,30 @@ fun FeedbackScreen(
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
 
-                                Row(
-                                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                                ) {
+                                /**
+                                 * Grid 2 Column
+                                 */
+                                allergyList.chunked(2).forEach { row ->
 
-                                    Box(modifier = Modifier.weight(1f)) {
-                                        AllergyItem(
-                                            title = "Alergi Kacang",
-                                            totalStudent = 6
-                                        )
-                                    }
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                                    ) {
 
-                                    Box(modifier = Modifier.weight(1f)) {
-                                        AllergyItem(
-                                            title = "Alergi Telur",
-                                            totalStudent = 5
-                                        )
-                                    }
-                                }
+                                        row.forEach { allergy ->
 
-                                Row(
-                                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                                ) {
+                                            Box(
+                                                modifier = Modifier.weight(1f)
+                                            ) {
 
-                                    Box(modifier = Modifier.weight(1f)) {
-                                        AllergyItem(
-                                            title = "Vegetarian",
-                                            totalStudent = 2
-                                        )
-                                    }
+                                                AllergySummaryItem(
+                                                    allergy = allergy
+                                                )
+                                            }
+                                        }
 
-                                    Box(modifier = Modifier.weight(1f)) {
-                                        AllergyItem(
-                                            title = "Alergi Ayam",
-                                            totalStudent = 1
-                                        )
+                                        if (row.size == 1) {
+                                            Spacer(Modifier.weight(1f))
+                                        }
                                     }
                                 }
                             }

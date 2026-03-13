@@ -3,8 +3,6 @@ package com.example.mbg.feature.feedback.component
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,12 +15,11 @@ import com.example.mbg.ui.theme.MBGButton
 import com.example.mbg.R
 
 @Composable
-fun FeedbackRatingCard(
-    onSubmit: (rating: Int, comment: String) -> Unit
+fun MBGNeedsCard(
+    value: String,
+    onValueChange: (String) -> Unit,
+    onSave: () -> Unit
 ) {
-
-    var rating by remember { mutableStateOf(0) }
-    var comment by remember { mutableStateOf("") }
 
     Card(
         shape = RoundedCornerShape(16.dp),
@@ -48,48 +45,31 @@ fun FeedbackRatingCard(
             ) {
 
                 Icon(
-                    painter = painterResource(R.drawable.bintang),
+                    painter = painterResource(R.drawable.kebutuhan_mbg),
                     contentDescription = null,
                     tint = Color(0xFF5BA37B)
                 )
 
-                Spacer(Modifier.width(6.dp))
+                Spacer(Modifier.width(10.dp))
 
-                Text("Penilaian Dapur MBG")
+                Text(
+                    "Kebutuhan MBG",
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
 
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(10.dp))
 
-            Row {
+            Text("Siswa Membutuhkan MBG")
 
-                repeat(5) { index ->
-
-                    IconButton(
-                        onClick = { rating = index + 1 }
-                    ) {
-
-                        Icon(
-                            imageVector = Icons.Default.Star,
-                            contentDescription = null,
-                            tint =
-                                if (index < rating)
-                                    Color(0xFFFFC107)
-                                else
-                                    Color.LightGray
-                        )
-                    }
-                }
-            }
-
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(18.dp))
 
             OutlinedTextField(
-                value = comment,
-                onValueChange = { comment = it },
-                placeholder = { Text("Tulis masukan...") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(100.dp),
+                value = value,
+                onValueChange = onValueChange,
+                placeholder = { Text("Contoh: 450",
+                    color = Color.Gray) },
+                modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
 
                     focusedContainerColor = Color(0xFFEDEFF3),
@@ -107,24 +87,14 @@ fun FeedbackRatingCard(
             Spacer(Modifier.height(12.dp))
 
             Button(
-                onClick = {
-
-                    if (rating > 0 && comment.isNotBlank()) {
-
-                        onSubmit(rating, comment)
-
-                        comment = ""
-                        rating = 0
-                    }
-                },
+                onClick = onSave,
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MBGButton,
-                    contentColor = Color.White
+                    containerColor = MBGButton
                 )
             ) {
-
-                Text("Kirim Feedback")
+                Text("Simpan",
+                    color = Color.White)
             }
         }
     }

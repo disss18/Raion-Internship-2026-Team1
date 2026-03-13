@@ -1,4 +1,4 @@
-package com.example.mbg.feature.feedback.component
+package com.example.mbg.feature.school.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -15,60 +15,56 @@ import androidx.compose.ui.unit.dp
 import com.example.mbg.feature.feedback.domain.model.AllergyModel
 
 @Composable
-fun AllergyItem(
-
+fun AllergyInputItem(
     allergy: AllergyModel,
-
-    onDelete: (AllergyModel) -> Unit = {}
-
+    onDelete: () -> Unit
 ) {
 
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(2.dp)
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                Color(0xFFEDEFF3),
+                RoundedCornerShape(10.dp)
+            )
+            .padding(10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
 
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-
             verticalAlignment = Alignment.CenterVertically
         ) {
 
             Box(
                 modifier = Modifier
-                    .size(30.dp)
+                    .size(28.dp)
                     .background(
-                        Color(0xFFE6F4EA),
+                        Color(0xFF5BA37B),
                         CircleShape
                     ),
-
                 contentAlignment = Alignment.Center
             ) {
 
                 Text(
-                    text = allergy.totalStudent.toString()
+                    text = allergy.totalStudent.toString(),
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
 
-            Spacer(Modifier.width(10.dp))
+            Spacer(Modifier.width(8.dp))
 
-            Text(
-                text = allergy.allergyName,
-                modifier = Modifier.weight(1f)
+            Text(allergy.allergyName)
+        }
+
+        IconButton(onClick = onDelete) {
+
+            Icon(
+                imageVector = Icons.Default.Delete,
+                contentDescription = null
             )
-
-            IconButton(
-                onClick = { onDelete(allergy) }
-            ) {
-
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = null
-                )
-            }
         }
     }
 }
+

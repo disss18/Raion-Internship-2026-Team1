@@ -1,33 +1,43 @@
 package com.example.mbg.core.ui.component
 
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.mbg.core.navigation.BottomNavItem
-import androidx.compose.runtime.*
+import com.example.mbg.core.navigation.Screen
 
 @Composable
 fun DashboardBottomBar(
+
+    navController: NavController,
+
     items: List<BottomNavItem>
+
 ) {
 
-    var selectedIndex by remember { mutableStateOf(0) }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
 
-    NavigationBar {
+    val currentRoute = navBackStackEntry?.destination?.route
 
-        items.forEachIndexed { index, item ->
+    NavigationBar(containerColor = Color.White) {
+
+        items.forEach { item ->
 
             NavigationBarItem(
 
-                selected = selectedIndex == index,
+                selected = currentRoute == item.route,
 
                 onClick = {
-                    selectedIndex = index
+
+                    navController.navigate(item.route) {
+
+                        launchSingleTop = true
+
+                        restoreState = true
+                    }
                 },
 
                 icon = {
@@ -36,8 +46,7 @@ fun DashboardBottomBar(
                         painter = painterResource(item.icon),
                         contentDescription = item.label
                     )
-
-                },
+                }
             )
         }
     }

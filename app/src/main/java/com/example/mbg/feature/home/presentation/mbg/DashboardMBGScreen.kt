@@ -10,8 +10,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.mbg.R
 import com.example.mbg.core.navigation.BottomNavItem
+import com.example.mbg.core.navigation.Screen
 import com.example.mbg.core.ui.component.*
 import com.example.mbg.feature.feedback.component.FeedbackCard
 import com.example.mbg.feature.feedback.presentation.FeedbackViewModel
@@ -20,6 +22,7 @@ import com.example.mbg.core.util.formatTimeAgo
 
 @Composable
 fun DashboardMBGScreen(
+    navController: NavController,
     feedbackViewModel: FeedbackViewModel,
     onSeeAllClick: () -> Unit
 ) {
@@ -35,15 +38,38 @@ fun DashboardMBGScreen(
     println("UI FEEDBACK SIZE = ${feedbackList.size}")
 
     val mbgBottomNav = listOf(
-        BottomNavItem("Beranda", R.drawable.beranda_botom),
-        BottomNavItem("Menu", R.drawable.menu_bottom),
-        BottomNavItem("Distribusi", R.drawable.distribusi_bottom),
-        BottomNavItem("Profil", R.drawable.profil_bottom)
+
+        BottomNavItem(
+            "Beranda",
+            R.drawable.beranda_botom,
+            Screen.DashboardMBG.route
+        ),
+
+        BottomNavItem(
+            "Menu",
+            R.drawable.menu_bottom,
+            Screen.Home.route
+        ),
+
+        BottomNavItem(
+            "Distribusi",
+            R.drawable.distribusi_bottom,
+            Screen.Feedback.route
+        ),
+
+        BottomNavItem(
+            "Profil",
+            R.drawable.profil_bottom,
+            Screen.Role.route
+        )
     )
 
     Scaffold(
         containerColor = Color.White,
-        bottomBar = { DashboardBottomBar(mbgBottomNav) }
+        bottomBar = { DashboardBottomBar(
+            navController = navController,
+            items = mbgBottomNav
+        )}
     ) { padding ->
 
         Column(

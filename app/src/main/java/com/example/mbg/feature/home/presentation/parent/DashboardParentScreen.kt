@@ -13,24 +13,50 @@ import com.example.mbg.core.navigation.BottomNavItem
 import com.example.mbg.core.ui.component.*
 import com.example.mbg.feature.home.presentation.component.*
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.example.mbg.core.navigation.Screen
 import com.example.mbg.feature.feedback.presentation.FeedbackViewModel
 import com.example.mbg.feature.feedback.component.FeedbackRatingCard
 
 @Composable
 fun DashboardParentScreen(
-    feedbackViewModel: FeedbackViewModel = viewModel()
+    feedbackViewModel: FeedbackViewModel = viewModel(),
+    navController: NavController
 ) {
 
     val parentBottomNav = listOf(
-        BottomNavItem("Beranda", R.drawable.beranda_botom),
-        BottomNavItem("Menu", R.drawable.beranda_botom),
-        BottomNavItem("Aktivitas", R.drawable.aktivitas_bottom),
-        BottomNavItem("Profil", R.drawable.profil_bottom)
+
+        BottomNavItem(
+            "Beranda",
+            R.drawable.beranda_botom,
+            Screen.DashboardOrangTua.route
+        ),
+
+        BottomNavItem(
+            "Menu",
+            R.drawable.menu_bottom,
+            Screen.Home.route
+        ),
+
+        BottomNavItem(
+            "Aktivitas",
+            R.drawable.aktivitas_bottom,
+            Screen.Feedback.route
+        ),
+
+        BottomNavItem(
+            "Profil",
+            R.drawable.profil_bottom,
+            Screen.Role.route
+        )
     )
 
     Scaffold(
         containerColor = Color.White,
-        bottomBar = { DashboardBottomBar(parentBottomNav) }
+        bottomBar = { DashboardBottomBar(
+            navController = navController,
+            items = parentBottomNav
+        ) }
     ) { padding ->
 
         Column(
@@ -58,20 +84,6 @@ fun DashboardParentScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 /** FEEDBACK */
-
-                DashboardSectionTitle("Feedback Menu")
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                FeedbackRatingCard { rating, comment ->
-
-                    feedbackViewModel.sendFeedback(
-                        school = "SDN 1 Jakarta",
-                        parent = "Orang Tua",
-                        comment = comment,
-                        rating = rating
-                    )
-                }
 
                 Spacer(modifier = Modifier.height(24.dp))
             }
