@@ -4,7 +4,6 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
-    // 🔥 PERBAIKAN: Hapus versi 2.0.21 biar nggak bentrok sama classpath 1.9.0
     id("org.jetbrains.kotlin.plugin.serialization")
 }
 
@@ -62,8 +61,7 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation("androidx.compose.foundation:foundation")
 
-    // 🔥 PERBAIKAN: Sesuaikan dengan versi yang stabil (1.6.0) untuk Kotlin 1.9.0
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     implementation("androidx.core:core-splashscreen:1.2.0")
     implementation("androidx.navigation:navigation-compose:2.7.7")
