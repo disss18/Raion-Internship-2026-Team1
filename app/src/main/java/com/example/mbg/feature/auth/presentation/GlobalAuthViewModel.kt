@@ -45,7 +45,6 @@ class GlobalAuthViewModel : ViewModel() {
                         refreshAllData()
                     }
 
-                    // 🔥 Jangan reset auth kalau cuma sementara
                     is SessionStatus.NotAuthenticated -> {
                         _authState.value = AuthState.Unauthenticated
                     }
@@ -118,8 +117,6 @@ class GlobalAuthViewModel : ViewModel() {
     }
 
     fun setVerificationPending() {
-        // 🔥 PERBAIKAN: Kasih tau sistem kalau yang verifikasi PASTI Dapur MBG
-        // Biar nggak di-lempar ke layar kosong (Screen.Home)
         _userRole.value = "DAPUR_MBG"
         _verificationStatus.value = "pending"
 

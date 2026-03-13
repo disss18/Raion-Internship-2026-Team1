@@ -146,7 +146,7 @@ fun RootNavGraph(
             )
         }
 
-        // AuthGraph sudah meng-handle RoleScreen
+        // AuthGraph dah handle RoleScreen
         authNavGraph(navController)
 
         mainNavGraph(
