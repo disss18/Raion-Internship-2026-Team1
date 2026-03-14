@@ -1,6 +1,12 @@
 package com.example.mbg.core.navigation
 
+// 🔥 Ada beberapa tambahan import untuk bikin layar dummy artikel
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -9,11 +15,14 @@ import com.example.mbg.feature.auth.presentation.AuthState
 import com.example.mbg.feature.auth.presentation.GlobalAuthViewModel
 import com.example.mbg.feature.feedback.presentation.FeedbackViewModel
 import com.example.mbg.feature.onboarding.presentation.OnboardingScreen
+import com.example.mbg.feature.reward.presentation.screen.ArtikelScreen
 import com.example.mbg.feature.reward.presentation.screen.RewardScreen
 import com.example.mbg.feature.splashscreen.presentation.AnimatedSplashScreen
 import com.example.mbg.feature.splashscreen.components.WelcomeScreen
 import kotlinx.coroutines.delay
+
 private const val DEV_BYPASS_MBG = true
+
 @Composable
 fun RootNavGraph(
     deepLinkRoute: String? = null
@@ -35,6 +44,8 @@ fun RootNavGraph(
         splashFinished = true
     }
 
+
+
     LaunchedEffect(deepLinkRoute, splashFinished) {
         if (!splashFinished) return@LaunchedEffect
         if (deepLinkRoute == Screen.ResetPassword.route) {
@@ -55,7 +66,7 @@ fun RootNavGraph(
         val currentRoute = navController.currentBackStackEntry?.destination?.route
         val authRoutes = listOf(
             Screen.Splash.route, Screen.Onboarding.route, Screen.Welcome.route,
-            Screen.Login.route, Screen.Register.route, Screen.Role.route,Screen.VerificationMBG.route,      // ✅ TAMBAH
+            Screen.Login.route, Screen.Register.route, Screen.Role.route,Screen.VerificationMBG.route,
             Screen.VerificationStatus.route
         )
         val isInAuthScreen = authRoutes.contains(currentRoute)
@@ -156,5 +167,13 @@ fun RootNavGraph(
             verificationStatus = verificationStatus,
             feedbackViewModel = feedbackViewModel
         )
-    }
+
+        composable("artikel") {
+            ArtikelScreen(
+                // Ini fungsi biar tombol panah '<' di pojok kiri atas bisa balik ke halaman Reward
+                onBackClick = { navController.navigateUp() }
+            )
+        }
+        }
 }
+

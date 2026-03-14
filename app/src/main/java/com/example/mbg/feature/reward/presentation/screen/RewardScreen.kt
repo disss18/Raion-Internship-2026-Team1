@@ -22,67 +22,46 @@ import io.github.jan.supabase.gotrue.auth
 
 @Composable
 fun RewardScreen(
-
     navController: NavController,
-
     viewModel: RewardViewModel = viewModel()
-
 ) {
-
     val uiState by viewModel.uiState.collectAsState()
-
     val userId = SupabaseClientProvider.client.auth.currentUserOrNull()?.id
-
     val clipboardManager = LocalClipboardManager.current
-
     var voucherCode by remember { mutableStateOf<String?>(null) }
 
     /**
      * LOAD DATA
      */
     LaunchedEffect(userId) {
-
         userId?.let {
-
             viewModel.loadPoint(it)
-
             viewModel.startRealtimeListener(it)
-
         }
-
     }
 
     /**
      * OBSERVE VOUCHER
      */
     LaunchedEffect(uiState.voucherCode) {
-
         voucherCode = uiState.voucherCode
-
     }
 
     Scaffold(
-
         bottomBar = {
-
             DashboardBottomBar(
                 navController = navController
             )
-
         }
-
     ) { padding ->
-
         Column(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
         ) {
-
             RewardHeader()
 
             Column(
-
                 modifier = Modifier
                     .fillMaxSize()
                     .offset(y = (-16).dp)
@@ -95,9 +74,7 @@ fun RewardScreen(
                     )
                     .verticalScroll(rememberScrollState())
                     .padding(top = 16.dp)
-
             ) {
-
                 PointSummaryCard(
                     totalPoint = uiState.point,
                     role = "Pejuang Nutrisi"
@@ -118,12 +95,10 @@ fun RewardScreen(
                     actionText = "Lihat Semua"
                 )
 
+                // 🔥 PERBAIKAN DI SINI:
+                // Kita panggil ArticleCard dengan parameter navController sesuai file ArticleCard.kt terbaru
                 ArticleCard(
-                    onClick = {
-                        userId?.let {
-                            viewModel.addArticlePoint(it)
-                        }
-                    }
+                    navController = navController
                 )
 
                 Spacer(Modifier.height(20.dp))
@@ -136,83 +111,55 @@ fun RewardScreen(
                 RewardGrid(
                     userPoint = uiState.point,
                     onRedeem = { rewardId, cost ->
-
                         userId?.let {
-
                             viewModel.redeem(
                                 userId = it,
                                 rewardId = rewardId,
                                 cost = cost
                             )
-
                         }
-
                     }
                 )
 
                 Spacer(Modifier.height(40.dp))
-
             }
-
         }
-
     }
 
     /**
      * POPUP VOUCHER SUCCESS
      */
     voucherCode?.let { code ->
-
         RedeemDialog(
-
             code = code,
-
             onCopy = {
-
                 clipboardManager.setText(
                     AnnotatedString(code)
                 )
-
             },
-
             onDismiss = {
-
                 voucherCode = null
-
             }
-
         )
-
     }
 
     /**
      * POPUP POINT NOT ENOUGH
      */
     if (uiState.notEnoughPoint) {
-
         PointNotEnoughDialog(
-
             onDismiss = {
-
                 viewModel.resetNotEnoughPoint()
-
             }
-
         )
-
     }
-
 }
 
 /**
  * SIMPLE UI MODEL
  */
 data class RewardItem(
-
     val id: String,
-
     val title: String,
-
     val cost: Int
-
 )

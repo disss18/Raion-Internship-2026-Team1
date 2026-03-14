@@ -16,17 +16,18 @@ object BottomNavConfig {
         BottomNavItem(
             label = "Menu",
             icon = R.drawable.menu_bottom,
-            route = Screen.Home.route
+            route = Screen.InputGizi.route
         ),
+
         BottomNavItem(
             label = "Distribusi",
             icon = R.drawable.distribusi_bottom,
-            route = Screen.Feedback.route
+            route = Screen.Distribution.route
         ),
         BottomNavItem(
             label = "Profil",
             icon = R.drawable.profil_bottom,
-            route = "profile" // 🔥 Rutenya udah dibenerin ke profil
+            route = "profile"
         )
     )
 
@@ -45,14 +46,14 @@ object BottomNavConfig {
             route = Screen.SchoolStudent.route
         ),
         BottomNavItem(
-            label = "Aktivitas",
+            label = "Distribusi",
             icon = R.drawable.distribusi_bottom,
-            route = Screen.Feedback.route
+            route = Screen.Distribution.route
         ),
         BottomNavItem(
             label = "Profil",
             icon = R.drawable.profil_bottom,
-            route = "profile" // 🔥 Rutenya udah dibenerin ke profil
+            route = "profile"
         )
     )
 

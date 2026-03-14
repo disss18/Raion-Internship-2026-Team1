@@ -19,7 +19,6 @@ fun NavGraphBuilder.authNavGraph(
         route = Screen.Auth.route,
         startDestination = Screen.Login.route
     ) {
-        // ================= LOGIN =================
         composable(Screen.Login.route) {
             LoginScreen(
                 onNavigateToRegister = { navController.navigate(Screen.Register.route) },
@@ -28,7 +27,6 @@ fun NavGraphBuilder.authNavGraph(
             )
         }
 
-        // ================= REGISTER =================
         composable(Screen.Register.route) {
             RegisterScreen(
                 onNavigateToLogin = {
@@ -38,29 +36,27 @@ fun NavGraphBuilder.authNavGraph(
             )
         }
 
-        // ================= ROLE =================
         composable(Screen.Role.route) {
-            val globalAuthViewModel: GlobalAuthViewModel =
-                androidx.lifecycle.viewmodel.compose.viewModel()
+            val globalAuthViewModel: GlobalAuthViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 
             RoleScreen(
                 onRoleSelected = { role ->
-
                     globalAuthViewModel.refreshAllData()
 
                     when (role) {
-
                         "DAPUR_MBG" -> {
-                            navController.navigate(Screen.VerificationMBG.route)
+                            // 🔥 BYPASS: Langsung ke Dashboard, gak usah verifikasi
+                            navController.navigate(Screen.DashboardMBG.route) {
+                                popUpTo(Screen.Auth.route) { inclusive = true }
+                                launchSingleTop = true
+                            }
                         }
-
                         "SEKOLAH" -> {
                             navController.navigate(Screen.DashboardSekolah.route) {
                                 popUpTo(Screen.Auth.route) { inclusive = true }
                                 launchSingleTop = true
                             }
                         }
-
                         "ORANG_TUA" -> {
                             navController.navigate(Screen.DashboardOrangTua.route) {
                                 popUpTo(Screen.Auth.route) { inclusive = true }
@@ -72,31 +68,17 @@ fun NavGraphBuilder.authNavGraph(
             )
         }
 
-        // ================= VERIFICATION MBG =================
         composable(Screen.VerificationMBG.route) {
-            val globalAuthViewModel: GlobalAuthViewModel =
-                androidx.lifecycle.viewmodel.compose.viewModel()
-
             VerificationScreen(
                 onBackClick = { navController.popBackStack() },
-                onSubmitSuccess = {
-
-                    globalAuthViewModel.setVerificationPending()
-
-                    navController.navigate(Screen.VerificationStatus.route) {
-                        popUpTo(Screen.Auth.route) { inclusive = true }
-                        launchSingleTop = true
-                    }
-                }
+                onSubmitSuccess = { navController.navigate(Screen.VerificationStatus.route) }
             )
         }
 
-        // ================= FORGOT PASSWORD =================
         composable(Screen.ForgotPassword.route) {
             ForgotPasswordScreen(onBackToLogin = { navController.popBackStack() })
         }
 
-        // ================= RESET PASSWORD =================
         composable(Screen.ResetPassword.route) {
             ResetPasswordScreen(
                 onBack = { navController.popBackStack() },

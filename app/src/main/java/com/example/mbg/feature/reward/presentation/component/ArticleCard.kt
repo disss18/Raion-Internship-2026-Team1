@@ -11,50 +11,37 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.mbg.R
 
 @Composable
 fun ArticleCard(
-    onClick: () -> Unit
+    navController: NavController
 ) {
-
     Card(
-
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
-
         shape = RoundedCornerShape(16.dp),
-
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         ),
-
         elevation = CardDefaults.cardElevation(4.dp)
-
     ) {
-
         Column {
-
             Image(
-
                 painter = painterResource(R.drawable.ayam),
-
                 contentDescription = null,
-
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(150.dp)
                     .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
-
                 contentScale = ContentScale.Crop
-
             )
 
             Column(
                 modifier = Modifier.padding(16.dp)
             ) {
-
                 Text(
                     text = "Pentingnya Protein untuk Tumbuh Kembang Anak",
                     style = MaterialTheme.typography.titleMedium
@@ -70,30 +57,22 @@ fun ArticleCard(
                 Spacer(modifier = Modifier.height(14.dp))
 
                 Button(
-
-                    onClick = onClick,
-
+                    onClick = {
+                        // Sekarang ini nggak bakal error karena navController sudah dikenalin di atas
+                        navController.navigate("artikel")
+                    },
                     modifier = Modifier.fillMaxWidth(),
-
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFFD8E5DE)
                     ),
-
                     shape = RoundedCornerShape(10.dp)
-
                 ) {
-
                     Text(
                         text = "Baca Artikel",
                         color = Color(0xFF4C8F65)
                     )
-
                 }
-
             }
-
         }
-
     }
-
 }
