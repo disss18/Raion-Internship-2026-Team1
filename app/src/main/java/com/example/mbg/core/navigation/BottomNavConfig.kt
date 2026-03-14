@@ -69,7 +69,7 @@ object BottomNavConfig {
         BottomNavItem(
             label = "Menu",
             icon = R.drawable.menu_bottom,
-            route = Screen.Home.route
+            route = Screen.MenuParent.route
         ),
         BottomNavItem(
             label = "Aktivitas",

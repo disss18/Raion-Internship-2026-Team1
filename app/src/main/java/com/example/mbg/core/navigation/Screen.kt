@@ -46,4 +46,6 @@ sealed class Screen(val route: String) {
     object Distribution : Screen("distribution")
     object Reward : Screen("reward")
     object FormTambahItem : Screen("form_tambah_item")
+
+    object MenuParent : Screen("menu_parent")
 }

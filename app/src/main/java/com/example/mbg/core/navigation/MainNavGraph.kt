@@ -36,6 +36,7 @@ import com.example.mbg.feature.inputGizi.presentation.InputGiziViewModelFactory
 import com.example.mbg.feature.verificationMBG.presentation.*
 import com.example.mbg.feature.profile.presentation.*
 import androidx.compose.ui.platform.LocalContext
+import com.example.mbg.feature.home.presentation.parent.MenuParentScreen
 import com.example.mbg.feature.inputGizi.presentation.FormTambahItemScreen
 
 fun NavGraphBuilder.mainNavGraph(
@@ -308,6 +309,26 @@ fun NavGraphBuilder.mainNavGraph(
                     globalAuth.updateVerificationStatus(userId)
 
                 }
+            )
+        }
+
+        composable(Screen.MenuParent.route) {
+
+            val repository = remember {
+                InputGiziRepositoryImpl(
+                    SupabaseClientProvider.client
+                )
+            }
+
+            val factory = remember {
+                InputGiziViewModelFactory(repository)
+            }
+
+            val viewModel: InputGiziViewModel = viewModel(factory = factory)
+
+            MenuParentScreen(
+                navController = navController,
+                viewModel = viewModel
             )
         }
     }
