@@ -3,6 +3,7 @@ package com.example.mbg.verificationMBG
 import android.content.Context
 import android.net.Uri
 import android.webkit.MimeTypeMap
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mbg.core.supabase.SupabaseClientProvider
@@ -12,6 +13,8 @@ import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import java.util.UUID
+
+private const val TAG = "VERIFICATION_DEBUG"
 
 @Serializable
 data class ProfileResponse(
@@ -34,7 +37,7 @@ class VerificationViewModel : ViewModel() {
 
         viewModelScope.launch {
 
-            println("VERIF START")
+            Log.d(TAG, "START VERIFICATION")
 
             try {
 
@@ -44,30 +47,29 @@ class VerificationViewModel : ViewModel() {
                 val session = client.auth.currentSessionOrNull()
 
                 if (session == null) {
-                    println("SESSION NULL")
+                    Log.e(TAG, "SESSION NULL - USER BELUM LOGIN")
                     return@launch
                 }
 
                 val userId = session.user?.id
 
                 if (userId == null) {
-                    println("USER ID NULL")
+                    Log.e(TAG, "USER ID NULL")
                     return@launch
                 }
 
-                println("USER ID = $userId")
+                Log.d(TAG, "USER ID = $userId")
 
                 // ================= PROFILE =================
                 val profile = client.from("profiles")
                     .select {
-                        filter {
-                            eq("id", userId)
-                        }
-                    }.decodeSingleOrNull<ProfileResponse>()
+                        filter { eq("id", userId) }
+                    }
+                    .decodeSingleOrNull<ProfileResponse>()
 
                 val userEmail = profile?.email ?: session.user?.email ?: ""
 
-                println("USER EMAIL = $userEmail")
+                Log.d(TAG, "USER EMAIL = $userEmail")
 
                 // ================= VALIDASI FILE =================
                 if (
@@ -76,9 +78,11 @@ class VerificationViewModel : ViewModel() {
                     dokumenUri == null ||
                     buktiTransferUri == null
                 ) {
-                    println("FILE BELUM LENGKAP")
+                    Log.e(TAG, "FILE BELUM LENGKAP")
                     return@launch
                 }
+
+                Log.d(TAG, "SEMUA FILE ADA")
 
                 // ================= EXTENSION =================
                 val extUsaha = getFileExtension(context, fotoUsahaUri)
@@ -86,7 +90,10 @@ class VerificationViewModel : ViewModel() {
                 val extDoc = getFileExtension(context, dokumenUri)
                 val extTransfer = getFileExtension(context, buktiTransferUri)
 
+                Log.d(TAG, "EXTENSION: usaha=$extUsaha ktp=$extKtp doc=$extDoc transfer=$extTransfer")
+
                 // ================= UPLOAD STORAGE =================
+
                 val usahaUrl = uploadFile(
                     context,
                     "$userId/usaha_${UUID.randomUUID()}.$extUsaha",
@@ -111,25 +118,25 @@ class VerificationViewModel : ViewModel() {
                     buktiTransferUri
                 )
 
-                println("UPLOAD RESULT")
-                println("usahaUrl = $usahaUrl")
-                println("ktpUrl = $ktpUrl")
-                println("dokumenUrl = $dokumenUrl")
-                println("transferUrl = $transferUrl")
+                Log.d(TAG, "UPLOAD RESULT")
+                Log.d(TAG, "usahaUrl = $usahaUrl")
+                Log.d(TAG, "ktpUrl = $ktpUrl")
+                Log.d(TAG, "dokumenUrl = $dokumenUrl")
+                Log.d(TAG, "transferUrl = $transferUrl")
 
-                // ================= VALIDASI UPLOAD =================
                 if (
                     usahaUrl.isBlank() ||
                     ktpUrl.isBlank() ||
                     dokumenUrl.isBlank() ||
                     transferUrl.isBlank()
                 ) {
-                    println("UPLOAD GAGAL")
+                    Log.e(TAG, "UPLOAD GAGAL")
                     return@launch
                 }
 
                 // ================= INSERT DATABASE =================
-                println("INSERT DATABASE")
+
+                Log.d(TAG, "INSERT DATABASE")
 
                 client.from("dapur_verifications").insert(
                     mapOf(
@@ -146,20 +153,19 @@ class VerificationViewModel : ViewModel() {
                     )
                 )
 
-                println("VERIFICATION INSERT SUCCESS")
+                Log.d(TAG, "INSERT SUCCESS")
 
                 onSuccess()
 
             } catch (e: Exception) {
 
-                e.printStackTrace()
-                println("VERIFICATION ERROR: ${e.message}")
+                Log.e(TAG, "VERIFICATION ERROR", e)
 
             }
         }
     }
 
-    // ================= STORAGE UPLOAD =================
+    // ================= STORAGE =================
 
     private suspend fun uploadFile(
         context: Context,
@@ -174,7 +180,9 @@ class VerificationViewModel : ViewModel() {
 
             val bytes = inputStream.readBytes()
 
-            val bucket = SupabaseClientProvider.client.storage.from("berkas_dapur")
+            val bucket = SupabaseClientProvider.client
+                .storage
+                .from("berkas_dapur")
 
             bucket.upload(
                 path = fileName,
@@ -183,21 +191,20 @@ class VerificationViewModel : ViewModel() {
 
             val publicUrl = bucket.publicUrl(fileName)
 
-            println("UPLOAD SUCCESS: $publicUrl")
+            Log.d(TAG, "UPLOAD SUCCESS: $publicUrl")
 
             publicUrl
 
         } catch (e: Exception) {
 
-            e.printStackTrace()
-            println("UPLOAD ERROR: ${e.message}")
+            Log.e(TAG, "UPLOAD ERROR", e)
 
             ""
 
         }
     }
 
-    // ================= FILE EXTENSION =================
+    // ================= EXTENSION =================
 
     private fun getFileExtension(
         context: Context,

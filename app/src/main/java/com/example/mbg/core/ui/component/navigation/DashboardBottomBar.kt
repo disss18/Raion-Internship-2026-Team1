@@ -19,6 +19,8 @@ fun DashboardBottomBar(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     val currentRoute = navBackStackEntry?.destination?.route
+    val isInVerificationFlow =
+        currentRoute == Screen.VerificationMBG.route
 
     NavigationBar(containerColor = Color.White) {
 

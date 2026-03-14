@@ -25,29 +25,45 @@ class InputGiziViewModel(private val repository: InputGiziRepositoryImpl) : View
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
-    var totalKalori = 0.0
-        private set
-    var totalProtein = 0.0
-        private set
-    var totalKarbo = 0.0
-        private set
-    var totalLemak = 0.0
-        private set
+    private val _totalKalori = MutableStateFlow(0.0)
+    val totalKalori: StateFlow<Double> = _totalKalori
+
+    private val _totalProtein = MutableStateFlow(0.0)
+    val totalProtein: StateFlow<Double> = _totalProtein
+
+    private val _totalKarbo = MutableStateFlow(0.0)
+    val totalKarbo: StateFlow<Double> = _totalKarbo
+
+    private val _totalLemak = MutableStateFlow(0.0)
+    val totalLemak: StateFlow<Double> = _totalLemak
 
     init {
         fetchKatalogMenu()
     }
 
     fun fetchKatalogMenu() {
+
         viewModelScope.launch {
+
+            _isLoading.value = true
+
             try {
-                _isLoading.value = true
+
                 val items = repository.getMenuItems()
+
                 _katalogMenu.value = items
-                _isLoading.value = false
+
             } catch (e: Exception) {
-                _isLoading.value = false
+
                 e.printStackTrace()
+
+                // fallback supaya UI tidak crash
+                _katalogMenu.value = emptyList()
+
+            } finally {
+
+                _isLoading.value = false
+
             }
         }
     }
@@ -64,10 +80,15 @@ class InputGiziViewModel(private val repository: InputGiziRepositoryImpl) : View
     }
 
     private fun hitungAkumulasiGizi(items: List<MenuItem>) {
-        totalKalori = items.sumOf { it.kalori }
-        totalProtein = items.sumOf { it.protein }
-        totalKarbo = items.sumOf { it.karbohidrat }
-        totalLemak = items.sumOf { it.lemak }
+
+        _totalKalori.value = items.sumOf { it.kalori }
+
+        _totalProtein.value = items.sumOf { it.protein }
+
+        _totalKarbo.value = items.sumOf { it.karbohidrat }
+
+        _totalLemak.value = items.sumOf { it.lemak }
+
     }
 
     fun publishMenuHariIni(onSuccess: () -> Unit) {

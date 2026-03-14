@@ -45,8 +45,7 @@ fun NavGraphBuilder.authNavGraph(
 
                     when (role) {
                         "DAPUR_MBG" -> {
-                            // 🔥 BYPASS: Langsung ke Dashboard, gak usah verifikasi
-                            navController.navigate(Screen.DashboardMBG.route) {
+                            navController.navigate(Screen.VerificationMBG.route) {
                                 popUpTo(Screen.Auth.route) { inclusive = true }
                                 launchSingleTop = true
                             }
@@ -71,7 +70,12 @@ fun NavGraphBuilder.authNavGraph(
         composable(Screen.VerificationMBG.route) {
             VerificationScreen(
                 onBackClick = { navController.popBackStack() },
-                onSubmitSuccess = { navController.navigate(Screen.VerificationStatus.route) }
+                onSubmitSuccess = {
+                    navController.navigate(Screen.VerificationStatus.route) {
+                        popUpTo(Screen.VerificationMBG.route) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
             )
         }
 

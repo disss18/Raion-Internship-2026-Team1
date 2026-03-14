@@ -32,6 +32,7 @@ import com.example.mbg.R
 import com.example.mbg.ui.theme.*
 import com.example.mbg.core.ui.component.button.PrimaryButton
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mbg.feature.auth.presentation.GlobalAuthViewModel
 import com.example.mbg.verificationMBG.VerificationViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,9 +47,9 @@ fun VerificationScreen(
     onSubmitSuccess: () -> Unit = {}
 ) {
     val viewModel: VerificationViewModel = viewModel()
+    val globalAuthViewModel: GlobalAuthViewModel = viewModel()
     val context = LocalContext.current
 
-    // 🔥 PERBAIKAN: Gunakan rememberSaveable agar state kebal dari Process Death
     var currentStep by rememberSaveable { mutableIntStateOf(initialStep) }
     var namaUmkm by rememberSaveable { mutableStateOf(initNamaUmkm) }
     var alamat by rememberSaveable { mutableStateOf(initAlamat) }
@@ -244,6 +245,9 @@ fun VerificationScreen(
                                         dokumenUri = dokumenUri,
                                         buktiTransferUri = buktiTransferUri,
                                         onSuccess = {
+
+                                            globalAuthViewModel.setVerificationPending()
+
                                             onSubmitSuccess()
                                         }
                                     )

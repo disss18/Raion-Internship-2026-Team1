@@ -32,10 +32,17 @@ import com.example.mbg.ui.theme.*
 
 @Composable
 fun InputGiziScreen(
-    viewModel: InputGiziViewModel, onNavigateToFormTambahItem: () -> Unit
+    viewModel: InputGiziViewModel,
+    onNavigateToFormTambahItem: () -> Unit
 ) {
+
     val katalogMenu by viewModel.katalogMenu.collectAsState()
     val selectedItems by viewModel.selectedItems.collectAsState()
+
+    val totalKalori by viewModel.totalKalori.collectAsState()
+    val totalProtein by viewModel.totalProtein.collectAsState()
+    val totalKarbo by viewModel.totalKarbo.collectAsState()
+    val totalLemak by viewModel.totalLemak.collectAsState()
 
     var showEditDialog by remember { mutableStateOf(false) }
     var showUploadSuccessDialog by remember { mutableStateOf(false) }
@@ -44,6 +51,7 @@ fun InputGiziScreen(
         { newSelection: Set<com.example.mbg.feature.inputGizi.domain.model.MenuItem> ->
             val toAdd = newSelection - selectedItems.toSet()
             val toRemove = selectedItems.toSet() - newSelection
+
             toAdd.forEach { viewModel.toggleItemSelection(it, true) }
             toRemove.forEach { viewModel.toggleItemSelection(it, false) }
         }
@@ -53,25 +61,34 @@ fun InputGiziScreen(
             .fillMaxSize()
             .background(Color.White)
     ) {
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp, vertical = 24.dp)
                 .statusBarsPadding()
         ) {
+
             Text(
                 "Menu & Gizi Hari Ini",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
             )
-            Text("Dapur MBG - Pusat Monitoring", fontSize = 14.sp, color = TextGray)
+
+            Text(
+                "Dapur MBG - Pusat Monitoring",
+                fontSize = 14.sp,
+                color = TextGray
+            )
         }
+
         Divider(color = Color(0xFFF3F4F6), thickness = 1.dp)
 
         Box(modifier = Modifier.fillMaxSize()) {
+
             if (katalogMenu.isEmpty()) {
-                // STATE 1: KOSONG TOTAL
+
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -80,26 +97,33 @@ fun InputGiziScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
+
                     Image(
                         painter = painterResource(id = R.drawable.icon_bowlmakanan),
                         contentDescription = null,
                         modifier = Modifier.size(240.dp)
                     )
+
                     Spacer(modifier = Modifier.height(32.dp))
+
                     Text(
                         "Belum ada menu yang diinput.",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
                     )
+
                     Spacer(modifier = Modifier.height(12.dp))
+
                     Text(
                         "Silahkan masukkan daftar menu dan informasi gizi untuk agar mitra dapat memantau distribusi makanan.",
                         fontSize = 14.sp,
                         color = TextGray,
                         textAlign = TextAlign.Center
                     )
+
                     Spacer(modifier = Modifier.height(48.dp))
+
                     Button(
                         onClick = onNavigateToFormTambahItem,
                         modifier = Modifier
@@ -108,14 +132,18 @@ fun InputGiziScreen(
                         colors = ButtonDefaults.buttonColors(containerColor = FoundationGreen),
                         shape = RoundedCornerShape(8.dp)
                     ) {
+
                         Row(verticalAlignment = Alignment.CenterVertically) {
+
                             Icon(
                                 painter = painterResource(id = R.drawable.lingkaran_tambah),
-                                null,
+                                contentDescription = null,
                                 tint = Color.White,
                                 modifier = Modifier.size(18.dp)
                             )
+
                             Spacer(modifier = Modifier.width(8.dp))
+
                             Text(
                                 "Tambah Menu",
                                 color = Color.White,
@@ -125,8 +153,9 @@ fun InputGiziScreen(
                         }
                     }
                 }
+
             } else if (selectedItems.isEmpty()) {
-                // STATE 2: MENU ADA, KERANJANG KOSONG
+
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -135,28 +164,33 @@ fun InputGiziScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
+
                     Image(
                         painter = painterResource(id = R.drawable.icon_bowlmakanan),
                         contentDescription = null,
                         modifier = Modifier.size(240.dp)
                     )
+
                     Spacer(modifier = Modifier.height(32.dp))
+
                     Text(
                         "Belum ada menu yang diinput\nhari ini.",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
                     )
+
                     Spacer(modifier = Modifier.height(12.dp))
+
                     Text(
                         "Silahkan pilih daftar menu dan informasi gizi untuk hari ini agar mitra dapat memantau distribusi makanan.",
                         fontSize = 14.sp,
                         color = TextGray,
                         textAlign = TextAlign.Center
                     )
+
                     Spacer(modifier = Modifier.height(48.dp))
 
-                    // DROPDOWN INLINE EXPANDEBLE
                     MenuHariIniDropdown(
                         options = katalogMenu,
                         selectedItems = selectedItems,
@@ -164,14 +198,16 @@ fun InputGiziScreen(
                         onAddNewItem = onNavigateToFormTambahItem
                     )
                 }
+
             } else {
-                // STATE 3: keranjang ada isinya
+
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(horizontal = 24.dp)
                         .verticalScroll(rememberScrollState())
                 ) {
+
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Card(
@@ -180,39 +216,47 @@ fun InputGiziScreen(
                         border = BorderStroke(1.dp, Color(0xFFE5E7EB)),
                         shape = RoundedCornerShape(16.dp)
                     ) {
+
                         Column(modifier = Modifier.padding(16.dp)) {
+
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
+
                                 Row(verticalAlignment = Alignment.CenterVertically) {
+
                                     Icon(
                                         painter = painterResource(id = R.drawable.sendokgarpu_icon),
-                                        null,
+                                        contentDescription = null,
                                         tint = FoundationGreen,
                                         modifier = Modifier.size(20.dp)
                                     )
+
                                     Spacer(modifier = Modifier.width(8.dp))
+
                                     Text(
                                         "Rincian Menu & Kandungan",
                                         fontSize = 14.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = Color.Black
+                                        fontWeight = FontWeight.Bold
                                     )
                                 }
+
                                 Text(
                                     "Edit",
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = Color(0xFF3B82F6),
                                     textDecoration = TextDecoration.Underline,
-                                    modifier = Modifier
-                                        .clickable { showEditDialog = true }
-                                        .padding(4.dp))
+                                    modifier = Modifier.clickable { showEditDialog = true }
+                                )
                             }
+
                             Spacer(modifier = Modifier.height(16.dp))
-                            selectedItems.forEachIndexed { index, item ->
+
+                            selectedItems.forEach { item ->
+
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -220,39 +264,47 @@ fun InputGiziScreen(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
+
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
                                         modifier = Modifier.weight(1f)
                                     ) {
+
                                         AsyncImage(
                                             model = item.foto_url,
-                                            contentDescription = "Foto Menu",
+                                            contentDescription = null,
                                             contentScale = ContentScale.Crop,
                                             modifier = Modifier
                                                 .size(48.dp)
                                                 .clip(RoundedCornerShape(12.dp))
                                                 .background(Color(0xFFF3F4F6))
                                         )
+
                                         Spacer(modifier = Modifier.width(12.dp))
+
                                         Column {
+
                                             Text(
                                                 item.nama_item,
                                                 fontWeight = FontWeight.Bold,
-                                                fontSize = 14.sp,
-                                                color = Color.Black
+                                                fontSize = 14.sp
                                             )
+
                                             Text(
-                                                "Menu Terpilih", fontSize = 12.sp, color = TextGray
+                                                "Menu Terpilih",
+                                                fontSize = 12.sp,
+                                                color = TextGray
                                             )
                                         }
                                     }
+
                                     Column(horizontalAlignment = Alignment.End) {
+
                                         Text(
                                             "${item.kalori.toInt()} kkal",
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 14.sp,
-                                            color = Color.Black
+                                            fontWeight = FontWeight.Bold
                                         )
+
                                         Text(
                                             "Porsi: ${item.berat_gram.toInt()}gr",
                                             fontSize = 12.sp,
@@ -260,11 +312,6 @@ fun InputGiziScreen(
                                         )
                                     }
                                 }
-                                if (index < selectedItems.size - 1) Divider(
-                                    color = Color(0xFFF3F4F6),
-                                    thickness = 1.dp,
-                                    modifier = Modifier.padding(vertical = 8.dp)
-                                )
                             }
                         }
                     }
@@ -277,55 +324,55 @@ fun InputGiziScreen(
                         border = BorderStroke(1.dp, Color(0xFFE5E7EB)),
                         shape = RoundedCornerShape(16.dp)
                     ) {
+
                         Column(modifier = Modifier.padding(16.dp)) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.informasigizi_icon),
-                                    null,
-                                    tint = FoundationGreen,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    "Ringkasan Gizi Hari Ini",
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.Black
-                                )
-                            }
+
+                            Text(
+                                "Ringkasan Gizi Hari Ini",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+
                             Spacer(modifier = Modifier.height(16.dp))
+
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
+
                                 GiziBoxCard(
                                     modifier = Modifier.weight(1f),
                                     label = "TOTAL KALORI",
-                                    value = viewModel.totalKalori.toInt().toString(),
+                                    value = totalKalori.toInt().toString(),
                                     unit = "kkal"
                                 )
+
                                 GiziBoxCard(
                                     modifier = Modifier.weight(1f),
                                     label = "PROTEIN",
-                                    value = viewModel.totalProtein.toInt().toString(),
+                                    value = totalProtein.toInt().toString(),
                                     unit = "g"
                                 )
                             }
+
                             Spacer(modifier = Modifier.height(12.dp))
+
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
+
                                 GiziBoxCard(
                                     modifier = Modifier.weight(1f),
                                     label = "KARBOHIDRAT",
-                                    value = viewModel.totalKarbo.toInt().toString(),
+                                    value = totalKarbo.toInt().toString(),
                                     unit = "g"
                                 )
+
                                 GiziBoxCard(
                                     modifier = Modifier.weight(1f),
                                     label = "SERAT/LEMAK",
-                                    value = viewModel.totalLemak.toInt().toString(),
+                                    value = totalLemak.toInt().toString(),
                                     unit = "g"
                                 )
                             }
@@ -346,10 +393,10 @@ fun InputGiziScreen(
                         colors = ButtonDefaults.buttonColors(containerColor = FoundationGreen),
                         shape = RoundedCornerShape(8.dp)
                     ) {
+
                         Text(
                             "Upload",
                             color = Color.White,
-                            fontSize = 14.sp,
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -359,19 +406,26 @@ fun InputGiziScreen(
             }
 
             if (showEditDialog) {
+
                 EditMenuDialog(
                     katalogMenu = katalogMenu,
                     selectedItems = selectedItems,
                     onSaveSelection = handleSaveSelection,
-                    onAddNewItem = { showEditDialog = false; onNavigateToFormTambahItem() },
-                    onDismiss = { showEditDialog = false })
+                    onAddNewItem = {
+                        showEditDialog = false
+                        onNavigateToFormTambahItem()
+                    },
+                    onDismiss = { showEditDialog = false }
+                )
             }
 
             if (showUploadSuccessDialog) {
+
                 SuccessDialog(
                     title = "Menu Berhasil\nDiunggah",
                     message = "Menu yang kamu tambahkan\ntelah berhasil disimpan.",
-                    onDismiss = { showUploadSuccessDialog = false })
+                    onDismiss = { showUploadSuccessDialog = false }
+                )
             }
         }
     }

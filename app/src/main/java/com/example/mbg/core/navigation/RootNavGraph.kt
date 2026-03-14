@@ -64,6 +64,8 @@ fun RootNavGraph(
         if (isResetFlow) return@LaunchedEffect
 
         val currentRoute = navController.currentBackStackEntry?.destination?.route
+        val isInVerificationFlow =
+            currentRoute == Screen.VerificationMBG.route
         val authRoutes = listOf(
             Screen.Splash.route, Screen.Onboarding.route, Screen.Welcome.route,
             Screen.Login.route, Screen.Register.route, Screen.Role.route,Screen.VerificationMBG.route,
@@ -77,7 +79,21 @@ fun RootNavGraph(
 
                 when (userRole) {
                     "DAPUR_MBG" -> {
-                        val target = if (verificationStatus == "approved") Screen.DashboardMBG.route else Screen.VerificationStatus.route
+
+                        // Jangan redirect jika sedang isi form verifikasi
+                        if (isInVerificationFlow) return@LaunchedEffect
+
+                        val target = when (verificationStatus) {
+
+                            "approved" -> Screen.DashboardMBG.route
+
+                            "pending" -> Screen.VerificationStatus.route
+
+                            null -> Screen.VerificationMBG.route
+
+                            else -> Screen.VerificationMBG.route
+                        }
+
                         if (currentRoute != target && isInAuthScreen) {
                             navController.navigate(target) {
                                 popUpTo(Screen.Splash.route) { inclusive = true }

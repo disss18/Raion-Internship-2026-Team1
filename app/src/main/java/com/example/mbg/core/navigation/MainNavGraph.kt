@@ -27,9 +27,12 @@ import com.example.mbg.feature.feedback.presentation.FeedbackViewModel
 import com.example.mbg.feature.home.presentation.mbg.DashboardMBGScreen
 import com.example.mbg.feature.home.presentation.parent.DashboardParentScreen
 import com.example.mbg.feature.home.presentation.school.DashboardSchoolScreen
+import com.example.mbg.feature.inputGizi.data.repository.InputGiziRepositoryImpl
 import com.example.mbg.feature.reward.presentation.screen.RewardScreen
 import com.example.mbg.feature.school.presentation.SchoolStudentScreen
 import com.example.mbg.feature.inputGizi.presentation.InputGiziScreen
+import com.example.mbg.feature.inputGizi.presentation.InputGiziViewModel
+import com.example.mbg.feature.inputGizi.presentation.InputGiziViewModelFactory
 import com.example.mbg.feature.verificationMBG.presentation.*
 import com.example.mbg.feature.profile.presentation.*
 
@@ -62,13 +65,25 @@ fun NavGraphBuilder.mainNavGraph(
         // ==========================================
         // RUTE MENU
         // ==========================================
-        composable(Screen.Home.route) {
+        composable(Screen.InputGizi.route) {
             val globalAuth: GlobalAuthViewModel = viewModel()
             val currentRole by globalAuth.userRole.collectAsState()
 
             if (currentRole == "DAPUR_MBG") {
-                com.example.mbg.feature.inputGizi.presentation.InputGiziScreen(
-                    viewModel = viewModel(),
+                val repository = remember {
+                    InputGiziRepositoryImpl(
+                        SupabaseClientProvider.client
+                    )
+                }
+
+                val factory = remember {
+                    InputGiziViewModelFactory(repository)
+                }
+
+                val inputGiziViewModel: InputGiziViewModel = viewModel(factory = factory)
+
+                InputGiziScreen(
+                    viewModel = inputGiziViewModel,
                     onNavigateToFormTambahItem = { }
                 )
             } else if (currentRole == "SEKOLAH") {
@@ -85,25 +100,49 @@ fun NavGraphBuilder.mainNavGraph(
         // RUTE DISTRIBUSI
         // ==========================================
         composable(Screen.Distribution.route) {
+
             val globalAuth: GlobalAuthViewModel = viewModel()
             val currentRole by globalAuth.userRole.collectAsState()
 
             if (currentRole == "DAPUR_MBG") {
-                val dapurViewModel: com.example.mbg.feature.distribusi.presentation.dapur.DistribusiDapurViewModel =
-                    viewModel()
-                com.example.mbg.feature.distribusi.presentation.dapur.DistribusiDapurScreen(
-                    viewModel = dapurViewModel,
+
+                val repository = remember {
+                    com.example.mbg.feature.distribusi.data.repository.DistribusiRepositoryImpl(
+                        com.example.mbg.core.supabase.SupabaseClientProvider.client
+                    )
+                }
+
+                val factory = remember {
+                    com.example.mbg.feature.distribusi.presentation.dapur.DistribusiDapurViewModelFactory(repository)
+                }
+
+                val viewModel: DistribusiDapurViewModel = viewModel(factory = factory)
+
+                DistribusiDapurScreen(
+                    viewModel = viewModel,
                     navController = navController,
                     roleString = currentRole
                 )
+
+            } else if (currentRole == "SEKOLAH") {
+
+                val viewModel: DistribusiSekolahViewModel = viewModel()
+
+                DistribusiSekolahScreen(
+                    viewModel = viewModel,
+                    navController = navController,
+                    roleString = currentRole
+                )
+
             } else {
-                val sekolahViewModel: com.example.mbg.feature.distribusi.presentation.sekolah.DistribusiSekolahViewModel =
-                    viewModel()
-                com.example.mbg.feature.distribusi.presentation.sekolah.DistribusiSekolahScreen(
-                    viewModel = sekolahViewModel,
-                    navController = navController,
-                    roleString = currentRole
-                )
+
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("Role tidak dikenali")
+                }
+
             }
         }
 
@@ -190,57 +229,35 @@ fun NavGraphBuilder.mainNavGraph(
         }
 
         composable(Screen.VerificationStatus.route) {
-            VerificationStatusScreen(
-                status = VerifStatus.PENDING,
-                onNextClick = { navController.navigate(Screen.DashboardMBG.route) },
-                onRefreshClick = {})
-        }
-
-        composable(Screen.Distribution.route) {
 
             val globalAuth: GlobalAuthViewModel = viewModel()
-            val currentRole by globalAuth.userRole.collectAsState()
 
-            if (currentRole == "DAPUR_MBG") {
+            val verificationStatus by globalAuth.verificationStatus.collectAsState()
 
-                val repository = remember {
-                    com.example.mbg.feature.distribusi.data.repository.DistribusiRepositoryImpl(
-                        com.example.mbg.core.supabase.SupabaseClientProvider.client
-                    )
+            val session = SupabaseClientProvider.client.auth.currentSessionOrNull()
+            val userId = session?.user?.id
+
+            VerificationStatusScreen(
+
+                status = when (verificationStatus) {
+                    "approved" -> VerifStatus.SUCCESS
+                    "rejected" -> VerifStatus.FAILED
+                    else -> VerifStatus.PENDING
+                },
+
+                onNextClick = {
+                    navController.navigate(Screen.DashboardMBG.route) {
+                        popUpTo(Screen.VerificationStatus.route) { inclusive = true }
+                    }
+                },
+
+                onRefreshClick = {
+
+                    // ambil status terbaru dari Supabase
+                    globalAuth.updateVerificationStatus(userId)
+
                 }
-
-                val factory = remember {
-                    com.example.mbg.feature.distribusi.presentation.dapur.DistribusiDapurViewModelFactory(repository)
-                }
-
-                val viewModel: DistribusiDapurViewModel = viewModel(factory = factory)
-
-                DistribusiDapurScreen(
-                    viewModel = viewModel,
-                    navController = navController,
-                    roleString = currentRole
-                )
-
-            } else if (currentRole == "SEKOLAH") {
-
-                val viewModel: DistribusiSekolahViewModel = viewModel()
-
-                DistribusiSekolahScreen(
-                    viewModel = viewModel,
-                    navController = navController,
-                    roleString = currentRole
-                )
-
-            } else {
-
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("Role tidak dikenali")
-                }
-
-            }
+            )
         }
     }
 }
