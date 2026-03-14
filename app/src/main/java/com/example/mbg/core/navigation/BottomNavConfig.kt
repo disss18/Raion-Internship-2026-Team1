@@ -27,7 +27,7 @@ object BottomNavConfig {
         BottomNavItem(
             label = "Profil",
             icon = R.drawable.profil_bottom,
-            route = "profile"
+            route = Screen.Profile.route
         )
     )
 
@@ -53,7 +53,7 @@ object BottomNavConfig {
         BottomNavItem(
             label = "Profil",
             icon = R.drawable.profil_bottom,
-            route = "profile"
+            route = Screen.Profile.route
         )
     )
 
@@ -79,7 +79,7 @@ object BottomNavConfig {
         BottomNavItem(
             label = "Profil",
             icon = R.drawable.profil_bottom,
-            route = "profile" // 🔥 Rutenya udah dibenerin ke profil
+            route = Screen.Profile.route
         )
     )
 }

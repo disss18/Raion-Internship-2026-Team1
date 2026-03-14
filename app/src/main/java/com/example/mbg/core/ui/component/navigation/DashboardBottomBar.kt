@@ -14,13 +14,10 @@ import com.example.mbg.core.navigation.Screen
 fun DashboardBottomBar(
     navController: NavController,
     items: List<BottomNavItem> = BottomNavConfig.parent
-){
+) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-
     val currentRoute = navBackStackEntry?.destination?.route
-    val isInVerificationFlow =
-        currentRoute == Screen.VerificationMBG.route
 
     NavigationBar(containerColor = Color.White) {
 
@@ -34,14 +31,17 @@ fun DashboardBottomBar(
 
                     navController.navigate(item.route) {
 
-                        launchSingleTop = true
+                        popUpTo(navController.graph.startDestinationId) {
+                            saveState = true
+                        }
 
+                        launchSingleTop = true
                         restoreState = true
                     }
+
                 },
 
                 icon = {
-
                     Icon(
                         painter = painterResource(item.icon),
                         contentDescription = item.label
