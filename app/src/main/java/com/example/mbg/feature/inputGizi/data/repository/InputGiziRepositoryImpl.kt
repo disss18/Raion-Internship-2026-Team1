@@ -1,5 +1,7 @@
 package com.example.mbg.feature.inputGizi.data.repository
 
+import com.example.mbg.core.supabase.SupabaseClientProvider
+import com.example.mbg.feature.inputGizi.data.model.MenuItemInsert
 import com.example.mbg.feature.inputGizi.domain.model.DailyPublishedMenu
 import com.example.mbg.feature.inputGizi.domain.model.MenuItem
 import com.example.mbg.feature.inputGizi.domain.repository.InputGiziRepository
@@ -32,7 +34,23 @@ class InputGiziRepositoryImpl(
 
     //Simpan item menu baru ke database
     override suspend fun insertMenuItem(item: MenuItem) {
-        supabase.postgrest.from("menu_items").insert(item)
+
+        val data = MenuItemInsert(
+            id = item.id,
+            dapur_id = item.dapur_id,
+            nama_item = item.nama_item,
+            foto_url = item.foto_url,
+            berat_gram = item.berat_gram,
+            kalori = item.kalori,
+            karbohidrat = item.karbohidrat,
+            protein = item.protein,
+            lemak = item.lemak,
+            created_at = item.created_at
+        )
+
+        supabase.postgrest
+            .from("menu_items")
+            .insert(data)
     }
 
     //Ambil menu spesifik per dapur (Katalog)

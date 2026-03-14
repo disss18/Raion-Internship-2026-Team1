@@ -14,7 +14,9 @@ import java.io.File
 import java.io.FileOutputStream
 import java.util.UUID
 
-class InputGiziViewModel(private val repository: InputGiziRepositoryImpl) : ViewModel() {
+class InputGiziViewModel(
+    private val repository: InputGiziRepositoryImpl
+) : ViewModel() {
 
     private val _katalogMenu = MutableStateFlow<List<MenuItem>>(emptyList())
     val katalogMenu: StateFlow<List<MenuItem>> = _katalogMenu.asStateFlow()
@@ -42,7 +44,6 @@ class InputGiziViewModel(private val repository: InputGiziRepositoryImpl) : View
     }
 
     fun fetchKatalogMenu() {
-
         viewModelScope.launch {
 
             _isLoading.value = true
@@ -50,14 +51,11 @@ class InputGiziViewModel(private val repository: InputGiziRepositoryImpl) : View
             try {
 
                 val items = repository.getMenuItems()
-
                 _katalogMenu.value = items
 
             } catch (e: Exception) {
 
                 e.printStackTrace()
-
-                // fallback supaya UI tidak crash
                 _katalogMenu.value = emptyList()
 
             } finally {
@@ -69,12 +67,17 @@ class InputGiziViewModel(private val repository: InputGiziRepositoryImpl) : View
     }
 
     fun toggleItemSelection(item: MenuItem, isChecked: Boolean) {
+
         val currentList = _selectedItems.value.toMutableList()
+
         if (isChecked) {
-            if (!currentList.any { it.id == item.id }) currentList.add(item)
+            if (!currentList.any { it.id == item.id }) {
+                currentList.add(item)
+            }
         } else {
             currentList.removeAll { it.id == item.id }
         }
+
         _selectedItems.value = currentList
         hitungAkumulasiGizi(currentList)
     }
@@ -82,11 +85,8 @@ class InputGiziViewModel(private val repository: InputGiziRepositoryImpl) : View
     private fun hitungAkumulasiGizi(items: List<MenuItem>) {
 
         _totalKalori.value = items.sumOf { it.kalori }
-
         _totalProtein.value = items.sumOf { it.protein }
-
         _totalKarbo.value = items.sumOf { it.karbohidrat }
-
         _totalLemak.value = items.sumOf { it.lemak }
 
     }
@@ -107,8 +107,11 @@ class InputGiziViewModel(private val repository: InputGiziRepositoryImpl) : View
         onSuccess: () -> Unit,
         onError: (String) -> Unit
     ) {
+
         viewModelScope.launch {
+
             try {
+
                 _isLoading.value = true
 
                 var vKalori = 0.0
@@ -116,9 +119,13 @@ class InputGiziViewModel(private val repository: InputGiziRepositoryImpl) : View
                 var vKarbo = 0.0
                 var vLemak = 0.0
 
+                // Hitung nilai gizi dari list
                 giziList.forEach { gizi ->
+
                     val jumlah = gizi.jumlah.toDoubleOrNull() ?: 0.0
+
                     when (gizi.jenis.lowercase()) {
+
                         "kalori" -> vKalori = jumlah
                         "protein" -> vProtein = jumlah
                         "karbohidrat" -> vKarbo = jumlah
@@ -126,45 +133,76 @@ class InputGiziViewModel(private val repository: InputGiziRepositoryImpl) : View
                     }
                 }
 
+                // Fallback supaya tidak null di Supabase
+                val safeKalori = vKalori.takeIf { it > 0 } ?: 0.0
+                val safeKarbo = vKarbo.takeIf { it > 0 } ?: 0.0
+                val safeProtein = vProtein.takeIf { it > 0 } ?: 0.0
+                val safeLemak = vLemak.takeIf { it > 0 } ?: 0.0
+
                 val file = uriToFile(context, imageUri)
-                val fotoUrl = repository.uploadFotoItem(file, "foto_${System.currentTimeMillis()}.jpg")
+
+                val fotoUrl = repository.uploadFotoItem(
+                    file,
+                    "foto_${System.currentTimeMillis()}.jpg"
+                )
 
                 val newItem = MenuItem(
+
                     id = UUID.randomUUID().toString(),
-                    // TODO: Ini masih pakai ID dummy buat testing karena data akun belum ada.
-                    // Nanti wajib diganti narik ID otomatis kalau fitur Login udah digabung.
+
+                    // sementara pakai dummy
                     dapur_id = "00000000-0000-0000-0000-000000000000",
+
                     nama_item = namaMenu,
+
                     foto_url = fotoUrl,
+
                     berat_gram = jumlahPorsi.toDoubleOrNull() ?: 0.0,
-                    kalori = vKalori,
-                    karbohidrat = vKarbo,
-                    protein = vProtein,
-                    lemak = vLemak,
-                    created_at = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date())
+
+                    kalori = safeKalori,
+                    karbohidrat = safeKarbo,
+                    protein = safeProtein,
+                    lemak = safeLemak,
+
+                    created_at = java.text.SimpleDateFormat(
+                        "yyyy-MM-dd HH:mm:ss",
+                        java.util.Locale.getDefault()
+                    ).format(java.util.Date())
                 )
 
                 repository.insertMenuItem(newItem)
+
                 fetchKatalogMenu()
 
                 _isLoading.value = false
+
                 onSuccess()
 
             } catch (e: Exception) {
+
                 _isLoading.value = false
+
                 onError(e.message ?: "Kesalahan Server Supabase")
+
                 e.printStackTrace()
             }
         }
     }
 
     private fun uriToFile(context: Context, uri: Uri): File {
+
         val inputStream = context.contentResolver.openInputStream(uri)
+
         val tempFile = File.createTempFile("upload_", ".jpg", context.cacheDir)
+
         val outputStream = FileOutputStream(tempFile)
+
         inputStream?.copyTo(outputStream)
+
         inputStream?.close()
+
         outputStream.close()
+
         return tempFile
     }
 }

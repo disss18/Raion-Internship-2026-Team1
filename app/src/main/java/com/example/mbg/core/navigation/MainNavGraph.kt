@@ -35,6 +35,8 @@ import com.example.mbg.feature.inputGizi.presentation.InputGiziViewModel
 import com.example.mbg.feature.inputGizi.presentation.InputGiziViewModelFactory
 import com.example.mbg.feature.verificationMBG.presentation.*
 import com.example.mbg.feature.profile.presentation.*
+import androidx.compose.ui.platform.LocalContext
+import com.example.mbg.feature.inputGizi.presentation.FormTambahItemScreen
 
 fun NavGraphBuilder.mainNavGraph(
     navController: NavHostController,
@@ -66,10 +68,12 @@ fun NavGraphBuilder.mainNavGraph(
         // RUTE MENU
         // ==========================================
         composable(Screen.InputGizi.route) {
+
             val globalAuth: GlobalAuthViewModel = viewModel()
             val currentRole by globalAuth.userRole.collectAsState()
 
             if (currentRole == "DAPUR_MBG") {
+
                 val repository = remember {
                     InputGiziRepositoryImpl(
                         SupabaseClientProvider.client
@@ -84,16 +88,63 @@ fun NavGraphBuilder.mainNavGraph(
 
                 InputGiziScreen(
                     viewModel = inputGiziViewModel,
-                    onNavigateToFormTambahItem = { }
+                    onNavigateToFormTambahItem = {
+                        navController.navigate(Screen.FormTambahItem.route)
+                    }
                 )
-            } else if (currentRole == "SEKOLAH") {
-                DashboardSchoolScreen(
-                    navController = navController,
-                    feedbackViewModel = feedbackViewModel
-                )
-            } else {
-                DashboardParentScreen(navController = navController)
             }
+        }
+
+        composable(Screen.FormTambahItem.route) {
+
+            val context = androidx.compose.ui.platform.LocalContext.current
+
+            val repository = remember {
+                InputGiziRepositoryImpl(
+                    SupabaseClientProvider.client
+                )
+            }
+
+            val factory = remember {
+                InputGiziViewModelFactory(repository)
+            }
+
+            val inputGiziViewModel: InputGiziViewModel = viewModel(factory = factory)
+
+            FormTambahItemScreen(
+
+                onBackClick = {
+                    navController.popBackStack()
+                },
+
+                onSimpanClick = { kategori, namaMenu, satuanPorsi, jumlahPorsi, giziList, imageUri, deskripsi ->
+
+                    inputGiziViewModel.tambahMenuKeDatabase(
+                        context = context,
+                        kategori = kategori,
+                        namaMenu = namaMenu,
+                        satuanPorsi = satuanPorsi,
+                        jumlahPorsi = jumlahPorsi,
+                        giziList = giziList,
+                        deskripsi = deskripsi,
+                        imageUri = imageUri,
+
+                        onSuccess = {
+
+                            println("MENU BERHASIL DITAMBAH")
+
+                            navController.popBackStack()
+
+                        },
+
+                        onError = {
+
+                            println("ERROR SUPABASE: $it")
+
+                        }
+                    )
+                }
+            )
         }
 
         // ==========================================
